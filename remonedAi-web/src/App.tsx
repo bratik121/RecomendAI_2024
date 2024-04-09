@@ -1,12 +1,9 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import MyRoutes from "./routes/MyRoutes";
 
 function App() {
 	return (
-		<div className="w-full p-8">
-			<h2 className="text-purple-900 ">Bienvenido a remonedAi-web</h2>
-			<div>Hola</div>
+		<div className="w-screen overflow-hidden min-h-screen bg-c_dark_blue text-white px-8 py-4">
+			<MyRoutes />
 		</div>
 	);
 }
