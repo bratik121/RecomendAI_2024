@@ -5,23 +5,26 @@
     <title>Signup</title>
 </head>
 <body>
-        {{ form.success }}
-        {{ form.error }}
+    {% extends 'base.html' %}
+    {% block content %}
+        {{ success }}
+        {{ error }}
+
         <form method="POST">
             {% csrf_token %}
             <h3>{{ form }}</h3>
+            `<button>
+                Signup
+            </button>
 
-        <button>
-            Signup
-        </button>
-        
-        <button>
-            Login
-        </button>
-        
-        <button>
-            Login temporal user
-        </button>
-    </form>
+            <button>
+                Login
+            </button>
+
+            <button>
+                Login temporal user
+            </button>
+        </form>
+    {% endblock %}
 </body>
 </html>
