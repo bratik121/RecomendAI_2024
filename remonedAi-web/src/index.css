@@ -1,3 +1,23 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.font-custom {
+	font-family: "Outfit", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: <weight>;
+	font-style: normal;
+}
+
+.custom-shadow {
+	background: rgb(9, 217, 158);
+	background: radial-gradient(
+		circle,
+		rgba(9, 217, 158, 1) 0%,
+		rgba(9, 217, 158, 0) 100%
+	);
+}
+
+/* background: rgb(9,217,158);
+background: radial-gradient(circle, rgba(9,217,158,1) 0%, rgba(9,217,158,0) 100%); */
