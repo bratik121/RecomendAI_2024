@@ -1,9 +1,9 @@
 import MovieSlide from "./MovieSlide";
-import movies from "@/assets/movies/movies";
+import movies from "@/src/assets/movies/movies";
 import { Splide, SplideSlide, SplideTrack } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { RipplesButton } from "@/components/common";
+import { RipplesButton } from "@/src/components/common";
 import "./style.css";
 type Props = {};
 

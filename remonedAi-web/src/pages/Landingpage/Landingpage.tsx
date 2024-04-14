@@ -1,6 +1,7 @@
 import React from "react";
-import logo from "@/assets/logo-removebg-preview.png";
+import logo from "@/src/assets/logo-removebg-preview.png";
 import { MovieSlider } from "./MovieSlider";
+import { AboutSection } from "./AboutSection";
 type Props = {};
 
 const Landingpage = (props: Props) => {
@@ -16,12 +17,14 @@ const Landingpage = (props: Props) => {
 						<img src={logo} alt="" />
 					</div>
 				</div>
-				<span className="md:text-lg text-c_green italic font-medium text-center">
+				<span className="md:text-lg text-primary-600 italic font-medium text-center">
 					"From Bored to Buzzed: Your Next Movie Awaits"
 				</span>
 			</div>
 			{/* MovieSlider */}
 			<MovieSlider />
+			{/* AboutSection */}
+			<AboutSection />
 		</div>
 	);
 };
