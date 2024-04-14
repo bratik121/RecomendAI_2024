@@ -2,11 +2,12 @@ import React from "react";
 import logo from "@/src/assets/logo-removebg-preview.png";
 import { MovieSlider } from "./MovieSlider";
 import { AboutSection } from "./AboutSection";
+import { Input } from "@/src/components/common";
 type Props = {};
 
 const Landingpage = (props: Props) => {
 	return (
-		<div className="w-full items-center flex flex-col gap-y-8">
+		<div className="w-full items-center flex flex-col gap-y-8 ">
 			{/* Title */}
 			<div className="flex flex-col gap-y-2  md:gap-y-0  w-full items-center ">
 				<div className="flex flex-col md:flex-row items-center w-full justify-center relative">

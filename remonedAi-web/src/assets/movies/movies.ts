@@ -24,7 +24,7 @@ const movies = [
 	},
 	{
 		img: gozilaxkong,
-		title: "Godzilla vs Kong",
+		title: "Godzilla x Kong",
 	},
 	{
 		img: ironClaw,
