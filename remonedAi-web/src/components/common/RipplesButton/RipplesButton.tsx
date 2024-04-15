@@ -3,9 +3,14 @@ import "./style.css";
 type RipplesButtonProps = {
 	handleClick: () => void;
 	text: string;
+	className?: string;
 };
 
-const RipplesButton = ({ handleClick, text }: RipplesButtonProps) => {
+const RipplesButton = ({
+	handleClick,
+	text,
+	className,
+}: RipplesButtonProps) => {
 	const rippleEfect = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		let btn = e.target as HTMLButtonElement;
 		let x = e.clientX - btn.offsetLeft;
@@ -22,7 +27,7 @@ const RipplesButton = ({ handleClick, text }: RipplesButtonProps) => {
 	};
 	return (
 		<button
-			className="ripple-button px-3 rounded-2xl py-1 md:-translate-x-3 w-fit "
+			className={`ripple-button px-3 rounded-lg py-1  w-fit ${className}`}
 			onClick={(e) => {
 				rippleEfect(e);
 				handleClick();

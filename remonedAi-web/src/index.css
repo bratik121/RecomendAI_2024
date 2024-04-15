@@ -24,19 +24,5 @@
 	z-index: ;
 }
 
-.color-2 {
-	height: 800px;
-	width: 800px;
-	background-image: radial-gradient(
-		closest-side,
-		rgba(9, 217, 158, 0.76) 0%,
-		#132d46
-	);
-	position: absolute;
-	top: 300px;
-	right: -500px;
-	z-index: ;
-}
-
 /* background: rgb(9,217,158);
 background: radial-gradient(circle, rgba(9,217,158,1) 0%, rgba(9,217,158,0) 100%); */
