@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "../../common";
 import logo from "@/src/assets/logo-removebg-preview.png";
 import { useScroll, useTransform } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
 import { BiLogOutCircle } from "react-icons/bi";
 import { userLogout } from "@/src/redux/actions";
-
+import { useNavigate } from "react-router-dom";
 import { RootState } from "@/src/redux/reducers";
 import "./style.css";
 
@@ -18,6 +18,16 @@ const RenderAuth = ({
 	name: string;
 	handleLogout(): void;
 }) => {
+	const navigate = useNavigate();
+
+	const handleSignin = () => {
+		navigate("/sign/in");
+	};
+
+	const handleSignup = () => {
+		navigate("/sign/up");
+	};
+
 	if (isAuthenticated) {
 		return (
 			<div className="items-center flex gap-x-2">
@@ -31,8 +41,8 @@ const RenderAuth = ({
 	}
 	return (
 		<div className="flex items-center gap-x-2">
-			<Button text="Sign In" />
-			<Button text="Sign Up" fill={false} />
+			<Button text="Sign In" onClick={handleSignin} />
+			<Button text="Sign Up" onClick={handleSignup} fill={false} />
 		</div>
 	);
 };
@@ -51,7 +61,7 @@ const Header = () => {
 	};
 
 	// State to hold the current opacity value
-	const [currentOpacity, setCurrentOpacity] = useState(1); // default initial opacity
+	const [currentOpacity, setCurrentOpacity] = useState(0); // default initial opacity
 
 	// Update the opacity state whenever the `opacity` MotionValue changes
 	useEffect(() => {

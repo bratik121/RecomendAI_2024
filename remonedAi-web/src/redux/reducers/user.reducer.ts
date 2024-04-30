@@ -11,11 +11,11 @@ import {
 
 const initalState: userState = {
 	isFetching: false,
-	isAuthenticated: true,
+	isAuthenticated: false,
 	user: {
 		email: "",
-		name: "Bryant",
-		lastname: "Mitchell",
+		name: "",
+		lastname: "",
 		id: "",
 	},
 	error: "",

@@ -87,6 +87,7 @@ const Input = (props: Props) => {
 					onFocus={onFocus}
 					name={name}
 					onKeyDown={onKeyDown}
+					style={{ backgroundColor: "transparent" }}
 				/>
 				{/* Right icon */}
 				{rightIcon && (
