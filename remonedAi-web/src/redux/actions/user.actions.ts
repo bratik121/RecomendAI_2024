@@ -6,6 +6,7 @@ import {
 	POST_LOGIN_USER_SUCCESS,
 	POST_REGISTER_USER_ERROR,
 	POST_REGISTER_USER_SUCCESS,
+	USER_LOGOUT,
 } from "../constants";
 import { IRegisterUser, ILoginUser, IApiResponse } from "../Interfaces";
 
@@ -32,3 +33,5 @@ export const postLoginUserSuccess = createAction<IApiResponse>(
 );
 
 export const postLoginUserError = createAction<any>(POST_LOGIN_USER_ERROR);
+
+export const userLogout = createAction(USER_LOGOUT);

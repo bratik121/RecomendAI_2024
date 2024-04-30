@@ -69,7 +69,7 @@ const Input = (props: Props) => {
 				)}
 				{/* Input */}
 				<input
-					className={`h-full w-full rounded-lg bg-c_dark_blue ${
+					className={`h-full w-full rounded-lg bg-c_dark_blue-600 ${
 						border && "border"
 					} ${error ? "border-red-600" : "border-c_gray-700"}  ${getPadding(
 						leftIcon,
@@ -87,6 +87,7 @@ const Input = (props: Props) => {
 					onFocus={onFocus}
 					name={name}
 					onKeyDown={onKeyDown}
+					style={{ backgroundColor: "transparent" }}
 				/>
 				{/* Right icon */}
 				{rightIcon && (

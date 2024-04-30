@@ -9,7 +9,10 @@ type Props = {};
 
 const MovieSlider = (props: Props) => {
 	return (
-		<div className="flex flex-col items-center gap-y-2 w-full">
+		<div className="flex flex-col items-center gap-y-6 w-full">
+			<h4 className="text-3xl md:text-5xl font-medium font-custom">
+				Our catalog
+			</h4>
 			{/* Slider */}
 			<div className="w-full px-8 md:px-16">
 				<Splide
@@ -50,12 +53,6 @@ const MovieSlider = (props: Props) => {
 						))}
 					</SplideTrack>
 				</Splide>
-			</div>
-			<div className="md:translate-x-3">
-				<RipplesButton
-					handleClick={() => console.log("clicked")}
-					text="know more"
-				/>
 			</div>
 		</div>
 	);

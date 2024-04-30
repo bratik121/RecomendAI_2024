@@ -9,7 +9,7 @@ const MyRoutes = (props: Props) => {
 		<AnimatePresence>
 			<Routes>
 				<Route path="/" element={<Landingpage />} />
-				<Route path="/sign" element={<Sign />} />
+				<Route path="/sign/*" element={<Sign />} />
 			</Routes>
 		</AnimatePresence>
 	);

@@ -10,14 +10,48 @@
 	font-style: normal;
 }
 
-.custom-shadow {
-	background: rgb(9, 217, 158);
-	background: radial-gradient(
-		circle,
-		rgba(9, 217, 158, 1) 0%,
-		rgba(9, 217, 158, 0) 100%
+.color {
+	height: 800px;
+	width: 800px;
+	background-image: radial-gradient(
+		closest-side,
+		rgba(9, 217, 158, 0.76) 0%,
+		#132d46
 	);
+	position: absolute;
+	top: -499px;
+	left: -200px;
+	z-index: ;
 }
 
 /* background: rgb(9,217,158);
 background: radial-gradient(circle, rgba(9,217,158,1) 0%, rgba(9,217,158,0) 100%); */
+
+.overflow-y-scroll::-webkit-scrollbar {
+	width: 0.5vw;
+}
+
+.overflow-y-scroll::-webkit-scrollbar-track {
+	background: transparent;
+	border-radius: 0.5vw;
+}
+
+.overflow-y-scroll::-webkit-scrollbar-thumb {
+	background: #08c48f;
+	border-radius: 0.5vw;
+}
+
+.overflow-y-scroll::-webkit-scrollbar-thumb:hover {
+	background: #067555;
+}
+
+.overflow-y-scroll::-webkit-scrollbar-button {
+	display: none;
+}
+
+/* removing horizontal scrollbar */
+
+.overflow-y-scroll::-webkit-scrollbar {
+	height: 0px;
+	background: transparent;
+}
