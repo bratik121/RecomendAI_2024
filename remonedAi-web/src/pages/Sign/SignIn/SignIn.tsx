@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, Input } from "@/src/components/common";
 import { useNavigate } from "react-router-dom";
 import logo from "@/src/assets/logo-removebg-preview.png";
@@ -6,9 +5,7 @@ import { useInput, useInputPassword } from "@/src/hooks";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { isEmail, isPassword } from "@/src/utils";
 
-type Props = {};
-
-const SignIn = (props: Props) => {
+const SignIn = () => {
 	const navigate = useNavigate();
 
 	const email = useInput("");

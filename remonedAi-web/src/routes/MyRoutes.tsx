@@ -1,15 +1,21 @@
 import { AnimatePresence } from "framer-motion";
 import { Routes, Route } from "react-router-dom";
-import { Landingpage, Sign } from "../pages";
+import { Landingpage, Sign, ReviewFilms } from "../pages";
 import ProtectedRoutes from "../components/protectedRoutes/protectedRoutes";
-type Props = {};
+type Props = {
+	isAuthenticated: boolean;
+};
 
-const MyRoutes = (props: Props) => {
+const MyRoutes = ({ isAuthenticated }: Props) => {
 	return (
 		<AnimatePresence>
 			<Routes>
 				<Route path="/" element={<Landingpage />} />
 				<Route path="/sign/*" element={<Sign />} />
+				{/* Rutas progetigas por autenticacion  */}
+				<Route element={<ProtectedRoutes isAuthenticated={true} />}>
+					<Route path="/review-films" element={<ReviewFilms />} />
+				</Route>
 			</Routes>
 		</AnimatePresence>
 	);
