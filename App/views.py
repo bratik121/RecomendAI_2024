@@ -1,16 +1,16 @@
-from sqlite3 import IntegrityError
-
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
 from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm
+from django.db import IntegrityError
 
-
-# Create your views here.
+@require_http_methods(["GET", "POST"])
 def signup(request, *args, **kwargs):
     if request.method == 'GET':
         print('retrieving data.')
-        return render(request, "signup.html", {
-            'form': UserCreationForm
+        return JsonResponse({
+            "code": 200,
+            "data": [],
+            "message": "User creation form retrieved successfully."
         })
     else:
         if request.POST['password1'] == request.POST['password2']:
@@ -18,20 +18,26 @@ def signup(request, *args, **kwargs):
                 print('sending data...')
                 user = User.objects.create_user(username=request.POST['username'], password=request.POST['password1'])
                 user.save()
-                return render(request, "signup.html", {'form': UserCreationForm, 'success': 'Succesful created!'})
+                return JsonResponse({
+                    "code": 201,
+                    "data": {
+                        "user": {
+                            "username": user.username,
+                            "name": 'bryant',
+                            "lastname": "mitchell"
+                        }
+                    },
+                    "message": "User created successfully!"
+                })
             except IntegrityError:
-                return render(request, "signup.html", {'form': UserCreationForm, 'error': 'Username already taken!'})
-
-        return render(request, "signup.html",
-                      {
-                          'form': UserCreationForm,
-                          'error': 'Passwords does not match'
-                      })
-
-
-def button_sign(request, *args, **kwargs):
-    return render(request, "home.html", {})
-
-
-def peliculas(request, *args, **kwargs):
-    return render(request, "Peliculas.html", {})
+                return JsonResponse({
+                    "code": 400,
+                    "data": [],
+                    "message": "Username already taken!"
+                })
+        else:
+            return JsonResponse({
+                "code": 400,
+                "data": [],
+                "message": "Passwords do not match!"
+            })
