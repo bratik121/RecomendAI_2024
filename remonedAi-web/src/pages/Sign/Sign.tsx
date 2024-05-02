@@ -1,7 +1,3 @@
-import { useEffect, useState } from "react";
-import { apiRequest } from "@/src/redux/actions";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import SignIn from "./SignIn/SignIn";
 import SignUp from "./SignUp/SignUp";
@@ -10,12 +6,8 @@ import { motion as m, AnimatePresence } from "framer-motion";
 import { opacityVariant } from "@/src/types";
 import "./style.css";
 
-type Props = {};
-
-const Sign = (props: Props) => {
+const Sign = () => {
 	const path = useLocation().pathname;
-
-	const navigate = useNavigate();
 
 	return (
 		<div className="flex h-screen w-screen  items-center justify-center">
