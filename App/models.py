@@ -9,7 +9,6 @@ class User(models.Model):
     password = models.CharField(max_length=30)
     lastname = models.CharField(max_length=30)
 
-
 class Pelicula(models.Model):
     idPelicula = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=30)
@@ -20,21 +19,22 @@ class Pelicula(models.Model):
 
 
 class userLike(models.Model):
-    idUser = models.AutoField(primary_key=True)
+    idUser = models.IntegerField(primary_key=True)
     peliculas = JSONField()
 
 
 class knownMovie(models.Model):
-    idUser = models.AutoField(primary_key=True)
+    idUser = models.IntegerField(primary_key=True)
     peliculas = JSONField()
 
 
 class unknownMovie(models.Model):
-    idUser = models.AutoField(primary_key=True)
+    idUser = models.IntegerField(primary_key=True)
     peliculas = JSONField()
 
+
 class gridView(models.Model):
-    idUser = models.AutoField(primary_key=True)
+    idUser = models.IntegerField(primary_key=True)
     genreGrid = JSONField()
     binaryY = models.BinaryField()
     binarySeen = models.BinaryField()

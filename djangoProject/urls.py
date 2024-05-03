@@ -21,11 +21,17 @@ from App import views
 
 from rest_framework import routers, serializers, viewsets
 
-from App.views import PeliculaViewSet
+from App.views import PeliculaViewSet, UserLikeViewSet, knownMovieViewSet, unknownMovieViewSet, gridViewSet, UserViewSet
 
 route = routers.DefaultRouter()
 
-route.register("", PeliculaViewSet, basename="Pelicula")
+route.register("Pelicula", PeliculaViewSet, basename="Pelicula")
+route.register("User", UserViewSet, basename="User")
+route.register("knownMovie", knownMovieViewSet, basename="knownMovie")
+route.register("unknownMovie", unknownMovieViewSet, basename="unknownMovie")
+route.register("gridView", gridViewSet, basename="gridView")
+route.register("UserLike", UserLikeViewSet, basename="UserLike")
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
