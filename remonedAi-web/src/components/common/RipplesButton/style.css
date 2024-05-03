@@ -1,0 +1,39 @@
+.ripple-button {
+	color: #fff;
+	height: 3rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	position: relative;
+	overflow: hidden;
+	top: 0;
+	z-index: 10;
+	background: rgb(9, 217, 158);
+	background: radial-gradient(
+		circle,
+		rgba(9, 217, 158, 1) 0%,
+		rgba(7, 157, 114, 1) 100%
+	);
+}
+
+.ripples {
+	position: absolute;
+	background: #fff;
+	transform: translate(-50%, -50%);
+	pointer-events: none;
+	border-radius: 50%;
+	animation: ripple 1s linear infinite;
+}
+
+@keyframes ripple {
+	0% {
+		width: 0px;
+		height: 0px;
+		opacity: 0.5;
+	}
+
+	100% {
+		width: 500px;
+		height: 500px;
+		opacity: 0;
+	}
+}

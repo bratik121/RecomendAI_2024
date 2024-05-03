@@ -1,0 +1,19 @@
+.is-active > .movie_slide {
+	scale: 1;
+	opacity: 1;
+}
+
+.movie_slide {
+	scale: 0.9;
+	opacity: 0.5;
+	transition: all 0.3s ease-in-out;
+	padding: 10px;
+}
+
+.splide__arrow {
+	background: transparent !important;
+}
+
+.splide__arrow svg {
+	fill: #09d99e !important;
+}
