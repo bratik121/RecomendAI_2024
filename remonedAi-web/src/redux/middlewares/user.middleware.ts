@@ -17,7 +17,7 @@ import {
 
 import { storage } from "@/src/helpers";
 
-const USER_URL = "http://localhost:3001/user";
+const USER_URL = `${import.meta.env.VITE_API_URL}/User/`;
 
 const userProcess: Middleware =
 	({ dispatch }) =>
@@ -25,10 +25,12 @@ const userProcess: Middleware =
 	(action) => {
 		next(action);
 		if (postRegisterUserProcess.match(action)) {
+			console.log("Url", USER_URL); // "http://localhost:3000/api/User
+			console.log("action.payload : ", action.payload);
 			dispatch(
 				apiRequest(
 					"POST",
-					`${USER_URL}/register`,
+					`${USER_URL}`,
 					action.payload,
 					POST_REGISTER_USER_SUCCESS,
 					POST_REGISTER_USER_ERROR
