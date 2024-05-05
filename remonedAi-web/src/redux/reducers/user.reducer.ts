@@ -37,7 +37,12 @@ export const user = (
 				...state,
 				isFetching: false,
 				isAuthenticated: true,
-				user: action.payload,
+				user: {
+					email: action.payload.email,
+					name: action.payload.name,
+					lastname: action.payload.lastname,
+					id: action.payload.id,
+				},
 			};
 		case POST_REGISTER_USER_ERROR:
 			return {
