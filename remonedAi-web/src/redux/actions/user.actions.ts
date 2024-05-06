@@ -15,7 +15,7 @@ export const postRegisterUserProcess = createAction<IRegisterUser>(
 	POST_REGISTER_USER_PROCESS
 );
 
-export const postRegisterUserSuccess = createAction<IApiResponse>(
+export const postRegisterUserSuccess = createAction<any>(
 	POST_REGISTER_USER_SUCCESS
 );
 
@@ -28,10 +28,10 @@ export const postLoginUserProcess = createAction<ILoginUser>(
 	POST_LOGIN_USER_PROCESS
 );
 
-export const postLoginUserSuccess = createAction<IApiResponse>(
-	POST_LOGIN_USER_SUCCESS
-);
+export const postLoginUserSuccess = createAction<any>(POST_LOGIN_USER_SUCCESS);
 
 export const postLoginUserError = createAction<any>(POST_LOGIN_USER_ERROR);
+
+export const setUserFromStorage = createAction<any>("SET_USER_FROM_STORAGE");
 
 export const userLogout = createAction(USER_LOGOUT);

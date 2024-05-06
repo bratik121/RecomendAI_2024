@@ -56,12 +56,19 @@ const userSuccess: Middleware =
 	(action) => {
 		next(action);
 		if (postRegisterUserSuccess.match(action)) {
-			console.log(action.payload.data);
-			storage.set("user", action.payload.data);
+			console.log(action.payload);
+			const user = {
+				email: action.payload.email,
+				name: action.payload.name,
+				lastname: action.payload.lastname,
+				id: action.payload.id,
+			};
+			console.log("user", user);
+			storage.set("user", user);
 		}
 		if (postLoginUserSuccess.match(action)) {
-			console.log(action.payload.data);
-			storage.set("user", action.payload.data);
+			console.log(action.payload);
+			storage.set("user", action.payload);
 		}
 	};
 
