@@ -1,4 +1,4 @@
-import { Iuser, userState, userAction } from "../Interfaces";
+import { Iuser, userState, reduxAction } from "../Interfaces";
 import {
 	POST_LOGIN_USER_ERROR,
 	POST_LOGIN_USER_PROCESS,
@@ -23,7 +23,7 @@ const initalState: userState = {
 
 export const user = (
 	state: userState = initalState,
-	action: userAction
+	action: reduxAction
 ): userState => {
 	switch (action.type) {
 		case POST_REGISTER_USER_PROCESS:
