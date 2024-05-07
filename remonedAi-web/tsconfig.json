@@ -6,7 +6,10 @@
 		"skipLibCheck": true,
 
 		/* Bundler mode */
-		"moduleResolution": "Bundler",
+		//Lo pase de Bundler a Node //? Para slider
+		"moduleResolution": "Node",
+		//esmoduleinterop lo pase a true para que no me de error en la importacion de modulos //? Para slider
+		"esModuleInterop": true,
 		"allowImportingTsExtensions": true,
 		"resolveJsonModule": true,
 		"isolatedModules": true,

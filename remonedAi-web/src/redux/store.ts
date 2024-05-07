@@ -1,9 +1,13 @@
 import { configureStore, Middleware } from "@reduxjs/toolkit";
 
 import { rootReducer } from "./reducers";
-import { apiMdl, userMiddleware } from "./middlewares/";
+import { apiMdl, userMiddleware, movieMiddleware } from "./middlewares/";
 
-const middlewares: Middleware[] = [apiMdl, ...userMiddleware];
+const middlewares: Middleware[] = [
+	apiMdl,
+	...userMiddleware,
+	...movieMiddleware,
+];
 
 export const store = configureStore({
 	reducer: rootReducer,

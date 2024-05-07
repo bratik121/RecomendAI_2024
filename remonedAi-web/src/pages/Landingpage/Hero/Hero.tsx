@@ -9,9 +9,7 @@ const Hero = (props: Props) => {
 	const handleClick = () => {};
 
 	return (
-		<div className="w-full flex flex-col gap-y-6 md:flex-row justify-between relative  ">
-			{/* blured-dot */}
-			<div className="blured-dot "></div>
+		<div className="max-w-full w-full flex flex-col gap-y-6 md:flex-row justify-between z-20  ">
 			{/* Info section */}
 			<div className="flex flex-col items-center md:items-start w-full lg:max-w-[50%] gap-y-4 md:gap-y-6 order-2 md:order-1">
 				<h3 className="text-3xl md:text-6xl font-custom font-bold">
@@ -25,7 +23,7 @@ const Hero = (props: Props) => {
 				<RipplesButton text="Start now" handleClick={handleClick} />
 			</div>
 			{/* Video Container */}
-			<div className="h-[200px] w-full lg:w-[600px] lg:h-[350px] rounded-lg video-container order-1 md:order-2">
+			<div className="h-[200px] w-full lg:w-[600px] lg:h-[350px] rounded-lg relative-10 video-container order-1 md:order-2">
 				<video
 					autoPlay
 					loop

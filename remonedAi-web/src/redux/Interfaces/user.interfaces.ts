@@ -13,11 +13,6 @@ export interface userState {
 	error: string;
 }
 
-export interface userAction {
-	type: string;
-	payload: any;
-}
-
 // Actions interfaces
 export interface IRegisterUser {
 	email: string;
