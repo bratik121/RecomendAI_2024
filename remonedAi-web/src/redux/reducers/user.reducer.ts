@@ -1,4 +1,4 @@
-import { Iuser, userState, userAction } from "../Interfaces";
+import { Iuser, userState, reduxAction } from "../Interfaces";
 import {
 	POST_LOGIN_USER_ERROR,
 	POST_LOGIN_USER_PROCESS,
@@ -6,6 +6,7 @@ import {
 	POST_REGISTER_USER_ERROR,
 	POST_REGISTER_USER_PROCESS,
 	POST_REGISTER_USER_SUCCESS,
+	SET_USER_FROM_STORAGE,
 	USER_LOGOUT,
 } from "../constants";
 
@@ -23,7 +24,7 @@ const initalState: userState = {
 
 export const user = (
 	state: userState = initalState,
-	action: userAction
+	action: reduxAction
 ): userState => {
 	switch (action.type) {
 		case POST_REGISTER_USER_PROCESS:
@@ -37,7 +38,12 @@ export const user = (
 				...state,
 				isFetching: false,
 				isAuthenticated: true,
-				user: action.payload,
+				user: {
+					email: action.payload.email,
+					name: action.payload.name,
+					lastname: action.payload.lastname,
+					id: action.payload.id,
+				},
 			};
 		case POST_REGISTER_USER_ERROR:
 			return {
@@ -63,6 +69,12 @@ export const user = (
 				...state,
 				isFetching: false,
 				error: action.payload,
+			};
+		case SET_USER_FROM_STORAGE:
+			return {
+				...state,
+				isAuthenticated: true,
+				user: action.payload,
 			};
 		case USER_LOGOUT:
 			return initalState;

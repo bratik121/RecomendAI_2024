@@ -3,3 +3,8 @@ export interface IApiResponse {
 	message: string;
 	data: any;
 }
+
+export interface reduxAction {
+	type: string;
+	payload: any;
+}
