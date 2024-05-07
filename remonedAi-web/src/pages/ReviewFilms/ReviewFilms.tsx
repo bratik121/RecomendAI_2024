@@ -27,11 +27,13 @@ function ReviewFilms({}: Props) {
 	};
 
 	return (
-		<div className="flex flex-col items-center mt-4 gap-y-4">
+		<div className="flex flex-col items-center mt-4 gap-y-4 relative z-40">
 			{/* Titulo y subtitulo */}
 			<div className="flex flex-col items-center gap-y-2">
-				<h1 className="text-3xl font-bold font-custom">Review Films</h1>
-				<p>Review ten films in order to get better recomendations</p>
+				<h1 className="text-3xl font-bold font-custom ">Review Films</h1>
+				<p className="text-center">
+					Review ten films in order to get better recomendations
+				</p>
 			</div>
 			{/* Clasificador de peliculas */}
 			<div className=" flex flex-col gap-y-2 items-center">

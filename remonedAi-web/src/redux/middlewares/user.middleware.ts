@@ -7,6 +7,7 @@ import {
 	postLoginUserSuccess,
 	postRegisterUserError,
 	postRegisterUserSuccess,
+	userLogout,
 } from "../actions";
 import {
 	POST_REGISTER_USER_ERROR,
@@ -85,4 +86,19 @@ const userErrors: Middleware =
 		}
 	};
 
-export const userMiddleware = [userProcess, userSuccess, userErrors];
+const userStorageProccess: Middleware =
+	({ dispatch }) =>
+	(next) =>
+	(action) => {
+		next(action);
+		if (userLogout.match(action)) {
+			storage.remove("user");
+		}
+	};
+
+export const userMiddleware = [
+	userProcess,
+	userSuccess,
+	userErrors,
+	userStorageProccess,
+];

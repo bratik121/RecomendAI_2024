@@ -101,7 +101,7 @@ const SignUp = (props: Props) => {
 				<div className=" flex flex-col gap-y-6 px-8 py-6">
 					{/* Inputs */}
 					<div className="flex flex-col gap-y-2">
-						<div className=" flex gap-x-2">
+						<div className=" flex flex-col gap-y-2 gap-x-2 md:flex-row">
 							<Input
 								text="Name"
 								name="name"
