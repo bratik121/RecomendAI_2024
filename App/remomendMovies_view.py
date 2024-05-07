@@ -1,12 +1,10 @@
 from django.http import JsonResponse
 from .models import Movie, Interaction
 from sklearn.preprocessing import MultiLabelBinarizer
-from django.db.models import Case, When, Value, IntegerField
-from django.db import models
 import pandas as pd
 from django.contrib.auth.models import User
 from sklearn.ensemble import RandomForestClassifier
-import numpy as np  # Importing numpy
+import numpy as np
 
 def recommend_movies(request, idUser):
     if request.method == 'GET':
@@ -45,28 +43,36 @@ def recommend_movies(request, idUser):
             X_unseen = unseen_movies.drop(columns=['id'])
             predicted_likes = forest.predict_proba(X_unseen)
 
-            # Debugging output: Checking the shape of the predicted output
+            # Check the shape of predicted output and adjust if necessary
             if predicted_likes.shape[1] == 1:
-                predicted_likes = np.hstack([1 - predicted_likes, predicted_likes])
-
+                if forest.classes_[0] == 1:
+                    predicted_likes = np.hstack([1 - predicted_likes, predicted_likes])
+                else:
+                    predicted_likes = np.hstack([predicted_likes, 1 - predicted_likes])
             unseen_movies['like_probability'] = predicted_likes[:, 1]
 
-            # Order preserved query for movies
-            preserved_order = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(unseen_movies.index.tolist())], output_field=IntegerField())
-            movies_queryset = Movie.objects.filter(id__in=unseen_movies.index).annotate(order=preserved_order).order_by('order')
+            # Sort by probability of being liked
+            recommended_movies = unseen_movies.sort_values(by='like_probability', ascending=False)
 
-            # Prepare response with correct format
+            # Prepare and send response
             response_data = []
-            for movie in movies_queryset[:10]:
-                genres_list = [genre.name for genre in movie.genres.all()]  # Ensure Genre M2M relationship
-                response_data.append({
-                    'id': movie.id,
-                    'title': movie.title,
-                    'poster_path': movie.poster_path,
-                    'release_year': movie.release_year.strftime('%Y') if movie.release_year else 'N/A',
-                    'overview': movie.overview,
-                    'genres': genres_list
-                })
+            count = 0
+            for id, prob in recommended_movies['like_probability'].items():
+                if count >= 10:
+                    break
+                try:
+                    movie = Movie.objects.get(id=id)
+                    response_data.append({
+                        'id': movie.id,
+                        'title': movie.title,
+                        'poster_path': movie.poster_path,
+                        'release_year': movie.release_year,
+                        'overview': movie.overview,
+                        'genres': movie.genres if isinstance(movie.genres, list) else movie.genres.split(', ')
+                    })
+                    count += 1
+                except Movie.DoesNotExist:
+                    continue  # Ignore movies that do not exist
 
             return JsonResponse(response_data, safe=False)
 
