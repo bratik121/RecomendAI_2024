@@ -14,8 +14,7 @@ def login_view(request):
         password = data.get('password')
 
         logger.debug(f"Attempting to login with email: {email}")
-        print(email)
-        print(password)
+  
 
         user = authenticate(request, username=email, password=password)
 
@@ -23,7 +22,12 @@ def login_view(request):
         if user is not None:
             login(request, user)
             logger.debug("Login successful")
-            return JsonResponse({'message': 'Login successful'}, status=200)
+            return JsonResponse({
+                'id': user.id,
+                'email': user.email,
+                'name': user.name,
+                'lastname': user.lastname,
+            }, status=200)
         else:
             logger.warning("Login failed - Invalid credentials")
             return JsonResponse({'message': 'Invalid credentials'}, status=401)
