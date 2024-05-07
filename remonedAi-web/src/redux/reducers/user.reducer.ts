@@ -6,6 +6,7 @@ import {
 	POST_REGISTER_USER_ERROR,
 	POST_REGISTER_USER_PROCESS,
 	POST_REGISTER_USER_SUCCESS,
+	SET_USER_FROM_STORAGE,
 	USER_LOGOUT,
 } from "../constants";
 
@@ -68,6 +69,12 @@ export const user = (
 				...state,
 				isFetching: false,
 				error: action.payload,
+			};
+		case SET_USER_FROM_STORAGE:
+			return {
+				...state,
+				isAuthenticated: true,
+				user: action.payload,
 			};
 		case USER_LOGOUT:
 			return initalState;
