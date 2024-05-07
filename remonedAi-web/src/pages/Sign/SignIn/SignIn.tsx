@@ -1,15 +1,30 @@
-import { Button, Input } from "@/src/components/common";
+import { useEffect } from "react";
+import { Button, Input, Loading } from "@/src/components/common";
 import { useNavigate } from "react-router-dom";
 import logo from "@/src/assets/logo-removebg-preview.png";
+import { useDispatch, useSelector } from "react-redux";
 import { useInput, useInputPassword } from "@/src/hooks";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { postLoginUserProcess } from "@/src/redux/actions";
+import { RootState } from "@/src/redux/reducers";
 import { isEmail, isPassword } from "@/src/utils";
 
 const SignIn = () => {
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
+
+	const { isFetching, isAuthenticated } = useSelector(
+		(state: RootState) => state.user
+	);
 
 	const email = useInput("");
 	const password = useInputPassword("");
+
+	useEffect(() => {
+		if (isAuthenticated) {
+			navigate("/");
+		}
+	}, [isAuthenticated]);
 
 	const validate = (): boolean => {
 		let flag = true;
@@ -30,7 +45,11 @@ const SignIn = () => {
 	};
 	const handleSignIn = () => {
 		if (!validate()) return;
-		console.log("Sign in");
+		const data = {
+			email: email.value,
+			password: password.value,
+		};
+		dispatch(postLoginUserProcess(data));
 	};
 
 	const handleSignUp = () => {
@@ -40,6 +59,14 @@ const SignIn = () => {
 	const handleLogoClick = () => {
 		navigate("/");
 	};
+
+	if (isFetching)
+		return (
+			<div className="w-full h-full flex justify-center items-center">
+				<Loading />
+			</div>
+		);
+
 	return (
 		<div className="w-full h-full px-4  ">
 			<div className=" flex flex-col gap-y-2 py-4">
@@ -70,7 +97,7 @@ const SignIn = () => {
 						/>
 						<Input
 							text="Password"
-							type="password"
+							type={password.showPassword ? "text" : "password"}
 							name="password"
 							value={password.value}
 							onChange={password.onChange}

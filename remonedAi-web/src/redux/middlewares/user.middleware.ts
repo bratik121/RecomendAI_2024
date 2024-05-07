@@ -20,14 +20,14 @@ import { storage } from "@/src/helpers";
 
 const USER_URL = `${import.meta.env.VITE_API_URL}/User/`;
 
+const LOGIN_URL = `${import.meta.env.VITE_API_URL}/auth/login`;
+
 const userProcess: Middleware =
 	({ dispatch }) =>
 	(next) =>
 	(action) => {
 		next(action);
 		if (postRegisterUserProcess.match(action)) {
-			console.log("Url", USER_URL); // "http://localhost:3000/api/User
-			console.log("action.payload : ", action.payload);
 			dispatch(
 				apiRequest(
 					"POST",
@@ -42,7 +42,7 @@ const userProcess: Middleware =
 			dispatch(
 				apiRequest(
 					"POST",
-					`${USER_URL}/login`,
+					LOGIN_URL,
 					action.payload,
 					POST_LOGIN_USER_SUCCESS,
 					POST_LOGIN_USER_ERROR
@@ -57,19 +57,23 @@ const userSuccess: Middleware =
 	(action) => {
 		next(action);
 		if (postRegisterUserSuccess.match(action)) {
-			console.log(action.payload);
 			const user = {
 				email: action.payload.email,
 				name: action.payload.name,
 				lastname: action.payload.lastname,
 				id: action.payload.id,
 			};
-			console.log("user", user);
+
 			storage.set("user", user);
 		}
 		if (postLoginUserSuccess.match(action)) {
-			console.log(action.payload);
-			storage.set("user", action.payload);
+			const user = {
+				email: action.payload.email,
+				name: action.payload.name,
+				lastname: action.payload.lastname,
+				id: action.payload.id,
+			};
+			storage.set("user", user);
 		}
 	};
 
