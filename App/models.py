@@ -66,3 +66,25 @@ class gridView(models.Model):
     genreGrid = JSONField()
     binaryY = models.BinaryField()
     binarySeen = models.BinaryField()
+
+class Movie(models.Model):
+    title = models.CharField(max_length=255)
+    poster_path = models.CharField(max_length=500)  # Asegúrate de que el path tenga suficiente longitud
+    release_year = models.CharField(max_length=4)
+    overview = models.TextField()
+    genres = JSONField()  # Esto almacenará una lista de géneros como JSON
+
+    def __str__(self):
+        return self.title
+    
+class Interaction(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='interactions')
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='interactions')
+    liked = models.BooleanField(default=False)
+    seen = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('user', 'movie')  # Asegura que la combinación de usuario y película sea única
+
+    def __str__(self):
+        return f"{self.user.name} - {self.movie.title}"
