@@ -33,7 +33,7 @@ def rateMovies(request):
                 interaction.seen = True
                 interaction.save()
 
-        return JsonResponse({'message': 'Ratings updated successfully'}, status=200)
+        return JsonResponse({'id_user':user_id }, status=200)
 
     except User.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
