@@ -1,35 +1,86 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IMovie, IReview } from "@/src/redux/Interfaces";
 import { FaHeart, FaTrash } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { Loading } from "@/src/components/common";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/src/redux/reducers";
+import { IRate_10_Movies } from "@/src/redux/Interfaces";
 import MovieCard from "./MovieCard";
 import "./style.css";
+import {
+	post10MoviesProcess,
+	postRate10MoviesProcess,
+} from "@/src/redux/actions";
 
 type Props = {};
 
 function ReviewFilms({}: Props) {
 	const [ratedMovies, setRatedMovies] = React.useState<IReview[]>([]);
+	const dispatch = useDispatch();
 	const [index, setIndex] = React.useState<number>(0);
-	const { movies } = useSelector((state: RootState) => state.movie);
+	const { user, isAuthenticated } = useSelector(
+		(state: RootState) => state.user
+	);
+	const { movies, isFetching } = useSelector((state: RootState) => state.movie);
+
+	//Trayendo 10 peliculas que el usuario no ha visto
+	useEffect(() => {
+		if (isAuthenticated) {
+			console.log("Se ejecuto");
+			dispatch(post10MoviesProcess(parseInt(user.id)));
+		}
+	}, [user.id]);
+
+	useEffect(() => {
+		if (ratedMovies.length > 0) {
+			console.log(ratedMovies);
+		}
+	}, [ratedMovies]);
+
+	const handleRate10Movies = () => {
+		setRatedMovies([]);
+		setIndex(0);
+		const data: IRate_10_Movies = {
+			id_user: parseInt(user.id),
+			movies: ratedMovies,
+		};
+		console.log(data);
+		dispatch(postRate10MoviesProcess(data));
+	};
 
 	const handleDisLike = () => {
+		if (index === movies.length - 1) {
+			handleRate10Movies();
+			return;
+		}
 		const newRatedMovies = [
 			...ratedMovies,
-			{ movie_id: movies[index].id, liked: false },
+			{ id_movie: movies[index].id, like: false },
 		];
 		setRatedMovies(newRatedMovies);
 		setIndex(index + 1);
 	};
 
 	const handleLike = () => {
+		if (index === movies.length - 1) {
+			handleRate10Movies();
+			return;
+		}
 		const newRatedMovies = [
 			...ratedMovies,
-			{ movie_id: movies[index].id, liked: true },
+			{ id_movie: movies[index].id, like: true },
 		];
 		setRatedMovies(newRatedMovies);
 		setIndex(index + 1);
 	};
+
+	if (isFetching) {
+		return (
+			<div className="flex py-8 justify-center items-center">
+				<Loading />
+			</div>
+		);
+	}
 
 	return (
 		<div className="flex flex-col items-center mt-4 gap-y-4 relative z-40">

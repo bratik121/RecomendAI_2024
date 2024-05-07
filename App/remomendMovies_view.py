@@ -5,7 +5,6 @@ import pandas as pd
 from django.contrib.auth.models import User
 from sklearn.ensemble import RandomForestClassifier
 import numpy as np
-
 def recommend_movies(request, idUser):
     if request.method == 'GET':
         try:
@@ -32,7 +31,16 @@ def recommend_movies(request, idUser):
             # Prepare the training set
             training_data = full_df.loc[full_df.index.isin(seen_movies_ids)]
             X_train = training_data.drop(columns=['id'])
+
+
             y_train = [interaction.liked for interaction in interactions if interaction.movie_id in training_data.index]
+
+            print("X_train")
+            print(X_train)
+
+            print("Y_train")
+            print(y_train)
+            print(len(y_train))
 
             # Fit the model
             forest = RandomForestClassifier(n_estimators=100, random_state=42)
@@ -40,7 +48,10 @@ def recommend_movies(request, idUser):
 
             # Predicting unseen movies
             unseen_movies = full_df.loc[~full_df.index.isin(seen_movies_ids)]
+
             X_unseen = unseen_movies.drop(columns=['id'])
+            print("x_unseen")
+            print(X_unseen)
             predicted_likes = forest.predict_proba(X_unseen)
 
             # Check the shape of predicted output and adjust if necessary
@@ -49,11 +60,15 @@ def recommend_movies(request, idUser):
                     predicted_likes = np.hstack([1 - predicted_likes, predicted_likes])
                 else:
                     predicted_likes = np.hstack([predicted_likes, 1 - predicted_likes])
+                    
             unseen_movies['like_probability'] = predicted_likes[:, 1]
 
             # Sort by probability of being liked
             recommended_movies = unseen_movies.sort_values(by='like_probability', ascending=False)
+     
 
+            print("Recommended movies")
+            print(recommended_movies)
             # Prepare and send response
             response_data = []
             count = 0
@@ -68,7 +83,7 @@ def recommend_movies(request, idUser):
                         'poster_path': movie.poster_path,
                         'release_year': movie.release_year,
                         'overview': movie.overview,
-                        'genres': movie.genres if isinstance(movie.genres, list) else movie.genres.split(', ')
+                        'genres': movie.genres if isinstance(movie.genres, list) else (movie.genres.split(', ') if isinstance(movie.genres, str) else [])
                     })
                     count += 1
                 except Movie.DoesNotExist:

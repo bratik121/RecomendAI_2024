@@ -8,13 +8,13 @@ export interface IMovie {
 }
 
 export interface IReview {
-	movie_id: number;
-	liked: boolean;
+	id_movie: number;
+	like: boolean;
 }
 
 export interface IRate_10_Movies {
 	id_user: number;
-	rated_movies: IReview[];
+	movies: IReview[];
 }
 
 export interface IPost_10_Movies {

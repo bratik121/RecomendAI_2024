@@ -13,7 +13,7 @@ const MovieCard = ({ genres, poster_path, release_year, title }: Props) => {
 			<div className="h-[300px]">
 				<img
 					src={`https://image.tmdb.org/t/p/w500/${poster_path} `}
-					alt=""
+					alt={title}
 					className="h-full w-full object-scale-down rounded-lg"
 				/>
 			</div>
