@@ -1,6 +1,8 @@
 import React from "react";
 import { IMovie, IReview } from "@/src/redux/Interfaces";
 import { FaHeart, FaTrash } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/redux/reducers";
 import MovieCard from "./MovieCard";
 import "./style.css";
 
@@ -9,21 +11,24 @@ type Props = {};
 function ReviewFilms({}: Props) {
 	const [ratedMovies, setRatedMovies] = React.useState<IReview[]>([]);
 	const [index, setIndex] = React.useState<number>(0);
+	const { movies } = useSelector((state: RootState) => state.movie);
 
 	const handleDisLike = () => {
-		// const newRatedMovies = [
-		// 	...ratedMovies,
-		// 	{ movie_id: firstMovie.id, liked: false },
-		// ];
-		// setRatedMovies(newRatedMovies);
+		const newRatedMovies = [
+			...ratedMovies,
+			{ movie_id: movies[index].id, liked: false },
+		];
+		setRatedMovies(newRatedMovies);
+		setIndex(index + 1);
 	};
 
 	const handleLike = () => {
-		// const newRatedMovies = [
-		// 	...ratedMovies,
-		// 	{ movie_id: firstMovie.id, liked: true },
-		// ];
-		// setRatedMovies(newRatedMovies);
+		const newRatedMovies = [
+			...ratedMovies,
+			{ movie_id: movies[index].id, liked: true },
+		];
+		setRatedMovies(newRatedMovies);
+		setIndex(index + 1);
 	};
 
 	return (
@@ -38,7 +43,12 @@ function ReviewFilms({}: Props) {
 			{/* Clasificador de peliculas */}
 			<div className=" flex flex-col gap-y-2 items-center">
 				{/* Card de la pelicula */}
-				{/* <MovieCard genres={} /> */}
+				<MovieCard
+					title={movies[index].title}
+					poster_path={movies[index].poster_path}
+					genres={movies[index].genres}
+					release_year={movies[index].release_year}
+				/>
 				{/* Buttons */}
 				<div className="flex gap-x-2">
 					<button

@@ -10,7 +10,7 @@ type Props = {
 const MovieCard = ({ genres, poster_path, release_year, title }: Props) => {
 	return (
 		<div className="movie-glass flex flex-col gap-y-2 p-4">
-			<div className="h-[350px]">
+			<div className="h-[300px]">
 				<img
 					src={`https://image.tmdb.org/t/p/w500/${poster_path} `}
 					alt=""

@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 from django.urls import path, include
 from App import views
-
+from App.login_view import login_view
 from rest_framework import routers, serializers, viewsets
 
 from App.views import PeliculaViewSet, UserLikeViewSet, knownMovieViewSet, unknownMovieViewSet, gridViewSet, UserViewSet
@@ -36,5 +36,6 @@ route.register("UserLike", UserLikeViewSet, basename="UserLike")
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(route.urls)),
+    path('api/auth/login', login_view, name='login'),
     path('', views.my_view, name='message-list'),
 ]
