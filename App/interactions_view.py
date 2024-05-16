@@ -7,6 +7,7 @@ def interactions(request, idUser):
         data = [{
             'movie_id': interaction.movie.id,
             'movie_title': interaction.movie.title,
+            'movie_genres': interaction.movie.genres,
             'liked': interaction.liked,
             'seen': interaction.seen,
         } for interaction in user_interactions]
