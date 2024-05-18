@@ -11,6 +11,19 @@ import {
 	post10MoviesProcess,
 	postRate10MoviesProcess,
 } from "@/src/redux/actions";
+import React, { useEffect } from "react";
+import { IMovie, IReview } from "@/src/redux/Interfaces";
+import { FaHeart, FaTrash } from "react-icons/fa";
+import { Loading } from "@/src/components/common";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "@/src/redux/reducers";
+import { IRate_10_Movies } from "@/src/redux/Interfaces";
+import MovieCard from "./MovieCard";
+import "./style.css";
+import {
+	post10MoviesProcess,
+	postRate10MoviesProcess,
+} from "@/src/redux/actions";
 
 type Props = {};
 
