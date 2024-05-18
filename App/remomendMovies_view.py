@@ -19,12 +19,15 @@ def recommend_movies(request, idUser):
             print(interactions)
             
 
-
+           
             
             all_movies = Movie.objects.all()
             movies_data = {
                 'id': [movie.id for movie in all_movies],
-                'genres': [movie.genres if movie.genres and isinstance(movie.genres, list) else ['Unknown'] for movie in all_movies]
+                'genres': [movie.genres if movie.genres and isinstance(movie.genres, list) else ['Unknown'] for movie in all_movies],
+                'popularity': [movie.popularity for movie in all_movies],
+                'vote_average': [movie.vote_average for movie in all_movies],
+                'revenue': [movie.revenue for movie in all_movies],
             }
 
             # Convert genres to DataFrame suitable for model training
@@ -112,6 +115,7 @@ def recommend_movies(request, idUser):
                         'title': movie.title,
                         'poster_path': movie.poster_path,
                         'release_year': movie.release_year,
+                        'vote_average': movie.vote_average,
                         'overview': movie.overview,
                         'genres': movie.genres if isinstance(movie.genres, list) else (movie.genres.split(', ') if isinstance(movie.genres, str) else [])
                     })
