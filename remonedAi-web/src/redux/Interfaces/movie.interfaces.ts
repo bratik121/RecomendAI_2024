@@ -3,6 +3,7 @@ export interface IMovie {
 	title: string;
 	poster_path: string;
 	release_year: string;
+	vote_average: number;
 	overview: string;
 	genres: string[];
 }
