@@ -69,7 +69,7 @@ def recommend_movies(request, idUser):
             print(len(y_train))
 
             # Fit the model
-            forest = RandomForestClassifier(n_estimators=100, random_state=42, class_weight='balanced', max_depth=10, min_samples_split=2, min_samples_leaf=1, max_features='sqrt')
+            forest = RandomForestClassifier(n_estimators=50)
             forest.fit(X_train, y_train.values.ravel())
 
             # Predicting unseen movies
@@ -103,7 +103,7 @@ def recommend_movies(request, idUser):
             response_data = []
             count = 0
             for _, row in recommended_movies.iterrows():
-                if count >= 10:
+                if count >= 20:
                     break
                 try:
                     movie = Movie.objects.get(id=row['id'])
@@ -118,6 +118,12 @@ def recommend_movies(request, idUser):
                     count += 1
                 except Movie.DoesNotExist:
                     continue  # Ignore movies that do not exist
+                
+            # shffleing and sewnding the first 10
+
+            np.random.shuffle(response_data)
+
+            response_data = response_data[:10]
 
             return JsonResponse(response_data, safe=False)
 

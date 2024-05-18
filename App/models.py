@@ -37,41 +37,16 @@ class User(AbstractBaseUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
-class Pelicula(models.Model):
-    idPelicula = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=30)
-    fecha = models.DateField()
-    presupuesto = models.IntegerField()
-    votecount = models.IntegerField()
-    generos = JSONField()
 
-
-class userLike(models.Model):
-    idUser = models.IntegerField(primary_key=True)
-    peliculas = JSONField()
-
-
-class knownMovie(models.Model):
-    idUser = models.IntegerField(primary_key=True)
-    peliculas = JSONField()
-
-
-class unknownMovie(models.Model):
-    idUser = models.IntegerField(primary_key=True)
-    peliculas = JSONField()
-
-
-class gridView(models.Model):
-    idUser = models.IntegerField(primary_key=True)
-    genreGrid = JSONField()
-    binaryY = models.BinaryField()
-    binarySeen = models.BinaryField()
 
 class Movie(models.Model):
     title = models.CharField(max_length=255)
     poster_path = models.CharField(max_length=500)  # Asegúrate de que el path tenga suficiente longitud
     release_year = models.CharField(max_length=4)
     overview = models.TextField()
+    popularity = models.FloatField()
+    vote_average = models.FloatField()
+    revenue = models.FloatField()
     genres = JSONField()  # Esto almacenará una lista de géneros como JSON
 
     def __str__(self):

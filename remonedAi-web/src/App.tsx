@@ -23,7 +23,7 @@ function App() {
 
 	return (
 		<div className="w-screen max-w-screen overflow-x-hidden bg-pattern min-h-screen bg-c_dark_blue-600 text-white page-background relative z-10">
-			<div className="color"></div>
+			{/* <div className="color"></div> */}
 			{!isOnSignPage && <Nav />}
 			<main
 				className={`${
