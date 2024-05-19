@@ -17,6 +17,7 @@ def tenmovies(request, idUser):
             'overview': movie.overview,
             'release_year': movie.release_year,
             'genres': movie.genres,
+            'vote_average': movie.vote_average,
             'poster_path': movie.poster_path
         } for movie in movies_to_recommend]
 

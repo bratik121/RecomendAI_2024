@@ -99,6 +99,7 @@ function ReviewFilms({}: Props) {
 					poster_path={movies[index].poster_path}
 					genres={movies[index].genres}
 					release_year={movies[index].release_year}
+					vote_average={movies[index].vote_average}
 				/>
 				{/* Buttons */}
 				<div className="flex gap-x-2">

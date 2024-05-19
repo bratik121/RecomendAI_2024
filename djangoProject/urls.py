@@ -15,7 +15,6 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.contrib.auth.models import User
 from django.urls import path, include
 from App import views
 from App.login_view import login_view
@@ -23,18 +22,13 @@ from App.rateMovies_view import rateMovies
 from App.interactions_view import interactions
 from App.tenmovies_view import tenmovies
 from App.remomendMovies_view import recommend_movies
-from rest_framework import routers, serializers, viewsets
+from rest_framework import routers
 
-from App.views import PeliculaViewSet, UserLikeViewSet, knownMovieViewSet, unknownMovieViewSet, gridViewSet, UserViewSet
+from App.views import   UserViewSet
 
 route = routers.DefaultRouter()
 
-route.register("Pelicula", PeliculaViewSet, basename="Pelicula")
 route.register("User", UserViewSet, basename="User")
-route.register("knownMovie", knownMovieViewSet, basename="knownMovie")
-route.register("unknownMovie", unknownMovieViewSet, basename="unknownMovie")
-route.register("gridView", gridViewSet, basename="gridView")
-route.register("UserLike", UserLikeViewSet, basename="UserLike")
 
 
 urlpatterns = [

@@ -45,7 +45,7 @@ const AboutSection = () => {
 
 	return (
 		<div className=" max-w-full w-full  flex flex-col gap-y-6 md:gap-y-2 items-center relative">
-			<div className="aboutUs-blurredDot"></div>
+			{/* <div className="aboutUs-blurredDot"></div> */}
 			<h4 className="text-3xl md:text-5xl font-medium font-custom">About us</h4>
 			<div className="flex gap-x-4 justify-around ">
 				<Lottie
