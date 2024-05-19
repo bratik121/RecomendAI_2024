@@ -1,4 +1,3 @@
-import React from "react";
 import Lottie from "lottie-react";
 import loading from "@/src/assets/lottie/loading.json";
 type Props = {

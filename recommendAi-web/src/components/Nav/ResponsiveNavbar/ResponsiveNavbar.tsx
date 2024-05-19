@@ -10,7 +10,6 @@ import logo from "@/src/assets/logo-removebg-preview.png";
 
 import "./style.css";
 import { userLogout } from "@/src/redux/actions";
-type Props = {};
 
 const RenderAuth = ({
 	isAuthenticated,
@@ -50,7 +49,7 @@ const RenderAuth = ({
 	);
 };
 
-const ResponsiveNavbar = (props: Props) => {
+const ResponsiveNavbar = () => {
 	const dispatch = useDispatch();
 	const [isOpen, setIsOpen] = useState(false);
 	const { isAuthenticated, user } = useSelector(

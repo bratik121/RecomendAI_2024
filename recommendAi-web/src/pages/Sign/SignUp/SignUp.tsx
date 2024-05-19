@@ -8,9 +8,8 @@ import { isEmail, isPassword, isName, isLastName } from "@/src/utils";
 import { useInput, useInputPassword } from "@/src/hooks";
 import { postRegisterUserProcess } from "@/src/redux/actions";
 import { RootState } from "@/src/redux/reducers";
-type Props = {};
 
-const SignUp = (props: Props) => {
+const SignUp = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const { isFetching, isAuthenticated } = useSelector(

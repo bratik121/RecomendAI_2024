@@ -51,54 +51,45 @@ const userProcess: Middleware =
 		}
 	};
 
-const userSuccess: Middleware =
-	({ dispatch }) =>
-	(next) =>
-	(action) => {
-		next(action);
-		if (postRegisterUserSuccess.match(action)) {
-			const user = {
-				email: action.payload.email,
-				name: action.payload.name,
-				lastname: action.payload.lastname,
-				id: action.payload.id,
-			};
+const userSuccess: Middleware = () => (next) => (action) => {
+	next(action);
+	if (postRegisterUserSuccess.match(action)) {
+		const user = {
+			email: action.payload.email,
+			name: action.payload.name,
+			lastname: action.payload.lastname,
+			id: action.payload.id,
+		};
 
-			storage.set("user", user);
-		}
-		if (postLoginUserSuccess.match(action)) {
-			const user = {
-				email: action.payload.email,
-				name: action.payload.name,
-				lastname: action.payload.lastname,
-				id: action.payload.id,
-			};
-			storage.set("user", user);
-		}
-	};
+		storage.set("user", user);
+	}
+	if (postLoginUserSuccess.match(action)) {
+		const user = {
+			email: action.payload.email,
+			name: action.payload.name,
+			lastname: action.payload.lastname,
+			id: action.payload.id,
+		};
+		storage.set("user", user);
+	}
+};
 
-const userErrors: Middleware =
-	({ dispatch }) =>
-	(next) =>
-	(action) => {
-		next(action);
-		if (postRegisterUserError.match(action)) {
-			console.log(action.payload);
-		}
-		if (postLoginUserError.match(action)) {
-			console.log(action.payload);
-		}
-	};
+const userErrors: Middleware = () => (next) => (action) => {
+	next(action);
+	if (postRegisterUserError.match(action)) {
+		console.log(action.payload);
+	}
+	if (postLoginUserError.match(action)) {
+		console.log(action.payload);
+	}
+};
 
-const userStorageProccess: Middleware =
-	({ dispatch }) =>
-	(next) =>
-	(action) => {
-		next(action);
-		if (userLogout.match(action)) {
-			storage.remove("user");
-		}
-	};
+const userStorageProccess: Middleware = () => (next) => (action) => {
+	next(action);
+	if (userLogout.match(action)) {
+		storage.remove("user");
+	}
+};
 
 export const userMiddleware = [
 	userProcess,

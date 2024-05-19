@@ -88,20 +88,17 @@ const movieSuccess: Middleware =
 		}
 	};
 
-const movieError: Middleware =
-	({ dispatch }) =>
-	(next) =>
-	(action) => {
-		next(action);
-		if (post10MoviesError.match(action)) {
-			console.log(action.payload);
-		}
-		if (postRate10MoviesError.match(action)) {
-			console.log(action.payload);
-		}
-		if (get10MovieRecomendationsError.match(action)) {
-			console.log(action.payload);
-		}
-	};
+const movieError: Middleware = () => (next) => (action) => {
+	next(action);
+	if (post10MoviesError.match(action)) {
+		console.log(action.payload);
+	}
+	if (postRate10MoviesError.match(action)) {
+		console.log(action.payload);
+	}
+	if (get10MovieRecomendationsError.match(action)) {
+		console.log(action.payload);
+	}
+};
 
 export const movieMiddleware = [movieProcess, movieSuccess, movieError];

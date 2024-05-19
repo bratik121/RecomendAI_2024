@@ -1,11 +1,8 @@
-import React from "react";
 import videoTrhiller from "@/src/assets/videos/thriller.mp4";
-import { RipplesButton, Loading } from "@/src/components/common";
+import { RipplesButton } from "@/src/components/common";
 import "./style.css";
 
-type Props = {};
-
-const Hero = (props: Props) => {
+const Hero = () => {
 	const handleClick = () => {};
 
 	return (

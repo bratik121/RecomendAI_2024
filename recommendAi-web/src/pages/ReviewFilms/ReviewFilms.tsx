@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { IMovie, IReview } from "@/src/redux/Interfaces";
+import { IReview } from "@/src/redux/Interfaces";
 import { FaHeart, FaTrash } from "react-icons/fa";
 import { Loading } from "@/src/components/common";
 import { useSelector, useDispatch } from "react-redux";

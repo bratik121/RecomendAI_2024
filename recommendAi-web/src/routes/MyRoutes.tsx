@@ -13,7 +13,7 @@ const MyRoutes = ({ isAuthenticated }: Props) => {
 				<Route path="/" element={<Landingpage />} />
 				<Route path="/sign/*" element={<Sign />} />
 				{/* Rutas progetigas por autenticacion  */}
-				<Route element={<ProtectedRoutes isAuthenticated={true} />}>
+				<Route element={<ProtectedRoutes isAuthenticated={isAuthenticated} />}>
 					<Route path="/review-films" element={<ReviewFilms />} />
 				</Route>
 			</Routes>

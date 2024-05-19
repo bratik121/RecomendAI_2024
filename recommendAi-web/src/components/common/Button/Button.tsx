@@ -41,7 +41,7 @@ const Button = (props: Props) => {
 		textSize = "sm",
 		title,
 	} = props;
-	const iconStyle = fill ? "text-c_gray-25" : "text-primary-600";
+	// const iconStyle = fill ? "text-c_gray-25" : "text-primary-600";
 	return (
 		<button
 			className={`flex min-w-fit w-full items-center justify-center gap-2  rounded-lg  border

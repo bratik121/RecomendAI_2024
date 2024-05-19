@@ -2,12 +2,10 @@ import MovieSlide from "./MovieSlide";
 import movies from "@/src/assets/movies/movies";
 import { Splide, SplideSlide, SplideTrack } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { RipplesButton } from "@/src/components/common";
+import { IoIosArrowForward } from "react-icons/io";
 import "./style.css";
-type Props = {};
 
-const MovieSlider = (props: Props) => {
+const MovieSlider = () => {
 	return (
 		<div className="flex flex-col items-center gap-y-6 w-full">
 			<h4 className="text-3xl md:text-5xl font-medium font-custom">

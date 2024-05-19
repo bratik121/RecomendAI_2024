@@ -11,7 +11,7 @@ import {
 	GET_10_MOVIES_RECOMENDATIONS_ERROR,
 } from "../constants";
 
-import { IRate_10_Movies, IApiResponse, IPost_10_Movies } from "../Interfaces";
+import { IRate_10_Movies } from "../Interfaces";
 
 export const postRate10MoviesProcess = createAction<IRate_10_Movies>(
 	POST_RATE_1O_MOVIES_PROCESS
