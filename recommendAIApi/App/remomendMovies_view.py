@@ -12,7 +12,7 @@ def recommend_movies(request, idUser):
     if request.method == 'GET':
         try:
             # Fetch movies that have been seen by the user
-            interactions = Interaction.objects.filter(user_id=idUser)
+            interactions = Interaction.objects.filter(user_id=idUser) 
             seen_movies_ids = list(interactions.values_list('movie_id', flat=True))
 
             print("interactions")

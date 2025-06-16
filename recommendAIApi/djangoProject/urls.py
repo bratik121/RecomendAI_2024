@@ -40,6 +40,6 @@ urlpatterns = [
     path('api/interactions/<int:idUser>/', interactions, name='interactions'),
     path('api/tenmovies/<int:idUser>/', tenmovies, name='te nmovies'),
     path('api/recommend/<int:idUser>/', recommend_movies, name='recommend'),
-    path('api/search_movies_by_name/', search_movies_by_name, name='search_movies_by_name'),
+    path('api/searchMoviesByName/', search_movies_by_name, name='searchMoviesByName'),
     path('', views.my_view, name='message-list'),
 ]

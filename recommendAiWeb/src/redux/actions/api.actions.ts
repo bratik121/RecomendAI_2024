@@ -4,7 +4,7 @@ import { createAction } from "@reduxjs/toolkit";
 export const apiRequest = createAction(
 	API_REQUEST,
 	(
-		method: string,
+		method: "GET" | "POST" | "PUT" | "DELETE",
 		url: string,
 		body: any,
 		onSuccess: string,

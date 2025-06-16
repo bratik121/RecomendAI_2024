@@ -6,6 +6,7 @@ export interface IMovie {
 	vote_average: number;
 	overview: string;
 	genres: string[];
+	liked?: boolean;
 }
 
 export interface IReview {
@@ -13,7 +14,7 @@ export interface IReview {
 	like: boolean;
 }
 
-export interface IRate_10_Movies {
+export interface IRate_Movies {
 	id_user: number;
 	movies: IReview[];
 }

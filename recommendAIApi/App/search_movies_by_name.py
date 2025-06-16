@@ -8,11 +8,16 @@ from .models import Movie, Interaction
 def search_movies_by_name(request):
     title = request.GET.get('title', '')
     user_id = request.GET.get('id_user', None)
+    try:
+        limit = int(request.GET.get('limit', 20))
+        offset = int(request.GET.get('offset', 0))
+    except ValueError:
+        return JsonResponse({'error': 'Invalid limit or offset'}, status=400)
     if not title:
         return JsonResponse({'error': 'No title provided'}, status=400)
     
-    # Case-insensitive search for movies containing the title
-    movies = Movie.objects.filter(title__icontains=title)
+    # Case-insensitive search for movies containing the title, ordered by popularity
+    movies = Movie.objects.filter(title__icontains=title).order_by('-popularity')[offset:offset+limit]
     movies_data = []
     for movie in movies:
         liked = False

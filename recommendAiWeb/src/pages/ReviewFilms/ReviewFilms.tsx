@@ -4,7 +4,7 @@ import { FaHeart, FaTrash } from "react-icons/fa";
 import { Loading } from "@/src/components/common";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/src/redux/reducers";
-import { IRate_10_Movies } from "@/src/redux/Interfaces";
+import { IRate_Movies } from "@/src/redux/Interfaces";
 import MovieCard from "./MovieCard";
 import "./style.css";
 import {
@@ -40,7 +40,7 @@ function ReviewFilms({}: Props) {
 	const handleRate10Movies = () => {
 		setRatedMovies([]);
 		setIndex(0);
-		const data: IRate_10_Movies = {
+		const data: IRate_Movies = {
 			id_user: parseInt(user.id),
 			movies: ratedMovies,
 		};

@@ -11,6 +11,9 @@ import {
 	get10MovieRecomendationsProcess,
 	get10MovieRecomendationsSuccess,
 	get10MovieRecomendationsError,
+	searchMoviesByNameSuccess,
+	searchMoviesByNameError,
+	searchMoviesByNameProcess,
 } from "../actions";
 
 import {
@@ -27,6 +30,10 @@ const RATE_MOVIES_URL = `${import.meta.env.VITE_API_URL}/rateMovies`;
 const GET_10_MOVIES_URL = `${import.meta.env.VITE_API_URL}/tenmovies/`;
 
 const RECOMMEND_MOVIES_URL = `${import.meta.env.VITE_API_URL}/recommend/`;
+
+const SEARCH_MOVIES_BY_NAME_URL = `${
+	import.meta.env.VITE_API_URL
+}/searchMoviesByName/`;
 
 const movieProcess: Middleware =
 	({ dispatch }) =>
@@ -67,6 +74,20 @@ const movieProcess: Middleware =
 				)
 			);
 		}
+
+		if (searchMoviesByNameProcess.match(action)) {
+			dispatch(
+				apiRequest(
+					"GET",
+					`${SEARCH_MOVIES_BY_NAME_URL}`,
+					action.payload,
+					searchMoviesByNameSuccess.type,
+					searchMoviesByNameError.type,
+					"",
+					action.payload
+				)
+			);
+		}
 	};
 
 const movieSuccess: Middleware =
@@ -86,6 +107,10 @@ const movieSuccess: Middleware =
 		if (get10MovieRecomendationsSuccess.match(action)) {
 			console.log("Peliculas obtenidas con exito");
 		}
+		if (searchMoviesByNameSuccess.match(action)) {
+			console.log("Peliculas encontradas con exito");
+			console.log(action.payload);
+		}
 	};
 
 const movieError: Middleware =
@@ -100,6 +125,11 @@ const movieError: Middleware =
 			console.log(action.payload);
 		}
 		if (get10MovieRecomendationsError.match(action)) {
+			console.log(action.payload);
+		}
+
+		if (searchMoviesByNameError.match(action)) {
+			console.log("Error al buscar peliculas por nombre");
 			console.log(action.payload);
 		}
 	};

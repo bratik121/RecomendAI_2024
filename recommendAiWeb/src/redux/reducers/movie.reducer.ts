@@ -7,6 +7,9 @@ import {
 	POST_RATE_10_MOVIES_ERROR,
 	GET_10_MOVIES_RECOMENDATIONS_SUCCESS,
 	GET_10_MOVIES_RECOMENDATIONS_ERROR,
+	SEARCH_MOVIES_BY_NAME_PROCESS,
+	SEARCH_MOVIES_BY_NAME_SUCCESS,
+	SEARCH_MOVIES_BY_NAME_ERROR,
 } from "../constants";
 
 const initialState: MovieState = {
@@ -60,6 +63,24 @@ export const movie = (
 			return {
 				...state,
 				isFetching: false,
+			};
+		case SEARCH_MOVIES_BY_NAME_PROCESS:
+			return {
+				...state,
+				isFetching: true,
+				error: "",
+			};
+		case SEARCH_MOVIES_BY_NAME_SUCCESS:
+			return {
+				...state,
+				isFetching: false,
+				movies: action.payload,
+			};
+		case SEARCH_MOVIES_BY_NAME_ERROR:
+			return {
+				...state,
+				isFetching: false,
+				error: action.payload,
 			};
 		default:
 			return state;
