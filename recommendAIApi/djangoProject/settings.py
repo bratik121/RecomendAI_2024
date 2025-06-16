@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'App',
+    'App.apps.AppAppConfig',
     'rest_framework',
     'corsheaders',
 ]
@@ -91,15 +91,15 @@ WSGI_APPLICATION = 'djangoProject.wsgi.application'
 DATABASES = {
     'default': {
         #!Vieja bd
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
         #!Nueva bd
-        # 'ENGINE': 'django.db.backends.postgresql',
-        # 'NAME': 'postgres',
-        # 'USER': 'postgres.ujhnxechalcdmbjboezh',  # Reemplaza con tu usuario de base de datos
-        # 'PASSWORD': '5tcgfVcD7RLCcwiq',  # Reemplaza con tu contraseña de base de datos
-        # 'HOST': 'aws-0-us-west-1.pooler.supabase.com',  # La URL de tu host de Supabase
-        # 'PORT': '5432',  # El puerto para PostgreSQL, normalmente 5432
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres',  # Reemplaza con tu usuario de base de datos
+        'PASSWORD': 'postgres',  # Reemplaza con tu contraseña de base de datos
+        'HOST': 'localhost',  # La URL de tu host de Supabase
+        'PORT': '5432',  # El puerto para PostgreSQL, normalmente 5432
     }
 }
 

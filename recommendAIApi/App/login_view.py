@@ -4,6 +4,8 @@ from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
 
+from App.models import User
+
 logger = logging.getLogger(__name__)
 
 @csrf_exempt
@@ -17,9 +19,8 @@ def login_view(request):
   
 
         user = authenticate(request, username=email, password=password)
-
         print(user)
-        if user is not None:
+        if user is not None and isinstance(user, User):
             login(request, user)
             logger.debug("Login successful")
             return JsonResponse({

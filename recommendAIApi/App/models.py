@@ -26,7 +26,8 @@ class MyUserManager(BaseUserManager):
 
         return self.create_user(email, password, **extra_fields)
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, models.Model):
+    id = models.AutoField(primary_key=True)
     email = models.EmailField(max_length=254, unique=True)
     name = models.CharField(max_length=30)
     lastname = models.CharField(max_length=30)
@@ -40,6 +41,7 @@ class User(AbstractBaseUser):
 
 
 class Movie(models.Model):
+    id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255)
     poster_path = models.CharField(max_length=500)  # Asegúrate de que el path tenga suficiente longitud
     release_year = models.CharField(max_length=4)
