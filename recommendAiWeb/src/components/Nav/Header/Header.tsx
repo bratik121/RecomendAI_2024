@@ -78,7 +78,7 @@ const Header = () => {
 
 	return (
 		<header className="hidden lg:block h-[72px] w-full fixed z-50">
-			<div className=" top-0 left-0 flex items-center justify-between px-8 h-full w-full absolute z-40 ">
+			<div className=" top-0 left-0 flex items-center justify-between px-16 h-full w-full absolute z-40 ">
 				{/* Logo */}
 				<CustomLink to="/" className="z-50 relative ">
 					<div className="flex items-center gap-x-2 cursor-pointer w-fit ">
