@@ -17,8 +17,11 @@ def search_movies_by_name(request):
         return JsonResponse({'error': 'No title provided'}, status=400)
     
     # Case-insensitive search for movies containing the title, ordered by popularity
-    movies = Movie.objects.filter(title__icontains=title).order_by('-popularity')[offset:offset+limit]
-    movies_data = []
+    queryset = Movie.objects.filter(title__icontains=title)
+    total_movies = queryset.count()
+    movies = queryset.order_by('-popularity')[offset:offset+limit]
+    total_pages = (total_movies + limit - 1) // limit  
+    movies_data =[]
     for movie in movies:
         liked = False
         if user_id:
@@ -36,4 +39,7 @@ def search_movies_by_name(request):
             'poster_path': movie.poster_path,
             'liked': liked
         })
-    return JsonResponse(movies_data, safe=False)
+    return JsonResponse({
+        "movies": movies_data,
+        "pages": total_pages
+    }, safe=False)
