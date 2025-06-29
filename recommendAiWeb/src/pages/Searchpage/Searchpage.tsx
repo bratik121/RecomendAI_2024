@@ -2,10 +2,18 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/src/components/common";
 import { useInput } from "@/src/hooks";
-import { searchMoviesByNameProcess } from "@/src/redux/actions";
-import { selectMovie, selectUser } from "@/src/redux/selectors";
+import {
+	postRate10MoviesProcess,
+	searchMoviesByNameProcess,
+} from "@/src/redux/actions";
+import { selectUser } from "@/src/redux/selectors";
 import { useDispatch, useSelector } from "react-redux";
 import { FaHeart, FaStar } from "react-icons/fa";
+import { IRate_Movies, IReview } from "@/src/redux/Interfaces";
+import {
+	IPagination,
+	useFetchMoviesByTitle,
+} from "@/src/redux/hooks/useRateMovie";
 
 // Variantes de animación
 const containerVariants = {
@@ -25,23 +33,49 @@ const itemVariants = {
 
 const Searchpage = () => {
 	const { id } = useSelector(selectUser);
-	const { isFetching, movies } = useSelector(selectMovie);
+
+	const review: IReview[] = [];
+	const [pagination, setPagination] = useState<IPagination>({
+		limit: 20,
+		offset: 0,
+	});
+
 	const searchInput = useInput("");
 	const dispatch = useDispatch();
 	const [hoveredMovie, setHoveredMovie] = useState<number | null>(null);
+	const { error, fetchMoviesByTitle, loading, movies, pages } =
+		useFetchMoviesByTitle();
+
+	const handleRateMovie = (id_movie: number) => {
+		const data: IRate_Movies = {
+			id_user: parseInt(id),
+			movies: [
+				{
+					id_movie: id_movie,
+					like: true,
+				},
+			],
+		};
+		dispatch(postRate10MoviesProcess(data));
+	};
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
-			dispatch(
-				searchMoviesByNameProcess({
-					title: searchInput.value,
-					id_user: id ? Number(id) : undefined,
-				})
-			);
+			fetchMoviesByTitle({
+				title: searchInput.value,
+				pagination: pagination,
+			});
 		}, 500);
-
+		// importante porque si vuelvo a escribir antes de que se cumpla el timeout, se cancela la búsqueda anterior
 		return () => clearTimeout(timer);
 	}, [searchInput.value, dispatch, id]);
+
+	const handleNext = () => {
+		setPagination({
+			...pagination,
+			offset: pagination.limit + pagination.offset,
+		});
+	};
 
 	return (
 		<div className="max-w-7xl mx-auto px-4 py-8 min-h-screen">
@@ -68,8 +102,7 @@ const Searchpage = () => {
 					/>
 				</motion.div>
 			</div>
-
-			{isFetching ? (
+			{loading ? (
 				<div className="flex justify-center py-20">
 					<motion.div
 						animate={{ rotate: 360 }}
@@ -150,6 +183,9 @@ const Searchpage = () => {
 									<motion.button
 										className="absolute top-3 left-3 p-2 bg-c_dark_blue-600 bg-opacity-80 rounded-full hover:bg-primary-500 hover:text-c_black transition"
 										whileTap={{ scale: 0.9 }}
+										onClick={() => {
+											handleRateMovie(movie.id);
+										}}
 									>
 										<FaHeart
 											className={`w-5 h-5 ${
@@ -196,6 +232,7 @@ const Searchpage = () => {
 					</AnimatePresence>
 				</motion.div>
 			)}
+			Pagina 1 de {pages}
 		</div>
 	);
 };
