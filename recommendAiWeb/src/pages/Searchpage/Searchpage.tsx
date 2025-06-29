@@ -9,7 +9,7 @@ import { IRate_Movies, IReview } from "@/src/redux/Interfaces";
 import {
 	IPagination,
 	useFetchMoviesByTitle,
-} from "@/src/redux/hooks/useRateMovie";
+} from "@/src/redux/hooks/useFetchMovieByTitle";
 import MovieCard from "./MovieCard";
 
 // Variantes de animación
