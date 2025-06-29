@@ -80,7 +80,7 @@ const movieProcess: Middleware =
 				apiRequest(
 					"GET",
 					`${SEARCH_MOVIES_BY_NAME_URL}`,
-					action.payload,
+					null,
 					searchMoviesByNameSuccess.type,
 					searchMoviesByNameError.type,
 					"",
