@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { IMovie } from "../Interfaces";
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { useSelector } from "react-redux";
 import { selectUser } from "../selectors";
 

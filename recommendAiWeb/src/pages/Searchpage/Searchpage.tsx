@@ -2,13 +2,9 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/src/components/common";
 import { useInput } from "@/src/hooks";
-import {
-	postRate10MoviesProcess,
-	searchMoviesByNameProcess,
-} from "@/src/redux/actions";
+import { postRate10MoviesProcess } from "@/src/redux/actions";
 import { selectUser } from "@/src/redux/selectors";
 import { useDispatch, useSelector } from "react-redux";
-import { FaHeart, FaStar } from "react-icons/fa";
 import { IRate_Movies, IReview } from "@/src/redux/Interfaces";
 import {
 	IPagination,

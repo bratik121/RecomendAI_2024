@@ -1,6 +1,6 @@
 import { IMovie } from "@/src/redux/Interfaces";
 import { AnimatePresence, motion } from "framer-motion";
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaHeart, FaStar } from "react-icons/fa";
 
 type Props = {
