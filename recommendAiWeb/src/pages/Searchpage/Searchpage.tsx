@@ -5,12 +5,13 @@ import { useInput } from "@/src/hooks";
 import { postRate10MoviesProcess } from "@/src/redux/actions";
 import { selectUser } from "@/src/redux/selectors";
 import { useDispatch, useSelector } from "react-redux";
-import { IRate_Movies, IReview } from "@/src/redux/Interfaces";
+import { IRateMovie, IReview } from "@/src/redux/Interfaces";
 import {
 	IPagination,
 	useFetchMoviesByTitle,
 } from "@/src/redux/hooks/useFetchMovieByTitle";
 import MovieCard from "./MovieCard";
+import { useRateMovie } from "@/src/redux/hooks/useRateMovie";
 
 // Variantes de animación
 const containerVariants = {
@@ -26,7 +27,6 @@ const containerVariants = {
 const Searchpage = () => {
 	const { id } = useSelector(selectUser);
 
-	const review: IReview[] = [];
 	const [pagination, setPagination] = useState<IPagination>({
 		limit: 20,
 		offset: 0,
@@ -35,32 +35,38 @@ const Searchpage = () => {
 	const searchInput = useInput("");
 	const dispatch = useDispatch();
 
-	const { error, fetchMoviesByTitle, loading, movies, pages } =
-		useFetchMoviesByTitle();
+	const {
+		error: fetchMoviesError,
+		fetchMoviesByTitle,
+		loading: fetchMoviesLoading,
+		movies,
+		pages,
+	} = useFetchMoviesByTitle();
 
-	const handleRateMovie = (id_movie: number) => {
-		const data: IRate_Movies = {
-			id_user: parseInt(id),
-			movies: [
-				{
-					id_movie: id_movie,
-					like: true,
-				},
-			],
-		};
-		dispatch(postRate10MoviesProcess(data));
-	};
+	const { error, loading, rateMovie } = useRateMovie();
 
-	useEffect(() => {
-		const timer = setTimeout(() => {
+	const fetchMovies = () => {
+		if (searchInput.value) {
 			fetchMoviesByTitle({
 				title: searchInput.value,
 				pagination: pagination,
 			});
-		}, 500);
+		}
+	};
+
+	const handleRateMovie = (id_movie: number) => {
+		const review: IReview = {
+			id_movie: id_movie,
+			like: true,
+		};
+		rateMovie(review, fetchMovies);
+	};
+
+	useEffect(() => {
+		const timer = setTimeout(fetchMovies, 500);
 		// importante porque si vuelvo a escribir antes de que se cumpla el timeout, se cancela la búsqueda anterior
 		return () => clearTimeout(timer);
-	}, [searchInput.value, dispatch, id]);
+	}, [searchInput.value, id]);
 
 	const handleNext = () => {
 		setPagination({
@@ -94,7 +100,7 @@ const Searchpage = () => {
 					/>
 				</motion.div>
 			</div>
-			{loading ? (
+			{fetchMoviesLoading || loading ? (
 				<div className="flex justify-center py-20">
 					<motion.div
 						animate={{ rotate: 360 }}
@@ -130,7 +136,11 @@ const Searchpage = () => {
 				>
 					<AnimatePresence>
 						{movies.map((movie) => (
-							<MovieCard movie={movie} handleRateMovie={handleRateMovie} />
+							<MovieCard
+								movie={movie}
+								handleRateMovie={handleRateMovie}
+								key={movie.id}
+							/>
 						))}
 					</AnimatePresence>
 				</motion.div>

@@ -10,7 +10,7 @@ def rateMovies(request):
     try:
         data = json.loads(request.body)
         user_id = data.get('id_user')
-        movies_data = data.get('movies')
+        movies_data = data.get('reviews')
         
 
         user = User.objects.get(pk=user_id)

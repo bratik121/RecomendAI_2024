@@ -16,7 +16,12 @@ export interface IReview {
 
 export interface IRate_Movies {
 	id_user: number;
-	movies: IReview[];
+	reviews: IReview[];
+}
+
+export interface IRateMovie {
+	id_user: number;
+	review: IReview;
 }
 
 export interface IPost_10_Movies {

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { IMovie, IReview } from "@/src/redux/Interfaces";
+import { IReview } from "@/src/redux/Interfaces";
 import { FaHeart, FaTrash } from "react-icons/fa";
 import { Loading } from "@/src/components/common";
 import { useSelector, useDispatch } from "react-redux";
@@ -42,7 +42,7 @@ function ReviewFilms({}: Props) {
 		setIndex(0);
 		const data: IRate_Movies = {
 			id_user: parseInt(user.id),
-			movies: ratedMovies,
+			reviews: ratedMovies,
 		};
 		console.log(data);
 		dispatch(postRate10MoviesProcess(data));
