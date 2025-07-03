@@ -2,10 +2,15 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/src/components/common";
 import { useInput } from "@/src/hooks";
-import { postRate10MoviesProcess } from "@/src/redux/actions";
+import {
+	HiChevronDoubleLeft,
+	HiChevronDoubleRight,
+	HiChevronLeft,
+	HiChevronRight,
+} from "react-icons/hi";
 import { selectUser } from "@/src/redux/selectors";
 import { useDispatch, useSelector } from "react-redux";
-import { IRateMovie, IReview } from "@/src/redux/Interfaces";
+import { IReview } from "@/src/redux/Interfaces";
 import {
 	IPagination,
 	useFetchMoviesByTitle,
@@ -72,6 +77,13 @@ const Searchpage = () => {
 		setPagination({
 			...pagination,
 			offset: pagination.limit + pagination.offset,
+		});
+	};
+
+	const handlePrev = () => {
+		setPagination({
+			...pagination,
+			offset: pagination.offset - pagination.limit,
 		});
 	};
 
@@ -145,7 +157,15 @@ const Searchpage = () => {
 					</AnimatePresence>
 				</motion.div>
 			)}
-			Pagina 1 de {pages}
+			<div className=" flex  items-center">
+				<div>
+					<HiChevronLeft />
+				</div>
+				<div> Pagina 1 de {pages}</div>
+				<div>
+					<HiChevronRight />
+				</div>
+			</div>
 		</div>
 	);
 };
