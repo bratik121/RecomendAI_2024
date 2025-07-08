@@ -2,11 +2,23 @@ import React from "react";
 import videoTrhiller from "@/src/assets/videos/thriller.mp4";
 import { RipplesButton, Loading } from "@/src/components/common";
 import "./style.css";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/src/redux/selectors";
 
 type Props = {};
 
 const Hero = (props: Props) => {
-	const handleClick = () => {};
+	const navigate = useNavigate();
+	const user = useSelector(selectUser);
+
+	const handleClick = () => {
+		if (user.name) {
+			navigate("/search");
+		} else {
+			navigate("/sign");
+		}
+	};
 
 	return (
 		<div className="max-w-full w-full flex flex-col gap-y-6 md:flex-row justify-between z-20  ">
