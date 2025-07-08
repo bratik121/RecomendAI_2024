@@ -38,7 +38,6 @@ const Searchpage = () => {
 	});
 
 	const searchInput = useInput("");
-	const dispatch = useDispatch();
 
 	const {
 		error: fetchMoviesError,
@@ -47,6 +46,10 @@ const Searchpage = () => {
 		movies,
 		pages,
 	} = useFetchMoviesByTitle();
+
+	const actualPage = (pagination.offset + 20) / 20;
+	const hasNextPage = actualPage < pages!;
+	const hasPrexPage = actualPage > 0;
 
 	const { error, loading, rateMovie } = useRateMovie();
 
@@ -68,16 +71,27 @@ const Searchpage = () => {
 	};
 
 	useEffect(() => {
+		if (pagination.offset) {
+			setPagination({
+				...pagination,
+				offset: 0,
+			});
+		}
+
 		const timer = setTimeout(fetchMovies, 500);
 		// importante porque si vuelvo a escribir antes de que se cumpla el timeout, se cancela la búsqueda anterior
 		return () => clearTimeout(timer);
 	}, [searchInput.value, id]);
 
 	const handleNext = () => {
-		setPagination({
-			...pagination,
-			offset: pagination.limit + pagination.offset,
-		});
+		if (hasNextPage) {
+			const newOffset = pagination.limit + pagination.offset;
+			console.log("pages / offtset", pages! / newOffset);
+			setPagination({
+				...pagination,
+				offset: newOffset,
+			});
+		}
 	};
 
 	const handlePrev = () => {
@@ -86,6 +100,10 @@ const Searchpage = () => {
 			offset: pagination.offset - pagination.limit,
 		});
 	};
+
+	useEffect(() => {
+		fetchMovies();
+	}, [pagination.offset]);
 
 	return (
 		<div className="max-w-7xl mx-auto px-4 py-8 min-h-screen">
@@ -159,11 +177,14 @@ const Searchpage = () => {
 			)}
 			<div className=" flex  items-center">
 				<div>
-					<HiChevronLeft />
+					<HiChevronLeft onClick={handlePrev} />
 				</div>
-				<div> Pagina 1 de {pages}</div>
 				<div>
-					<HiChevronRight />
+					{" "}
+					Pagina {(pagination.offset + 20) / 20} de {pages}
+				</div>
+				<div>
+					<HiChevronRight onClick={handleNext} />
 				</div>
 			</div>
 		</div>

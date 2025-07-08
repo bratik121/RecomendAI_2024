@@ -18,9 +18,6 @@ def recommend_movies(request, idUser):
             print("interactions")
             print(interactions)
             
-
-           
-            
             all_movies = Movie.objects.all()
             movies_data = {
                 'id': [movie.id for movie in all_movies],
