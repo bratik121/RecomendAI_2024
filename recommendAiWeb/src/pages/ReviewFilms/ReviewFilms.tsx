@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { IReview } from "@/src/redux/Interfaces";
-import { FaHeart, FaTrash } from "react-icons/fa";
+import { FaHeart, FaTimes } from "react-icons/fa";
 import { Loading } from "@/src/components/common";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/src/redux/reducers";
 import { IRate_Movies } from "@/src/redux/Interfaces";
 import MovieCard from "./MovieCard";
-import "./style.css";
+import { AnimatePresence, motion } from "framer-motion";
 import {
 	post10MoviesProcess,
 	postRate10MoviesProcess,
@@ -15,9 +15,9 @@ import {
 type Props = {};
 
 function ReviewFilms({}: Props) {
-	const [ratedMovies, setRatedMovies] = React.useState<IReview[]>([]);
+	const [ratedMovies, setRatedMovies] = useState<IReview[]>([]);
 	const dispatch = useDispatch();
-	const [index, setIndex] = React.useState<number>(0);
+	const [index, setIndex] = useState<number>(0);
 	const { user, isAuthenticated } = useSelector(
 		(state: RootState) => state.user
 	);
@@ -25,17 +25,10 @@ function ReviewFilms({}: Props) {
 
 	//Trayendo 10 peliculas que el usuario no ha visto
 	useEffect(() => {
-		if (isAuthenticated) {
-			console.log("Se ejecuto");
+		if (isAuthenticated && user?.id) {
 			dispatch(post10MoviesProcess(parseInt(user.id)));
 		}
-	}, [user.id]);
-
-	useEffect(() => {
-		if (ratedMovies.length > 0) {
-			console.log(ratedMovies);
-		}
-	}, [ratedMovies]);
+	}, [user.id, isAuthenticated, dispatch]);
 
 	const handleRate10Movies = () => {
 		setRatedMovies([]);
@@ -44,7 +37,6 @@ function ReviewFilms({}: Props) {
 			id_user: parseInt(user.id),
 			reviews: ratedMovies,
 		};
-		console.log(data);
 		dispatch(postRate10MoviesProcess(data));
 	};
 
@@ -74,47 +66,80 @@ function ReviewFilms({}: Props) {
 		setIndex(index + 1);
 	};
 
-	if (isFetching) {
+	if (isFetching || !movies || movies.length === 0) {
 		return (
-			<div className="flex py-8 justify-center items-center">
+			<div className="flex min-h-[60vh] justify-center items-center">
 				<Loading />
 			</div>
 		);
 	}
 
+	const progressPercentage = ((index + 1) / movies.length) * 100;
+
 	return (
-		<div className="flex flex-col items-center mt-4 gap-y-4 relative z-40">
+		<div className="flex flex-col items-center mt-4 gap-y-6 relative z-40 max-w-4xl mx-auto px-4 pb-12">
 			{/* Titulo y subtitulo */}
-			<div className="flex flex-col items-center gap-y-2">
-				<h1 className="text-3xl font-bold font-custom ">Review Films</h1>
-				<p className="text-center">
-					Review ten films in order to get better recomendations
+			<div className="flex flex-col items-center gap-y-2 mt-4">
+				<h1 className="text-4xl font-bold font-custom text-primary-400 tracking-tight">Review Films</h1>
+				<p className="text-center text-c_gray-500 max-w-md">
+					Review ten films in order to get better personalized recommendations
 				</p>
 			</div>
+
+			{/* Progress Bar */}
+			<div className="w-full max-w-sm mt-2">
+				<div className="flex justify-between text-sm text-c_gray-700 mb-2 font-medium">
+					<span>Progress</span>
+					<span>{index + 1} / {movies.length}</span>
+				</div>
+				<div className="h-2 w-full bg-c_dark_blue-400 rounded-full overflow-hidden">
+					<motion.div 
+						initial={{ width: 0 }}
+						animate={{ width: `${progressPercentage}%` }}
+						transition={{ duration: 0.3 }}
+						className="h-full bg-primary-500 rounded-full"
+					/>
+				</div>
+			</div>
+
 			{/* Clasificador de peliculas */}
-			<div className=" flex flex-col gap-y-2 items-center">
+			<div className="flex flex-col gap-y-8 items-center w-full mt-4">
 				{/* Card de la pelicula */}
-				<MovieCard
-					title={movies[index].title}
-					poster_path={movies[index].poster_path}
-					genres={movies[index].genres}
-					release_year={movies[index].release_year}
-					vote_average={movies[index].vote_average}
-				/>
+				<div className="w-full min-h-[500px] flex justify-center items-center">
+					<AnimatePresence mode="wait">
+						{movies[index] && (
+							<MovieCard
+								key={movies[index].id}
+								title={movies[index].title}
+								poster_path={movies[index].poster_path}
+								genres={movies[index].genres}
+								release_year={movies[index].release_year}
+								vote_average={movies[index].vote_average}
+							/>
+						)}
+					</AnimatePresence>
+				</div>
+				
 				{/* Buttons */}
-				<div className="flex gap-x-2">
-					<button
-						className="rounded-full border border-red-600 p-3 hover:bg-red-400 transition duration-150"
+				<div className="flex gap-x-6">
+					<motion.button
+						whileHover={{ scale: 1.1 }}
+						whileTap={{ scale: 0.9 }}
+						className="flex items-center justify-center w-16 h-16 rounded-full bg-c_dark_blue-400 border border-red-500/50 shadow-lg hover:bg-red-500/10 hover:border-red-500 transition-colors duration-200"
 						onClick={handleDisLike}
+						title="Dislike"
 					>
-						<FaTrash className="text-red-600 text-lg" />
-					</button>
-					<button
-						className="rounded-full border border-primary-600 p-3 hover:bg-primary-400 transition duration-150"
+						<FaTimes className="text-red-500 text-2xl" />
+					</motion.button>
+					<motion.button
+						whileHover={{ scale: 1.1 }}
+						whileTap={{ scale: 0.9 }}
+						className="flex items-center justify-center w-16 h-16 rounded-full bg-c_dark_blue-400 border border-primary-500/50 shadow-lg hover:bg-primary-500/10 hover:border-primary-500 transition-colors duration-200"
 						onClick={handleLike}
+						title="Like"
 					>
-						<FaHeart className="text-lg text-primary-600" />
-					</button>
+						<FaHeart className="text-2xl text-primary-500" />
+					</motion.button>
 				</div>
 			</div>
 		</div>

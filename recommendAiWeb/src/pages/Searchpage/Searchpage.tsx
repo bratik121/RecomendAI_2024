@@ -3,13 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/src/components/common";
 import { useInput } from "@/src/hooks";
 import {
-	HiChevronDoubleLeft,
-	HiChevronDoubleRight,
 	HiChevronLeft,
 	HiChevronRight,
 } from "react-icons/hi";
 import { selectUser } from "@/src/redux/selectors";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { IReview } from "@/src/redux/Interfaces";
 import {
 	IPagination,
@@ -40,7 +38,6 @@ const Searchpage = () => {
 	const searchInput = useInput("");
 
 	const {
-		error: fetchMoviesError,
 		fetchMoviesByTitle,
 		loading: fetchMoviesLoading,
 		movies,
@@ -51,7 +48,7 @@ const Searchpage = () => {
 	const hasNextPage = actualPage < pages!;
 	const hasPrexPage = actualPage > 0;
 
-	const { error, loading, rateMovie } = useRateMovie();
+	const { loading, rateMovie } = useRateMovie();
 
 	const fetchMovies = () => {
 		if (searchInput.value) {
@@ -175,18 +172,31 @@ const Searchpage = () => {
 					</AnimatePresence>
 				</motion.div>
 			)}
-			<div className=" flex  items-center">
-				<div>
-					<HiChevronLeft onClick={handlePrev} />
-				</div>
-				<div>
-					{" "}
-					Pagina {(pagination.offset + 20) / 20} de {pages}
-				</div>
-				<div>
-					<HiChevronRight onClick={handleNext} />
-				</div>
-			</div>
+			{movies.length > 0 && !fetchMoviesLoading && !loading && (
+				<motion.div 
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+					className="flex items-center justify-center gap-x-4 mt-12 mb-8"
+				>
+					<button
+						onClick={handlePrev}
+						disabled={!hasPrexPage}
+						className="flex items-center gap-x-2 px-4 py-2 rounded-lg bg-c_dark_blue-400 border border-c_dark_blue-400 hover:border-primary-500 disabled:opacity-50 disabled:hover:border-c_dark_blue-400 disabled:cursor-not-allowed transition-colors text-white font-medium shadow-md"
+					>
+						<HiChevronLeft className="text-xl" /> Anterior
+					</button>
+					<div className="text-c_gray-200 font-medium bg-c_dark_blue-600 border border-c_dark_blue-400 shadow-inner px-4 py-2 rounded-lg">
+						Página <span className="text-primary-400 font-bold">{actualPage}</span> de {pages || 1}
+					</div>
+					<button
+						onClick={handleNext}
+						disabled={!hasNextPage}
+						className="flex items-center gap-x-2 px-4 py-2 rounded-lg bg-c_dark_blue-400 border border-c_dark_blue-400 hover:border-primary-500 disabled:opacity-50 disabled:hover:border-c_dark_blue-400 disabled:cursor-not-allowed transition-colors text-white font-medium shadow-md"
+					>
+						Siguiente <HiChevronRight className="text-xl" />
+					</button>
+				</motion.div>
+			)}
 		</div>
 	);
 };
