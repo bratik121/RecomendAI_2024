@@ -1,5 +1,4 @@
 from django.db import models
-from jsonfield import JSONField
 
 
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
@@ -49,7 +48,7 @@ class Movie(models.Model):
     popularity = models.FloatField()
     vote_average = models.FloatField()
     revenue = models.FloatField()
-    genres = JSONField()  # Esto almacenará una lista de géneros como JSON
+    genres = models.JSONField()  # Esto almacenará una lista de géneros como JSON
 
     def __str__(self):
         return self.title
