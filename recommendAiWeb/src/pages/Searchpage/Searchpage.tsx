@@ -103,28 +103,36 @@ const Searchpage = () => {
 	}, [pagination.offset]);
 
 	return (
-		<div className="max-w-7xl mx-auto px-4 py-8 min-h-screen">
-			<div className="mb-10">
-				<motion.h1
-					className="text-3xl font-bold text-primary-400 mb-2"
+		<div className="max-w-7xl mx-auto px-4 py-12 min-h-screen">
+			<div className="mb-16 flex flex-col items-center">
+				<motion.div
 					initial={{ opacity: 0, y: -20 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.5 }}
+					className="text-center mb-8"
 				>
-					Buscar Películas
-				</motion.h1>
+					<h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-custom text-white tracking-tight mb-4">
+						Discover Your Next <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-primary-600">Obsession</span>
+					</h1>
+					<p className="text-lg text-c_gray-500 font-medium max-w-2xl mx-auto">
+						Search through thousands of movies, rate your favorites, and let our AI curate the perfect watchlist just for you.
+					</p>
+				</motion.div>
 
 				<motion.div
-					initial={{ opacity: 0 }}
-					animate={{ opacity: 1 }}
-					transition={{ delay: 0.2 }}
+					initial={{ opacity: 0, y: 10 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ delay: 0.2, duration: 0.5 }}
+					className="w-full max-w-3xl"
 				>
-					<Input
-						value={searchInput.value}
-						onChange={searchInput.onChange}
-						onFocus={searchInput.onFocus}
-						placeholder="Escribe el título de una película..."
-					/>
+					<div className="relative shadow-2xl rounded-xl">
+						<Input
+							value={searchInput.value}
+							onChange={searchInput.onChange}
+							onFocus={searchInput.onFocus}
+							placeholder="Search for a movie title..."
+						/>
+					</div>
 				</motion.div>
 			</div>
 			{fetchMoviesLoading || loading ? (

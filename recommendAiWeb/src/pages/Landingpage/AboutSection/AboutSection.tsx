@@ -44,20 +44,24 @@ const AboutSection = () => {
 	};
 
 	return (
-		<div className=" max-w-full w-full  flex flex-col gap-y-6 md:gap-y-2 items-center relative">
-			{/* <div className="aboutUs-blurredDot"></div> */}
-			<h4 className="text-3xl md:text-5xl font-medium font-custom">About us</h4>
-			<div className="flex gap-x-4 justify-around ">
-				<Lottie
-					animationData={about}
-					loop={true}
-					style={{ width: "300px", height: "300px" }}
-					className="hidden md:block"
-				/>
-				<div className="text-center w-full  md:w-[60%] flex flex-col  gap-y-6  cursor-pointer  justify-center">
+		<div className="max-w-7xl mx-auto w-full flex flex-col gap-y-12 items-center relative py-16">
+			<h2 className="text-4xl md:text-5xl font-bold font-custom text-white tracking-tight">
+				How <span className="text-primary-400">RecomendAI</span> Works
+			</h2>
+			
+			<div className="flex flex-col md:flex-row gap-8 lg:gap-16 justify-center items-center w-full bg-c_dark_blue-600/30 rounded-3xl p-8 lg:p-12 border border-white/5 shadow-xl backdrop-blur-sm">
+				<div className="w-full md:w-1/2 flex justify-center">
+					<Lottie
+						animationData={about}
+						loop={true}
+						className="w-[250px] md:w-[350px] lg:w-[450px]"
+					/>
+				</div>
+				
+				<div className="w-full md:w-1/2 flex flex-col gap-y-8 justify-center">
 					<AnimatePresence mode="wait">
 						<m.div
-							className="flex flex-col gap-y-2 md:gap-y-1 "
+							className="flex flex-col gap-y-4 min-h-[200px]"
 							onClick={handleNext}
 							variants={opacityVariant}
 							initial="hidden"
@@ -65,29 +69,29 @@ const AboutSection = () => {
 							exit="hidden"
 							key={selected}
 						>
-							{/* Titulo */}
-							<h2 className="text-2xl md:text-3xl font-medium text-c_gray-900">
+							<h3 className="text-3xl lg:text-4xl font-bold text-white">
 								{info[selected].title}
-							</h2>
-							{/* Parrafo */}
-							<p className="md:text-lg text-c_gray-700">
+							</h3>
+							<p className="text-lg lg:text-xl text-c_gray-500 leading-relaxed font-medium">
 								{info[selected].description}
 							</p>
 						</m.div>
 					</AnimatePresence>
-					{/* Botones */}
-					<div className="flex justify-center gap-x-2">
-						{info.map((_, index) => {
-							return (
-								<div
-									key={index}
-									onClick={() => handleSet(index)}
-									className={`w-2 h-2 rounded-full cursor-pointer transition duration-150 ${
-										selected === index ? "bg-primary-600" : "bg-c_gray-900"
-									}`}
-								></div>
-							);
-						})}
+					
+					{/* Navigation Dots */}
+					<div className="flex items-center gap-x-3 mt-4">
+						{info.map((_, index) => (
+							<button
+								key={index}
+								onClick={() => handleSet(index)}
+								aria-label={`Go to slide ${index + 1}`}
+								className={`h-2 rounded-full transition-all duration-300 ease-in-out ${
+									selected === index 
+										? "w-8 bg-primary-500 shadow-[0_0_10px_rgba(9,217,158,0.5)]" 
+										: "w-2 bg-c_gray-700 hover:bg-c_gray-500"
+								}`}
+							/>
+						))}
 					</div>
 				</div>
 			</div>

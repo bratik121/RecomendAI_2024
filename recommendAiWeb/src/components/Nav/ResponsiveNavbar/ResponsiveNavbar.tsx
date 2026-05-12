@@ -2,7 +2,7 @@ import { useState } from "react";
 import BurguerButton from "./BurguerButton";
 import { CustomLink, Button } from "@/src/components/common";
 import { BiLogOutCircle } from "react-icons/bi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/src/redux/reducers";
 import { motion as m, AnimatePresence } from "framer-motion";
@@ -10,7 +10,6 @@ import logo from "@/src/assets/logo-removebg-preview.png";
 
 import "./style.css";
 import { userLogout } from "@/src/redux/actions";
-type Props = {};
 
 const RenderAuth = ({
 	isAuthenticated,
@@ -33,25 +32,26 @@ const RenderAuth = ({
 
 	if (isAuthenticated) {
 		return (
-			<div className="items-center flex gap-x-2 min-w-fit">
-				<span>{name}</span>
+			<div className="items-center justify-between flex w-full border-t border-white/10 pt-4 mt-2">
+				<span className="text-white font-medium">{name}</span>
 				<BiLogOutCircle
-					className="text-primary-600 hovertext-primary-400 cursor-pointer text-2xl"
+					className="text-primary-500 hover:text-red-500 transition-colors cursor-pointer text-3xl"
 					onClick={handleLogout}
 				/>
 			</div>
 		);
 	}
 	return (
-		<div className="flex flex-col items-center gap-y-2">
+		<div className="flex flex-col items-stretch gap-y-3 w-full border-t border-white/10 pt-4 mt-2">
 			<Button text="Sign In" onClick={handleSignin} />
 			<Button text="Sign Up" onClick={handleSignup} fill={false} />
 		</div>
 	);
 };
 
-const ResponsiveNavbar = (props: Props) => {
+const ResponsiveNavbar = () => {
 	const dispatch = useDispatch();
+	const location = useLocation();
 	const [isOpen, setIsOpen] = useState(false);
 	const { isAuthenticated, user } = useSelector(
 		(state: RootState) => state.user
@@ -65,17 +65,17 @@ const ResponsiveNavbar = (props: Props) => {
 	};
 
 	return (
-		<div className="flex lg:hidden h-[72px] items-center justify-between px-8 z-50 fixed w-full bg-c_dark_blue-400">
+		<div className="flex lg:hidden h-[72px] items-center justify-between px-6 z-50 fixed w-full bg-c_dark_blue-600/90 backdrop-blur-md border-b border-white/5">
 			<CustomLink
 				to="/"
 				onClick={() => {
 					setIsOpen(false);
 				}}
 			>
-				<div className="flex items-center gap-x-2 cursor-pointer w-fit z-50 relative ">
-					<h2 className="text-white font-custom font-semibold">What2Watch</h2>
-					<div className="h-12 aspect-square">
-						<img src={logo} alt="What2Watch Logo" />
+				<div className="flex items-center gap-x-2 cursor-pointer w-fit z-50 relative">
+					<h2 className="text-white font-custom text-lg font-bold">What2Watch</h2>
+					<div className="h-10 aspect-square">
+						<img src={logo} alt="What2Watch Logo" className="object-contain" />
 					</div>
 				</div>
 			</CustomLink>
@@ -83,16 +83,26 @@ const ResponsiveNavbar = (props: Props) => {
 			<AnimatePresence>
 				{isOpen && (
 					<m.div
-						className={`flex flex-col gap-y-2 absolute top-16 left-0 w-full bg-c_dark_blue-400 py-4 z-40 px-8`}
-						initial={{ opacity: 0, y: -50 }}
+						className="flex flex-col gap-y-4 absolute top-[72px] left-0 w-full bg-c_dark_blue-600 border-b border-white/10 py-6 z-40 px-6 shadow-2xl"
+						initial={{ opacity: 0, y: -20 }}
 						animate={{ opacity: 1, y: 0 }}
-						exit={{ opacity: 0, y: -30 }}
+						exit={{ opacity: 0, y: -20 }}
+						transition={{ duration: 0.2 }}
 					>
+						<CustomLink to="/search" onClick={toggleState}>
+							<div className={`text-xl font-medium ${location.pathname.includes("search") ? "text-primary-400" : "text-white"}`}>
+								Discover
+							</div>
+						</CustomLink>
+
 						{isAuthenticated && (
 							<CustomLink to="/review-films" onClick={toggleState}>
-								<span className="text-white">Review films</span>
+								<div className={`text-xl font-medium ${location.pathname.includes("review-films") ? "text-primary-400" : "text-white"}`}>
+									Review Films
+								</div>
 							</CustomLink>
 						)}
+
 						<RenderAuth
 							isAuthenticated={isAuthenticated}
 							name={user.name + " " + user.lastname}

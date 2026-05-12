@@ -1,70 +1,105 @@
 import { useEffect, useState } from "react";
 import { IReview } from "@/src/redux/Interfaces";
 import { FaHeart, FaTimes } from "react-icons/fa";
-import { Loading } from "@/src/components/common";
+import { Loading, Button } from "@/src/components/common";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/src/redux/reducers";
 import { IRate_Movies } from "@/src/redux/Interfaces";
 import MovieCard from "./MovieCard";
 import { AnimatePresence, motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import {
 	post10MoviesProcess,
 	postRate10MoviesProcess,
 } from "@/src/redux/actions";
 
-type Props = {};
-
-function ReviewFilms({}: Props) {
+function ReviewFilms() {
 	const [ratedMovies, setRatedMovies] = useState<IReview[]>([]);
+	const [isBatchComplete, setIsBatchComplete] = useState(false);
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 	const [index, setIndex] = useState<number>(0);
 	const { user, isAuthenticated } = useSelector(
 		(state: RootState) => state.user
 	);
 	const { movies, isFetching } = useSelector((state: RootState) => state.movie);
 
-	//Trayendo 10 peliculas que el usuario no ha visto
 	useEffect(() => {
-		if (isAuthenticated && user?.id) {
+		if (isAuthenticated && user?.id && !isBatchComplete) {
 			dispatch(post10MoviesProcess(parseInt(user.id)));
 		}
 	}, [user.id, isAuthenticated, dispatch]);
 
-	const handleRate10Movies = () => {
-		setRatedMovies([]);
-		setIndex(0);
+	const submitBatch = (finalRatedMovies: IReview[]) => {
+		setIsBatchComplete(true);
 		const data: IRate_Movies = {
 			id_user: parseInt(user.id),
-			reviews: ratedMovies,
+			reviews: finalRatedMovies,
 		};
 		dispatch(postRate10MoviesProcess(data));
 	};
 
 	const handleDisLike = () => {
-		if (index === movies.length - 1) {
-			handleRate10Movies();
-			return;
-		}
 		const newRatedMovies = [
 			...ratedMovies,
 			{ id_movie: movies[index].id, like: false },
 		];
-		setRatedMovies(newRatedMovies);
-		setIndex(index + 1);
+		
+		if (index === movies.length - 1) {
+			submitBatch(newRatedMovies);
+		} else {
+			setRatedMovies(newRatedMovies);
+			setIndex(index + 1);
+		}
 	};
 
 	const handleLike = () => {
-		if (index === movies.length - 1) {
-			handleRate10Movies();
-			return;
-		}
 		const newRatedMovies = [
 			...ratedMovies,
 			{ id_movie: movies[index].id, like: true },
 		];
-		setRatedMovies(newRatedMovies);
-		setIndex(index + 1);
+		
+		if (index === movies.length - 1) {
+			submitBatch(newRatedMovies);
+		} else {
+			setRatedMovies(newRatedMovies);
+			setIndex(index + 1);
+		}
 	};
+
+	if (isBatchComplete) {
+		return (
+			<div className="flex flex-col min-h-[60vh] justify-center items-center gap-y-6 text-center max-w-2xl mx-auto px-4 py-20">
+				<motion.div
+					initial={{ scale: 0 }}
+					animate={{ scale: 1 }}
+					transition={{ type: "spring", bounce: 0.5, duration: 0.8 }}
+					className="w-28 h-28 bg-primary-500/10 rounded-full flex items-center justify-center mb-4 border border-primary-500/30 shadow-[0_0_30px_rgba(9,217,158,0.2)]"
+				>
+					<FaHeart className="text-6xl text-primary-500" />
+				</motion.div>
+				<motion.div
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ delay: 0.2, duration: 0.5 }}
+				>
+					<h2 className="text-4xl md:text-5xl font-bold font-custom text-white tracking-tight mb-4">Awesome Job!</h2>
+					<p className="text-xl text-c_gray-500 leading-relaxed mb-8">
+						Your ratings have been saved. Our AI is analyzing your taste to find your next favorite movies.
+					</p>
+					<div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+						<Button text="Discover Movies" onClick={() => navigate("/search")} />
+						<Button text="Rate More" fill={false} onClick={() => {
+							setIsBatchComplete(false);
+							setRatedMovies([]);
+							setIndex(0);
+							dispatch(post10MoviesProcess(parseInt(user.id)));
+						}} />
+					</div>
+				</motion.div>
+			</div>
+		);
+	}
 
 	if (isFetching || !movies || movies.length === 0) {
 		return (
@@ -92,7 +127,7 @@ function ReviewFilms({}: Props) {
 					<span>Progress</span>
 					<span>{index + 1} / {movies.length}</span>
 				</div>
-				<div className="h-2 w-full bg-c_dark_blue-400 rounded-full overflow-hidden">
+				<div className="h-2 w-full bg-c_dark_blue-400 rounded-full overflow-hidden border border-white/5">
 					<motion.div 
 						initial={{ width: 0 }}
 						animate={{ width: `${progressPercentage}%` }}

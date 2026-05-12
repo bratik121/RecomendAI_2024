@@ -9,12 +9,12 @@ type Props = {};
 
 const MovieSlider = (props: Props) => {
 	return (
-		<div className="flex flex-col items-center gap-y-6 w-full">
-			<h4 className="text-3xl md:text-5xl font-medium font-custom">
-				Our catalog
-			</h4>
+		<div className="flex flex-col items-center gap-y-10 w-full py-16">
+			<h2 className="text-4xl md:text-5xl font-bold font-custom text-white tracking-tight">
+				Trending <span className="text-primary-400">Now</span>
+			</h2>
 			{/* Slider */}
-			<div className="w-full px-8 md:px-16">
+			<div className="w-full px-8 md:px-16 max-w-[1400px] mx-auto">
 				<Splide
 					hasTrack={false}
 					options={{
@@ -22,14 +22,17 @@ const MovieSlider = (props: Props) => {
 						perPage: 5,
 						perMove: 1,
 						focus: "center",
-						gap: "0.25rem",
+						gap: "1.5rem",
 						autoplay: true,
 						pauseOnHover: true,
-						interval: 5000,
+						interval: 4000,
 						pagination: false,
 						flickPower: 200,
 						updateOnMove: true,
 						breakpoints: {
+							1024: {
+								perPage: 3,
+							},
 							680: {
 								perPage: 1,
 								arrows: false,
@@ -38,16 +41,16 @@ const MovieSlider = (props: Props) => {
 					}}
 				>
 					<div className="splide__arrows">
-						<button className="splide__arrow splide__arrow--prev">
+						<button className="splide__arrow splide__arrow--prev !bg-c_dark_blue-400/80 hover:!bg-primary-500 !text-white transition-colors">
 							<IoIosArrowForward className="text-2xl" />
 						</button>
-						<button className="splide__arrow splide__arrow--next">
+						<button className="splide__arrow splide__arrow--next !bg-c_dark_blue-400/80 hover:!bg-primary-500 !text-white transition-colors">
 							<IoIosArrowForward className="text-2xl" />
 						</button>
 					</div>
 					<SplideTrack>
 						{movies.map((movie, index) => (
-							<SplideSlide key={index} className="flex justify-center ">
+							<SplideSlide key={index} className="flex justify-center py-4">
 								<MovieSlide img={movie.img} title={movie.title} />
 							</SplideSlide>
 						))}
