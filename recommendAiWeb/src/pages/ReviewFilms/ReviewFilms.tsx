@@ -5,13 +5,13 @@ import { Loading, Button } from "@/src/components/common";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/src/redux/reducers";
 import { IRate_Movies } from "@/src/redux/Interfaces";
-import MovieCard from "./MovieCard";
 import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
 	post10MoviesProcess,
 	postRate10MoviesProcess,
 } from "@/src/redux/actions";
+import SwipeMovieCard from "./SwipeMovieCard";
 
 function ReviewFilms() {
 	const [ratedMovies, setRatedMovies] = useState<IReview[]>([]);
@@ -141,18 +141,16 @@ function ReviewFilms() {
 			<div className="flex flex-col gap-y-8 items-center w-full mt-4">
 				{/* Card de la pelicula */}
 				<div className="w-full min-h-[500px] flex justify-center items-center">
-					<AnimatePresence mode="wait">
-						{movies[index] && (
-							<MovieCard
-								key={movies[index].id}
-								title={movies[index].title}
-								poster_path={movies[index].poster_path}
-								genres={movies[index].genres}
-								release_year={movies[index].release_year}
-								vote_average={movies[index].vote_average}
-							/>
-						)}
-					</AnimatePresence>
+        <AnimatePresence mode="wait">
+          {movies[index] && (
+            <SwipeMovieCard
+              key={movies[index].id}
+              movie={movies[index]}
+              onLike={handleLike}
+              onDislike={handleDisLike}
+            />
+          )}
+        </AnimatePresence>
 				</div>
 				
 				{/* Buttons */}
