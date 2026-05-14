@@ -24,8 +24,18 @@ function ReviewFilms() {
 	);
 	const { movies, isFetching } = useSelector((state: RootState) => state.movie);
 
+  useEffect(() => {
+    console.log(movies);
+  }, [movies]);
+
 	useEffect(() => {
-		if (isAuthenticated && user?.id && !isBatchComplete) {
+    console.log(isAuthenticated);
+    console.log(user?.id);
+    console.log(isBatchComplete);
+    console.log(movies.length); 
+
+    if (isAuthenticated && user?.id && !isBatchComplete && movies.length === 0) {
+      console.log("Trayendo 10 nuevas peliculas")
 			dispatch(post10MoviesProcess(parseInt(user.id)));
 		}
 	}, [user.id, isAuthenticated, dispatch]);
@@ -102,7 +112,6 @@ function ReviewFilms() {
 							setIsBatchComplete(false);
 							setRatedMovies([]);
 							setIndex(0);
-							dispatch(post10MoviesProcess(parseInt(user.id)));
 						}} />
 					</div>
 				</motion.div>
