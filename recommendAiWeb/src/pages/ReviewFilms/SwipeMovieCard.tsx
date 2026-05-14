@@ -59,7 +59,7 @@ function SwipeMovieCard({ movie, onLike, onDislike }: SwipeMovieCardProps) {
 
   return (
     <motion.div
-      className="relative w-full min-h-[520px] flex justify-center items-center rounded-3xl overflow-hidden"
+      className="relative md:min-w-[600px] w-full min-h-[520px] flex justify-center items-center rounded-3xl overflow-hidden"
       style={{ background }}
     >
       <motion.div

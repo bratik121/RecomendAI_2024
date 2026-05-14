@@ -67,7 +67,16 @@ function ReviewFilms() {
 		}
 	};
 
-	if (isBatchComplete) {
+
+	if (isFetching || !movies || movies.length === 0) {
+		return (
+			<div className="flex min-h-[60vh] justify-center items-center">
+				<Loading />
+			</div>
+		);
+	}
+
+  	if (isBatchComplete) {
 		return (
 			<div className="flex flex-col min-h-[60vh] justify-center items-center gap-y-6 text-center max-w-2xl mx-auto px-4 py-20">
 				<motion.div
@@ -101,13 +110,6 @@ function ReviewFilms() {
 		);
 	}
 
-	if (isFetching || !movies || movies.length === 0) {
-		return (
-			<div className="flex min-h-[60vh] justify-center items-center">
-				<Loading />
-			</div>
-		);
-	}
 
 	const progressPercentage = ((index + 1) / movies.length) * 100;
 

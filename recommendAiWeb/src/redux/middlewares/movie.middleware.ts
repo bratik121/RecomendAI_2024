@@ -64,6 +64,7 @@ const movieProcess: Middleware =
 			);
 		}
 		if (get10MovieRecomendationsProcess.match(action)) {
+      console.log("url: ", `${RECOMMEND_MOVIES_URL + action.payload}`); 
 			dispatch(
 				apiRequest(
 					"GET",
