@@ -13,7 +13,7 @@ import {
 	IPagination,
 	useFetchMoviesByTitle,
 } from "@/src/redux/hooks/useFetchMovieByTitle";
-import MovieCard from "./MovieCard";
+import MovieCard from "../../components/MovieCard/MovieCard";
 import { useRateMovie } from "@/src/redux/hooks/useRateMovie";
 
 // Variantes de animación

@@ -12,7 +12,7 @@ import {
 	postRate10MoviesProcess,
 } from "@/src/redux/actions";
 import SwipeMovieCard from "./SwipeMovieCard";
-
+import MovieCard from "@/src/components/MovieCard/MovieCard";
 function ReviewFilms() {
 	const [ratedMovies, setRatedMovies] = useState<IReview[]>([]);
 	const [isBatchComplete, setIsBatchComplete] = useState(false);
@@ -63,6 +63,7 @@ function ReviewFilms() {
 		}
 	};
 
+
 	const handleLike = () => {
 		const newRatedMovies = [
 			...ratedMovies,
@@ -86,38 +87,79 @@ function ReviewFilms() {
 		);
 	}
 
-  	if (isBatchComplete) {
-		return (
-			<div className="flex flex-col min-h-[60vh] justify-center items-center gap-y-6 text-center max-w-2xl mx-auto px-4 py-20">
-				<motion.div
-					initial={{ scale: 0 }}
-					animate={{ scale: 1 }}
-					transition={{ type: "spring", bounce: 0.5, duration: 0.8 }}
-					className="w-28 h-28 bg-primary-500/10 rounded-full flex items-center justify-center mb-4 border border-primary-500/30 shadow-[0_0_30px_rgba(9,217,158,0.2)]"
-				>
+if (isBatchComplete) {
+	return (
+		<div className="relative z-40 mx-auto flex min-h-[70vh] w-full max-w-6xl flex-col items-center px-4 py-16 text-center">
+			<motion.div
+				initial={{ opacity: 0, scale: 0.9, y: 20 }}
+				animate={{ opacity: 1, scale: 1, y: 0 }}
+				transition={{ type: "spring", bounce: 0.35, duration: 0.8 }}
+				className="mb-10 flex max-w-3xl flex-col items-center"
+			>
+				<div className="mb-6 flex h-28 w-28 items-center justify-center rounded-full border border-primary-500/30 bg-primary-500/10 shadow-[0_0_40px_rgba(9,217,158,0.22)]">
 					<FaHeart className="text-6xl text-primary-500" />
-				</motion.div>
-				<motion.div
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ delay: 0.2, duration: 0.5 }}
-				>
-					<h2 className="text-4xl md:text-5xl font-bold font-custom text-white tracking-tight mb-4">Awesome Job!</h2>
-					<p className="text-xl text-c_gray-500 leading-relaxed mb-8">
-						Your ratings have been saved. Our AI is analyzing your taste to find your next favorite movies.
-					</p>
-					<div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-						<Button text="Discover Movies" onClick={() => navigate("/search")} />
-						<Button text="Rate More" fill={false} onClick={() => {
-							setIsBatchComplete(false);
-							setRatedMovies([]);
-							setIndex(0);
-						}} />
-					</div>
-				</motion.div>
-			</div>
-		);
-	}
+				</div>
+
+				<h2 className="mb-4 font-custom text-4xl font-bold tracking-tight text-white md:text-5xl">
+					Your recommendations are ready
+				</h2>
+
+				<p className="mb-4 max-w-2xl text-lg leading-relaxed text-c_gray-500 md:text-xl">
+					Based on your latest ratings, RecomendAI has selected a fresh set of movies that better match your taste.
+				</p>
+
+				<p className="max-w-2xl rounded-2xl border border-primary-500/20 bg-primary-500/10 px-5 py-4 text-sm leading-relaxed text-c_gray-300 md:text-base">
+					If these options still don&apos;t convince you, rate another batch to receive 10 fresh recommendations.
+				</p>
+			</motion.div>
+
+			<motion.div
+				initial={{ opacity: 0, y: 24 }}
+				animate={{ opacity: 1, y: 0 }}
+				transition={{ delay: 0.15, duration: 0.5 }}
+				className="mb-10 grid w-full grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5"
+			>
+				{movies.slice(0, 10).map((movie, movieIndex) => (
+					<motion.article
+						key={movie.id}
+						initial={{ opacity: 0, y: 30 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{
+							delay: movieIndex * 0.04,
+							duration: 0.35,
+						}}
+						whileHover={{ y: -8, scale: 1.02 }}
+					>
+            <MovieCard movie={movie} />
+					</motion.article>
+				))}
+			</motion.div>
+
+			<motion.div
+				initial={{ opacity: 0, y: 16 }}
+				animate={{ opacity: 1, y: 0 }}
+				transition={{ delay: 0.35, duration: 0.4 }}
+				className="flex flex-col items-center justify-center gap-4 sm:flex-row"
+			>
+				<Button text="Discover Movies" onClick={() => navigate("/search")} />
+
+				<Button
+					text="Rate Another Batch"
+					fill={false}
+					onClick={() => {
+						setIsBatchComplete(false);
+						setRatedMovies([]);
+						setIndex(0);
+
+						if (user?.id) {
+							dispatch(post10MoviesProcess(parseInt(user.id)));
+						}
+					}}
+				/>
+			</motion.div>
+		</div>
+	);
+}
 
 
 	const progressPercentage = ((index + 1) / movies.length) * 100;
