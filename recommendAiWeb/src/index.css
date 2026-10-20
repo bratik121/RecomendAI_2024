@@ -1,6 +1,5 @@
+@import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
-@tailwind base;
-@tailwind components;
 @tailwind utilities;
 
 .font-custom {
@@ -58,3 +57,29 @@ background: radial-gradient(circle, rgba(9,217,158,1) 0%, rgba(9,217,158,0) 100%
 /* * {
 	outline: 2px dashed red;
 } */
+
+@theme {
+	/* ===== Colores base ===== */
+	--color-c_black: #181c25;
+
+	/* ===== c_dark_blue ===== */
+	--color-c_dark_blue-400: #153452;
+	--color-c_dark_blue-600: #132d46;
+
+	/* ===== primary ===== */
+	--color-primary-100: #63f8ce;
+	--color-primary-200: #77f9d4;
+	--color-primary-300: #15f4b5;
+	--color-primary-400: #0beaab;
+	--color-primary-500: #09d99e;
+	--color-primary-600: #08c48f;
+	--color-primary-700: #07b080;
+	--color-primary-800: #079d72;
+	--color-primary-900: #067555;
+
+	/* ===== c_gray ===== */
+	--color-c_gray-200: #e2ebf4;
+	--color-c_gray-500: #c9daea;
+	--color-c_gray-700: #a6c1de;
+	--color-c_gray-900: #88acd3;
+}

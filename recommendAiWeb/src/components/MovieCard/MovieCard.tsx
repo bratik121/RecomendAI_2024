@@ -27,7 +27,7 @@ const getPosterUrl = (posterPath?: string) => {
 const MovieCard = ({ movie, handleRateMovie }: Props) => {
 	const [isHovered, setIsHovered] = useState(false);
 
-	const rating = Number(movie.vote_average || 0).toFixed(1);
+	const rating = Number(movie.vote_average * 10 || 0).toFixed(1);
 	const genres = movie.genres || [];
 
 	return (
@@ -66,8 +66,6 @@ const MovieCard = ({ movie, handleRateMovie }: Props) => {
 						<span>{rating}</span>
 					</div>
 
-			
-
 					<div className="absolute bottom-0 left-0 right-0 p-4">
 						<h3 className="line-clamp-2 text-xl font-bold leading-tight text-white drop-shadow-lg transition-colors duration-300 group-hover:text-primary-300">
 							{movie.title}
@@ -83,24 +81,26 @@ const MovieCard = ({ movie, handleRateMovie }: Props) => {
 								transition={{ duration: 0.2 }}
 								className="absolute inset-0 flex flex-col justify-end bg-black/50 p-5 backdrop-blur-sm"
 							>
-                		{handleRateMovie && (
-						<motion.button
-							type="button"
-							aria-label={movie.liked ? "Remove from favorites" : "Add to favorites"}
-							className="absolute top-3 right-3 flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-c_black/65 text-c_gray-300 shadow-lg backdrop-blur-md transition-all duration-300 hover:border-primary-500/40 hover:bg-primary-500 hover:text-c_black"
-							whileTap={{ scale: 0.88 }}
-							onClick={(event) => {
-								event.stopPropagation();
-								handleRateMovie(movie.id);
-							}}
-						>
-							{movie.liked ? (
-								<FaHeart className="h-5 w-5 text-primary-400 transition-colors group-hover:text-primary-300" />
-							) : (
-								<FaRegHeart className="h-5 w-5" />
-							)}
-						</motion.button>
-					)}
+								{handleRateMovie && (
+									<motion.button
+										type="button"
+										aria-label={
+											movie.liked ? "Remove from favorites" : "Add to favorites"
+										}
+										className="absolute top-3 right-3 flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-c_black/65 text-c_gray-300 shadow-lg backdrop-blur-md transition-all duration-300 hover:border-primary-500/40 hover:bg-primary-500 hover:text-c_black"
+										whileTap={{ scale: 0.88 }}
+										onClick={(event) => {
+											event.stopPropagation();
+											handleRateMovie(movie.id);
+										}}
+									>
+										{movie.liked ? (
+											<FaHeart className="h-5 w-5 text-primary-400 transition-colors group-hover:text-primary-300" />
+										) : (
+											<FaRegHeart className="h-5 w-5" />
+										)}
+									</motion.button>
+								)}
 								<motion.div
 									initial={{ y: 18, opacity: 0 }}
 									animate={{ y: 0, opacity: 1 }}
@@ -111,7 +111,7 @@ const MovieCard = ({ movie, handleRateMovie }: Props) => {
 										Overview
 									</p>
 
-									<p className="line-clamp-7 text-sm leading-relaxed text-c_gray-200 line-clamp-6">
+									<p className="  text-sm leading-relaxed text-c_gray-200 line-clamp-6">
 										{movie.overview || "No overview available for this movie."}
 									</p>
 								</motion.div>
@@ -130,24 +130,24 @@ const MovieCard = ({ movie, handleRateMovie }: Props) => {
 					</div>
 				</div>
 
-				<div className="flex min-h-[58px] flex-wrap gap-2">
+				<div className="flex min-h-14.5 flex-wrap gap-2">
 					{genres.slice(0, 3).map((genre) => (
 						<span
 							key={`${movie.id}-${genre}`}
-							className="rounded-full border border-primary-500/15 bg-primary-500/10 px-3 py-1 text-xs font-medium text-primary-100 transition-colors duration-300 group-hover:border-primary-500/30 group-hover:bg-primary-500/15 max-w-fit max-h-fit"
+							className="rounded-full border h-6   border-primary-500/15 bg-primary-500/10 px-3 py-1 text-xs font-medium text-primary-100 transition-colors duration-300 group-hover:border-primary-500/30 group-hover:bg-primary-500/15 max-w-fit  inline-flex items-center leading-none"
 						>
 							{genre}
 						</span>
 					))}
 
 					{genres.length > 3 && (
-						<span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-medium text-c_gray-300">
+						<span className="flex items-center rounded-full border border-white/10 h-6 bg-white/[0.04] px-3 py-1 text-xs font-medium text-c_gray-300">
 							+{genres.length - 3}
 						</span>
 					)}
 
 					{genres.length === 0 && (
-						<span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-medium text-c_gray-400">
+						<span className="rounded-full border border-white/10 bg-white/[0.04] px-3 text-xs font-medium text-c_gray-400">
 							No genres
 						</span>
 					)}

@@ -1,5 +1,4 @@
-import React from "react";
-import Lottie from "lottie-react";
+import { Lottie } from "lottie-react";
 import loading from "@/src/assets/lottie/loading.json";
 type Props = {
 	size?: number;
@@ -8,7 +7,8 @@ type Props = {
 function Loading({ size = 150 }: Props) {
 	return (
 		<Lottie
-			animationData={loading}
+			src={loading}
+			autoplay
 			loop={true}
 			style={{ width: size, height: size }}
 		/>
