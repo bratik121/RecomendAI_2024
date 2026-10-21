@@ -2,12 +2,10 @@ import MovieSlide from "./MovieSlide";
 import movies from "@/src/assets/movies/movies";
 import { Splide, SplideSlide, SplideTrack } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { RipplesButton } from "@/src/components/common";
+import { IoIosArrowForward } from "react-icons/io";
 import "./style.css";
-type Props = {};
 
-const MovieSlider = (props: Props) => {
+const MovieSlider = () => {
 	return (
 		<div className="flex flex-col items-center gap-y-10 w-full py-16">
 			<h2 className="text-4xl md:text-5xl font-bold font-custom text-white tracking-tight">
@@ -51,7 +49,11 @@ const MovieSlider = (props: Props) => {
 					<SplideTrack>
 						{movies.map((movie, index) => (
 							<SplideSlide key={index} className="flex justify-center py-4">
-								<MovieSlide img={movie.img} title={movie.title} />
+								<MovieSlide
+									img={movie.img}
+									title={movie.title}
+									id={movie.id}
+								/>
 							</SplideSlide>
 						))}
 					</SplideTrack>

@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.authtoken.models import Token
 
 from App.models import User
 
@@ -22,12 +23,14 @@ def login_view(request):
         print(user)
         if user is not None and isinstance(user, User):
             login(request, user)
+            token, _ = Token.objects.get_or_create(user=user)
             logger.debug("Login successful")
             return JsonResponse({
                 'id': user.id,
                 'email': user.email,
                 'name': user.name,
                 'lastname': user.lastname,
+                'token': token.key,
             }, status=200)
         else:
             logger.warning("Login failed - Invalid credentials")

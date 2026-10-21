@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import F
 
 
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
@@ -64,3 +65,95 @@ class Interaction(models.Model):
 
     def __str__(self):
         return f"{self.user.name} - {self.movie.title}"
+
+
+class CatalogState(models.Model):
+    """Versión global del catálogo de películas.
+
+    Se incrementa cuando cambia el catálogo para invalidar la matriz de
+    features y las recomendaciones materializadas.
+    """
+
+    version = models.PositiveIntegerField(default=1)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'estado del catálogo'
+        verbose_name_plural = 'estado del catálogo'
+
+    @classmethod
+    def get_version(cls):
+        state, _ = cls.objects.get_or_create(pk=1)
+        return state.version
+
+    @classmethod
+    def bump(cls):
+        cls.objects.get_or_create(pk=1)
+        cls.objects.filter(pk=1).update(version=F('version') + 1)
+        return cls.objects.filter(pk=1).values_list('version', flat=True).first()
+
+    def __str__(self):
+        return f'Catálogo v{self.version}'
+
+
+class RecommendationCache(models.Model):
+    """Recomendaciones materializadas por usuario.
+
+    Guardamos el top-20 de IDs para poder mezclar y devolver 10 en cada
+    request sin volver a entrenar el modelo.
+    """
+
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='recommendation_cache',
+    )
+    movie_ids = models.JSONField(default=list)
+    interaction_hash = models.CharField(max_length=64)
+    catalog_version = models.PositiveIntegerField(default=0)
+    recommender_version = models.CharField(max_length=32, default='rf-v1')
+    generated_at = models.DateTimeField(auto_now=True)
+    compute_ms = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        verbose_name = 'cache de recomendaciones'
+        verbose_name_plural = 'caches de recomendaciones'
+
+    def __str__(self):
+        return f'Recomendaciones de {self.user_id}'
+
+
+class Comment(models.Model):
+    """Comentario de una película, con un nivel de respuestas."""
+
+    movie = models.ForeignKey(
+        Movie,
+        on_delete=models.CASCADE,
+        related_name='comments',
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='comments',
+    )
+    parent = models.ForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='replies',
+    )
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_deleted = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['movie', 'parent', 'created_at']),
+            models.Index(fields=['user', 'created_at']),
+        ]
+
+    def __str__(self):
+        return f'{self.user.name} en {self.movie.title}'

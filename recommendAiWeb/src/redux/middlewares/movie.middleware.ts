@@ -115,7 +115,7 @@ const movieSuccess: Middleware =
 	};
 
 const movieError: Middleware =
-	({ dispatch }) =>
+	() =>
 	(next) =>
 	(action) => {
 		next(action);

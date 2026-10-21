@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-4krpavaq874m4^66g8wk8q*9ysoudi@u@-^cf6am*tg5whrv!m
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
 
 # Application definition
 
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'App.apps.AppAppConfig',
     'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
 ]
 
@@ -48,7 +49,13 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
           'rest_framework.permissions.AllowAny',
     ),
+    'DEFAULT_THROTTLE_RATES': {
+        'comments': '10/min',
+    },
 }
+
+RECOMMENDER_VERSION = 'rf-v1'
+RECOMMENDATION_CACHE_TTL_SECONDS = 7 * 24 * 60 * 60
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # This should be at the top

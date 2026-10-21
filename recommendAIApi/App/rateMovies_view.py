@@ -3,6 +3,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 import json
 from App.models import User, Movie, Interaction
+from App.recommendation.cache import invalidate_recommendations
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -33,6 +34,9 @@ def rateMovies(request):
                 interaction.liked = like
                 interaction.seen = True
                 interaction.save()
+
+        # El próximo GET recalcula con el historial actualizado.
+        invalidate_recommendations(user_id)
 
         return JsonResponse({'id_user':user_id }, status=200)
 

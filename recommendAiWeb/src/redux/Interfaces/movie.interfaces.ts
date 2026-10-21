@@ -9,6 +9,11 @@ export interface IMovie {
 	liked?: boolean;
 }
 
+export interface IMovieDetail extends IMovie {
+	popularity: number;
+	revenue: number;
+}
+
 export interface IReview {
 	id_movie: number;
 	like: boolean;

@@ -3,6 +3,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { FaHeart, FaRegHeart, FaStar } from "react-icons/fa";
 import { IoCalendarOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+import { getPosterUrl } from "@/src/utils";
 
 type Props = {
 	movie: IMovie;
@@ -14,30 +16,33 @@ const itemVariants = {
 	show: { opacity: 1, y: 0 },
 };
 
-const getPosterUrl = (posterPath?: string) => {
-	if (!posterPath) return "/placeholder-movie.jpg";
-
-	if (posterPath.startsWith("http")) {
-		return posterPath;
-	}
-
-	return `https://image.tmdb.org/t/p/w500/${posterPath}`;
-};
-
 const MovieCard = ({ movie, handleRateMovie }: Props) => {
 	const [isHovered, setIsHovered] = useState(false);
+	const navigate = useNavigate();
 
 	const rating = Number(movie.vote_average * 10 || 0).toFixed(1);
 	const genres = movie.genres || [];
+
+	const openDetail = () => navigate(`/movie/${movie.id}`);
 
 	return (
 		<motion.article
 			key={movie.id}
 			variants={itemVariants}
 			whileHover={{ y: -10, scale: 1.015 }}
-			className="group relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-c_dark_blue-400/95 to-c_dark_blue-600/95 shadow-xl shadow-black/25 backdrop-blur-sm transition-all duration-300 hover:border-primary-500/40 hover:shadow-[0_24px_60px_rgba(9,217,158,0.14)]"
+			className="group relative cursor-pointer overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-c_dark_blue-400/95 to-c_dark_blue-600/95 shadow-xl shadow-black/25 backdrop-blur-sm transition-all duration-300 hover:border-primary-500/40 hover:shadow-[0_24px_60px_rgba(9,217,158,0.14)]"
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
+			onClick={openDetail}
+			onKeyDown={(event) => {
+				if (event.key === "Enter" || event.key === " ") {
+					event.preventDefault();
+					openDetail();
+				}
+			}}
+			role="link"
+			tabIndex={0}
+			aria-label={`Ver detalle de ${movie.title}`}
 		>
 			<div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
 				<div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-primary-500/20 blur-3xl" />
@@ -93,6 +98,7 @@ const MovieCard = ({ movie, handleRateMovie }: Props) => {
 											event.stopPropagation();
 											handleRateMovie(movie.id);
 										}}
+										onKeyDown={(event) => event.stopPropagation()}
 									>
 										{movie.liked ? (
 											<FaHeart className="h-5 w-5 text-primary-400 transition-colors group-hover:text-primary-300" />

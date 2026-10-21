@@ -362,11 +362,31 @@ http://localhost:5173/
 
 | Endpoint | Method | Description |
 |---|---|---|
-| `/api/auth/login` | `POST` | Authenticates a user |
-| `/api/recommend/<idUser>/` | `GET` | Returns personalized movie recommendations |
+| `/api/auth/login` | `POST` | Authenticates a user and returns an API token |
+| `/api/recommend/<idUser>/` | `GET` | Returns personalized movie recommendations (cached) |
 | `/api/searchMoviesByName/` | `GET` | Searches movies by title |
 | `/api/rateMovies` | `POST` | Registers movie interactions such as liked or seen |
 | `/api/tenmovies/<idUser>/` | `GET` | Returns movies for the initial rating flow |
+| `/api/movies/<id>/` | `GET` | Returns the full detail of a movie |
+| `/api/movies/<id>/comments/` | `GET` / `POST` | Lists or creates comments (write requires token) |
+| `/api/comments/<id>/` | `PATCH` / `DELETE` | Edits or soft-deletes the author's comment |
+
+Authenticated write endpoints expect `Authorization: Token <token>`. The token is returned by
+`/api/auth/login` and `/api/User/` on registration.
+
+### Recommendation performance
+
+The recommendation engine caches the movie feature matrix in memory and stores the top-20
+recommendations per user in PostgreSQL, keyed by an interaction fingerprint plus catalog and
+recommender versions. The first request after an interaction change recalculates the model; the
+following requests are served from cache.
+
+Useful commands:
+
+```bash
+python manage.py benchmark_recommendations --user 1 --runs 5
+python manage.py rebuild_recommendations --user 1
+```
 
 ### User Flow
 

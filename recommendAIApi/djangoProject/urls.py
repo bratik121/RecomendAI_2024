@@ -24,8 +24,10 @@ from App.tenmovies_view import tenmovies
 from App.remomendMovies_view import recommend_movies
 from rest_framework import routers
 from App.search_movies_by_name import search_movies_by_name
+from App.comment_views import CommentDetailView, CommentListCreateView
+from App.movie_views import MovieDetailView
 
-from App.views import   UserViewSet
+from App.views import UserViewSet
 
 route = routers.DefaultRouter()
 
@@ -41,4 +43,11 @@ urlpatterns = [
     path('api/tenmovies/<int:idUser>/', tenmovies, name='te nmovies'),
     path('api/recommend/<int:idUser>/', recommend_movies, name='recommend'),
     path('api/searchMoviesByName/', search_movies_by_name, name='searchMoviesByName'),
+    path('api/movies/<int:pk>/', MovieDetailView.as_view(), name='movie-detail'),
+    path(
+        'api/movies/<int:movie_id>/comments/',
+        CommentListCreateView.as_view(),
+        name='movie-comments',
+    ),
+    path('api/comments/<int:pk>/', CommentDetailView.as_view(), name='comment-detail'),
 ]

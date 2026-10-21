@@ -9,7 +9,7 @@ import {
 	SET_USER_FROM_STORAGE,
 	USER_LOGOUT,
 } from "../constants";
-import { IRegisterUser, ILoginUser, IApiResponse } from "../Interfaces";
+import { IRegisterUser, ILoginUser } from "../Interfaces";
 
 //Register
 export const postRegisterUserProcess = createAction<IRegisterUser>(

@@ -1,4 +1,4 @@
-import { Iuser, userState, reduxAction } from "../Interfaces";
+import { userState, reduxAction } from "../Interfaces";
 import {
 	POST_LOGIN_USER_ERROR,
 	POST_LOGIN_USER_PROCESS,

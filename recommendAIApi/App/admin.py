@@ -1,11 +1,37 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import CatalogState, Comment, Interaction, Movie, RecommendationCache, User
 
-from .models import User
-from .models import Movie
-from .models import Interaction
 
-admin.site.register(User)
-admin.site.register(Movie)
-admin.site.register(Interaction)
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ('id', 'email', 'name', 'lastname', 'is_active', 'is_staff')
+    search_fields = ('email', 'name', 'lastname')
+
+
+@admin.register(Movie)
+class MovieAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title', 'release_year', 'vote_average', 'popularity')
+    search_fields = ('title',)
+
+
+@admin.register(Interaction)
+class InteractionAdmin(admin.ModelAdmin):
+    list_display = ('user', 'movie', 'liked', 'seen')
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('id', 'movie', 'user', 'parent', 'created_at', 'is_deleted')
+    list_filter = ('is_deleted', 'created_at')
+    search_fields = ('body', 'movie__title', 'user__email')
+
+
+@admin.register(RecommendationCache)
+class RecommendationCacheAdmin(admin.ModelAdmin):
+    list_display = ('user', 'catalog_version', 'recommender_version', 'generated_at', 'compute_ms')
+
+
+@admin.register(CatalogState)
+class CatalogStateAdmin(admin.ModelAdmin):
+    list_display = ('version', 'updated_at')

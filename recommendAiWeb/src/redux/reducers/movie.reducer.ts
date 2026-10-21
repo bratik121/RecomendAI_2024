@@ -1,4 +1,4 @@
-import { MovieState, reduxAction, IMovie } from "../Interfaces";
+import { MovieState, reduxAction } from "../Interfaces";
 import {
 	POST_10_MOVIES_PROCESS,
 	POST_10_MOVIES_ERROR,
