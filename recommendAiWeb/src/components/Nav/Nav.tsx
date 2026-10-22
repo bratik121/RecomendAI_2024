@@ -1,13 +1,11 @@
 import { Header } from "./Header";
 import { ResponsiveNavbar } from "./ResponsiveNavbar";
 
-const Nav = () => {
+export function Nav() {
 	return (
-		<div>
+		<>
 			<Header />
 			<ResponsiveNavbar />
-		</div>
+		</>
 	);
-};
-
-export default Nav;
+}

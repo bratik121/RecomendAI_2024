@@ -1,25 +1,40 @@
-import { AnimatePresence } from "framer-motion";
-import { Routes, Route } from "react-router-dom";
-import { Landingpage, MovieDetail, Sign, ReviewFilms, Searchpage } from "../pages";
+import { AnimatePresence, motion } from "framer-motion";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { Landingpage, MovieDetail, Sign, ReviewFilms, Searchpage, WatchlistPage, ProfilePage, NotFound } from "../pages";
 import ProtectedRoutes from "../components/protectedRoutes/protectedRoutes";
+import { pageTransition } from "@/src/lib/motion";
+
 type Props = {
 	isAuthenticated: boolean;
 };
 
-const MyRoutes = ({ isAuthenticated }: Props) => {
+/** Wraps each route so navigation cross-fades between pages. */
+function PageTransition({ children }: { children: React.ReactNode }) {
 	return (
-		<AnimatePresence>
-			<Routes>
-				<Route path="/" element={<Landingpage />} />
-				<Route path="/sign/*" element={<Sign />} />
-				<Route path="/search" element={<Searchpage />} />
-				<Route path="/movie/:id" element={<MovieDetail />} />
+		<motion.div variants={pageTransition} initial="initial" animate="enter" exit="exit">
+			{children}
+		</motion.div>
+	);
+}
 
-				{/* Rutas publicas */}
-				{/* Rutas progetigas por autenticacion  */}
+const MyRoutes = ({ isAuthenticated }: Props) => {
+	const location = useLocation();
+
+	return (
+		<AnimatePresence mode="wait" initial={false}>
+			<Routes location={location} key={location.pathname}>
+				<Route path="/" element={<PageTransition><Landingpage /></PageTransition>} />
+				<Route path="/sign/*" element={<PageTransition><Sign /></PageTransition>} />
+				<Route path="/search" element={<PageTransition><Searchpage /></PageTransition>} />
+				<Route path="/movie/:id" element={<PageTransition><MovieDetail /></PageTransition>} />
+
 				<Route element={<ProtectedRoutes isAuthenticated={isAuthenticated} />}>
-					<Route path="/review-films" element={<ReviewFilms />} />
+					<Route path="/review-films" element={<PageTransition><ReviewFilms /></PageTransition>} />
+					<Route path="/watchlist" element={<PageTransition><WatchlistPage /></PageTransition>} />
+					<Route path="/profile" element={<PageTransition><ProfilePage /></PageTransition>} />
 				</Route>
+
+				<Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
 			</Routes>
 		</AnimatePresence>
 	);
