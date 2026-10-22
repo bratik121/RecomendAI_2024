@@ -1,4 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Button } from "@/src/components/ui/button";
+import { cn } from "@/src/lib/utils";
 
 type Props = {
 	onSubmit: (body: string) => Promise<boolean>;
@@ -11,20 +14,19 @@ type Props = {
 
 const MAX_LENGTH = 1000;
 
-const CommentForm = ({
+export function CommentForm({
 	onSubmit,
 	initialBody = "",
-	placeholder = "Escribí tu comentario...",
+	placeholder,
 	submitting = false,
 	onCancel,
 	compact = false,
-}: Props) => {
+}: Props) {
+	const { t } = useTranslation("comments");
 	const [body, setBody] = useState(initialBody);
 	const [touched, setTouched] = useState(false);
 
-	useEffect(() => {
-		setBody(initialBody);
-	}, [initialBody]);
+	useEffect(() => setBody(initialBody), [initialBody]);
 
 	const trimmed = body.trim();
 	const tooShort = trimmed.length > 0 && trimmed.length < 2;
@@ -44,53 +46,54 @@ const CommentForm = ({
 	return (
 		<form
 			onSubmit={handleSubmit}
-			className={`rounded-2xl border border-white/10 bg-white/[0.03] p-4 ${
-				compact ? "" : "shadow-lg shadow-black/10"
-			}`}
+			className={cn(
+				"rounded-2xl border border-border-subtle bg-surface p-4",
+				!compact && "shadow-card"
+			)}
 		>
 			<textarea
 				value={body}
-				onChange={(event) => setBody(event.target.value)}
+				onChange={(e) => setBody(e.target.value)}
 				onBlur={() => setTouched(true)}
-				placeholder={placeholder}
+				placeholder={placeholder ?? t("placeholder")}
 				rows={compact ? 2 : 3}
 				maxLength={MAX_LENGTH}
-				className="w-full resize-y rounded-xl border border-white/10 bg-c_dark_blue-600/70 px-4 py-3 text-sm text-c_gray-100 placeholder:text-c_gray-900 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+				className="w-full resize-y rounded-xl border border-border-subtle bg-background px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-ring/30"
 			/>
 
 			<div className="mt-3 flex flex-wrap items-center justify-between gap-3">
 				<span
-					className={`text-xs ${
-						tooShort && touched ? "text-red-400" : "text-c_gray-900"
-					}`}
+					className={cn(
+						"text-xs",
+						tooShort && touched ? "text-danger" : "text-text-muted"
+					)}
 				>
 					{tooShort && touched
-						? "El comentario debe tener al menos 2 caracteres."
+						? t("tooShort")
 						: `${body.length}/${MAX_LENGTH}`}
 				</span>
 
 				<div className="flex items-center gap-2">
 					{onCancel && (
-						<button
+						<Button
 							type="button"
+							variant="ghost"
+							size="sm"
 							onClick={onCancel}
 							disabled={submitting}
-							className="rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-c_gray-500 transition-colors hover:border-white/25 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
 						>
-							Cancelar
-						</button>
+							{t("cancel", { ns: "common" })}
+						</Button>
 					)}
-					<button
-						type="submit"
-						disabled={!canSubmit}
-						className="rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-c_black transition-colors hover:bg-primary-400 disabled:cursor-not-allowed disabled:opacity-50"
-					>
-						{submitting ? "Enviando..." : initialBody ? "Guardar" : "Comentar"}
-					</button>
+					<Button type="submit" size="sm" disabled={!canSubmit}>
+						{submitting
+							? t("sending")
+							: initialBody
+								? t("save", { ns: "common" })
+								: t("post")}
+					</Button>
 				</div>
 			</div>
 		</form>
 	);
-};
-
-export default CommentForm;
+}

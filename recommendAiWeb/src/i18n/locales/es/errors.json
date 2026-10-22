@@ -1,0 +1,8 @@
+{
+  "generic": "Ocurrió un error inesperado.",
+  "required": "Este campo es obligatorio.",
+  "email": "Ingresá un email válido.",
+  "password": "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.",
+  "name": "Ingresá un nombre válido.",
+  "lastname": "Ingresá un apellido válido."
+}

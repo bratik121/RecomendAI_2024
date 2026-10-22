@@ -1,0 +1,12 @@
+{
+  "discover": "Descubrir",
+  "reviewFilms": "Calificar películas",
+  "watchlist": "Mi watchlist",
+  "profile": "Perfil",
+  "signIn": "Iniciar sesión",
+  "signUp": "Registrarse",
+  "logout": "Cerrar sesión",
+  "language": "Idioma",
+  "pendingCount_one": "{{count}} pendiente",
+  "pendingCount_other": "{{count}} pendientes"
+}

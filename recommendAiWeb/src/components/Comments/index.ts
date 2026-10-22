@@ -1,3 +1,3 @@
-export { default as CommentsSection } from "./CommentsSection";
-export { default as CommentForm } from "./CommentForm";
-export { default as CommentItem } from "./CommentItem";
+export { CommentsSection } from "./CommentsSection";
+export { CommentItem } from "./CommentItem";
+export { CommentForm } from "./CommentForm";

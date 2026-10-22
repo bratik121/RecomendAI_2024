@@ -1,0 +1,18 @@
+{
+  "title": "Mi Watchlist",
+  "empty": "Tu watchlist está vacía",
+  "emptyCta": "Descubrir películas",
+  "pending": "Pendientes",
+  "watched": "Vistas",
+  "all": "Todas",
+  "swipeVista": "Vista",
+  "swipePending": "Pendiente",
+  "swipeRemove": "Quitar",
+  "undo": "Deshacer",
+  "removed": "Eliminada de tu watchlist",
+  "markedWatched": "Marcada como vista",
+  "add": "Agregar a watchlist",
+  "added": "Agregada a tu watchlist",
+  "already": "Ya está en tu watchlist",
+  "swipeHint": "Deslizá a la derecha para marcar vista, a la izquierda para quitar."
+}

@@ -1,0 +1,12 @@
+{
+  "discover": "Discover",
+  "reviewFilms": "Rate movies",
+  "watchlist": "My watchlist",
+  "profile": "Profile",
+  "signIn": "Sign in",
+  "signUp": "Sign up",
+  "logout": "Log out",
+  "language": "Language",
+  "pendingCount_one": "{{count}} pending",
+  "pendingCount_other": "{{count}} pending"
+}

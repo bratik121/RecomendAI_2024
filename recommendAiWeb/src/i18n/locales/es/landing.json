@@ -1,0 +1,20 @@
+{
+  "hero_title": "Tu próxima película favorita <gradient>te espera</gradient>",
+  "hero_subtitle": "What2Watch es tu guía de cine con inteligencia artificial que cura recomendaciones personalizadas. Decile adiós al scroll infinito.",
+  "hero_cta_start": "Empezar a descubrir",
+  "hero_cta_join": "Unite gratis",
+  "hero_cta_see": "Explorar películas",
+  "trending_title": "Tendencias",
+  "trending_now": "ahora",
+  "how_title": "Cómo funciona RecomendAI",
+  "how_subtitle": "Tres pasos para dejar atrás el scroll infinito.",
+  "step1_title": "Calificá películas",
+  "step1_desc": "Marcá lo que te gusta (y lo que no) para que el modelo aprenda tu gusto.",
+  "step2_title": "Recibí recomendaciones",
+  "step2_desc": "Un modelo de Random Forest predice qué películas tienen más chances de gustarte.",
+  "step3_title": "Armá tu watchlist",
+  "step3_desc": "Guardá tus próximas películas y marcalas como vistas cuando las termines.",
+  "cta_title": "Tu próxima película favorita te espera",
+  "cta_desc": "Creá una cuenta gratis y empezá a descubrir cine a tu medida.",
+  "cta_button": "Unite gratis"
+}

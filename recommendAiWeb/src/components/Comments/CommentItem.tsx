@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { FaReply, FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
+import { Heart, Pencil, Reply, Star, Trash2 } from "lucide-react";
 import { IComment } from "@/src/redux/Interfaces";
-import CommentForm from "./CommentForm";
+import { Avatar } from "@/src/components/Avatar";
+import { CommentForm } from "./CommentForm";
+import { cn } from "@/src/lib/utils";
 
 type Props = {
 	comment: IComment;
@@ -13,11 +16,10 @@ type Props = {
 	isReply?: boolean;
 };
 
-const relativeDate = (value: string) => {
+const relativeDate = (value: string, locale: string) => {
 	const date = new Date(value);
 	const seconds = Math.round((date.getTime() - Date.now()) / 1000);
-	const formatter = new Intl.RelativeTimeFormat("es", { numeric: "auto" });
-
+	const formatter = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
 	const units: Array<[Intl.RelativeTimeFormatUnit, number]> = [
 		["year", 60 * 60 * 24 * 365],
 		["month", 60 * 60 * 24 * 30],
@@ -26,38 +28,36 @@ const relativeDate = (value: string) => {
 		["hour", 60 * 60],
 		["minute", 60],
 	];
-
 	for (const [unit, size] of units) {
 		if (Math.abs(seconds) >= size) {
 			return formatter.format(Math.round(seconds / size), unit);
 		}
 	}
-	return "recién";
+	return null;
 };
 
-const Avatar = ({ name }: { name: string }) => (
-	<div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-primary-500/30 bg-primary-500/10 text-sm font-bold text-primary-300">
-		{name.charAt(0).toUpperCase()}
-	</div>
-);
-
-const CommentItem = ({
+export function CommentItem({
 	comment,
 	onReply,
 	onEdit,
 	onDelete,
 	submitting = false,
 	isReply = false,
-}: Props) => {
+}: Props) {
+	const { t, i18n } = useTranslation("comments");
 	const [replying, setReplying] = useState(false);
 	const [editing, setEditing] = useState(false);
 	const fullName = `${comment.user.name} ${comment.user.lastname}`.trim();
+	const relative = relativeDate(comment.created_at, i18n.language);
 
 	const handleDelete = async () => {
 		if (!onDelete) return;
-		if (!window.confirm("¿Querés eliminar este comentario?")) return;
+		if (!window.confirm(t("deleteConfirm"))) return;
 		await onDelete(comment.id);
 	};
+
+	const actionClass =
+		"inline-flex items-center gap-1.5 text-xs font-medium text-text-muted transition-colors hover:text-text-primary";
 
 	return (
 		<motion.article
@@ -65,28 +65,42 @@ const CommentItem = ({
 			initial={{ opacity: 0, y: 8 }}
 			animate={{ opacity: 1, y: 0 }}
 			exit={{ opacity: 0, y: -8 }}
-			className={`rounded-2xl border border-white/10 bg-c_dark_blue-400/40 p-4 ${
-				isReply ? "ml-5 sm:ml-10" : ""
-			}`}
+			className={cn(
+				"rounded-2xl border border-border-subtle bg-surface p-4",
+				isReply && "ml-4 sm:ml-10"
+			)}
 		>
 			<div className="flex items-start gap-3">
-				<Avatar name={comment.user.name || "?"} />
+				<Avatar name={comment.user.name || "?"} src={comment.user.avatar} size={36} />
 
 				<div className="min-w-0 flex-1">
 					<div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-						<span className="text-sm font-semibold text-white">{fullName}</span>
-						<span className="text-xs text-c_gray-900">
-							{relativeDate(comment.created_at)}
+						<span className="text-sm font-semibold text-text-primary">{fullName}</span>
+						<span className="text-xs text-text-muted">
+							{relative || t("justNow")}
 						</span>
 						{comment.is_edited && !comment.is_deleted && (
-							<span className="text-xs text-c_gray-900">· editado</span>
+							<span className="text-xs text-text-muted">· {t("edited")}</span>
+						)}
+					</div>
+
+					<div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+						{comment.author_liked && (
+							<span className="inline-flex items-center gap-1 text-xs font-semibold text-accent">
+								<Heart className="h-3 w-3 fill-current" />
+								{t("likedBadge")}
+							</span>
+						)}
+						{comment.author_rating != null && (
+							<span className="inline-flex items-center gap-1 text-xs font-semibold text-star">
+								<Star className="h-3 w-3 fill-current" />
+								{comment.author_rating}/5
+							</span>
 						)}
 					</div>
 
 					{comment.is_deleted ? (
-						<p className="mt-2 text-sm italic text-c_gray-900">
-							Este comentario fue eliminado.
-						</p>
+						<p className="mt-2 text-sm italic text-text-muted">{t("deleted")}</p>
 					) : editing ? (
 						<div className="mt-3">
 							<CommentForm
@@ -103,41 +117,41 @@ const CommentItem = ({
 							/>
 						</div>
 					) : (
-						<p className="mt-2 whitespace-pre-wrap break-words text-sm leading-relaxed text-c_gray-200">
+						<p className="mt-2 whitespace-pre-wrap break-words text-sm leading-relaxed text-text-secondary">
 							{comment.body}
 						</p>
 					)}
 
 					{!comment.is_deleted && (
-						<div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-medium text-c_gray-500">
+						<div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
 							{onReply && !isReply && (
 								<button
 									type="button"
-									onClick={() => setReplying((value) => !value)}
-									className="inline-flex items-center gap-1.5 transition-colors hover:text-primary-400"
+									onClick={() => setReplying((v) => !v)}
+									className={cn(actionClass, "hover:text-accent")}
 								>
-									<FaReply className="h-3.5 w-3.5" />
-									Responder
+									<Reply className="h-3.5 w-3.5" />
+									{t("reply")}
 								</button>
 							)}
 							{comment.can_edit && onEdit && (
 								<button
 									type="button"
 									onClick={() => setEditing(true)}
-									className="inline-flex items-center gap-1.5 transition-colors hover:text-primary-400"
+									className={cn(actionClass, "hover:text-accent")}
 								>
-									<FaRegEdit className="h-3.5 w-3.5" />
-									Editar
+									<Pencil className="h-3.5 w-3.5" />
+									{t("edit")}
 								</button>
 							)}
 							{comment.can_edit && onDelete && (
 								<button
 									type="button"
 									onClick={handleDelete}
-									className="inline-flex items-center gap-1.5 transition-colors hover:text-red-400"
+									className={cn(actionClass, "hover:text-danger")}
 								>
-									<FaRegTrashAlt className="h-3.5 w-3.5" />
-									Eliminar
+									<Trash2 className="h-3.5 w-3.5" />
+									{t("delete")}
 								</button>
 							)}
 						</div>
@@ -148,7 +162,7 @@ const CommentItem = ({
 			{replying && onReply && (
 				<div className="mt-3 sm:ml-12">
 					<CommentForm
-						placeholder="Escribí una respuesta..."
+						placeholder={t("replyPlaceholder")}
 						onSubmit={async (body) => {
 							const success = await onReply(comment.id, body);
 							if (success) setReplying(false);
@@ -177,6 +191,4 @@ const CommentItem = ({
 			)}
 		</motion.article>
 	);
-};
-
-export default CommentItem;
+}
