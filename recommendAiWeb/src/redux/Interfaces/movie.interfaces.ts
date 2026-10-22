@@ -7,11 +7,17 @@ export interface IMovie {
 	overview: string;
 	genres: string[];
 	liked?: boolean;
+	average_rating?: number | null;
+	ratings_count?: number;
 }
 
 export interface IMovieDetail extends IMovie {
 	popularity: number;
 	revenue: number;
+	average_rating?: number | null;
+	ratings_count?: number;
+	user_rating?: { id: number; score: number } | null;
+	liked?: boolean;
 }
 
 export interface IReview {

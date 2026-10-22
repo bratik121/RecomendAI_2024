@@ -43,6 +43,8 @@ export const user = (
 					name: action.payload.name,
 					lastname: action.payload.lastname,
 					id: action.payload.id,
+					avatar: action.payload.avatar || null,
+					bio: action.payload.bio || "",
 				},
 			};
 		case POST_REGISTER_USER_ERROR:

@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions
 from rest_framework.throttling import ScopedRateThrottle
 
-from .models import Comment, Movie
+from .models import Comment, Interaction, Movie
 from .pagination import CommentPagination
 from .permissions import IsAuthorOrReadOnly
 from .serializers import CommentSerializer
@@ -20,14 +20,26 @@ class CommentListCreateView(generics.ListCreateAPIView):
             self._movie = get_object_or_404(Movie, pk=self.kwargs['movie_id'])
         return self._movie
 
+    def _movie_interaction_prefetch(self):
+        return Prefetch(
+            'user__interactions',
+            queryset=Interaction.objects.filter(movie_id=self.get_movie().id),
+            to_attr='movie_interaction',
+        )
+
     def get_queryset(self):
-        replies = Comment.objects.select_related('user').order_by('created_at')
+        replies = (
+            Comment.objects.select_related('user')
+            .prefetch_related(self._movie_interaction_prefetch())
+            .order_by('created_at')
+        )
         return (
             Comment.objects.filter(
                 movie=self.get_movie(),
                 parent__isnull=True,
             )
             .select_related('user')
+            .prefetch_related(self._movie_interaction_prefetch())
             .prefetch_related(Prefetch('replies', queryset=replies))
             .order_by('-created_at')
         )

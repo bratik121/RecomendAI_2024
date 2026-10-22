@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import F
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
@@ -31,6 +32,8 @@ class User(AbstractBaseUser, models.Model):
     email = models.EmailField(max_length=254, unique=True)
     name = models.CharField(max_length=30)
     lastname = models.CharField(max_length=30)
+    bio = models.TextField(max_length=280, blank=True)
+    avatar = models.ImageField(upload_to='avatars/%Y/%m/', blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
@@ -59,9 +62,18 @@ class Interaction(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='interactions')
     liked = models.BooleanField(default=False)
     seen = models.BooleanField(default=False)
+    rating = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+    )
+    rated_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         unique_together = ('user', 'movie')  # Asegura que la combinación de usuario y película sea única
+        indexes = [
+            models.Index(fields=['movie', 'rating']),
+        ]
 
     def __str__(self):
         return f"{self.user.name} - {self.movie.title}"
@@ -157,3 +169,23 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'{self.user.name} en {self.movie.title}'
+
+
+class WatchlistItem(models.Model):
+    """Película guardada por un usuario para ver más tarde."""
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='watchlist')
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='watchlist_items')
+    watched = models.BooleanField(default=False)
+    watched_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'movie')
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['user', 'watched']),
+        ]
+
+    def __str__(self):
+        return f'{self.user.name} → {self.movie.title}'

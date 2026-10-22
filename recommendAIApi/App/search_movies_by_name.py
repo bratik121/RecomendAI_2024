@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Avg, Count
 from .models import Movie, Interaction
 
 @csrf_exempt
@@ -19,7 +20,10 @@ def search_movies_by_name(request):
     # Case-insensitive search for movies containing the title, ordered by popularity
     queryset = Movie.objects.filter(title__icontains=title)
     total_movies = queryset.count()
-    movies = queryset.order_by('-popularity')[offset:offset+limit]
+    movies = queryset.annotate(
+        average_rating=Avg('interactions__rating'),
+        ratings_count=Count('interactions__rating'),
+    ).order_by('-popularity')[offset:offset+limit]
     total_pages = (total_movies + limit - 1) // limit  
     movies_data =[]
     for movie in movies:
@@ -37,7 +41,9 @@ def search_movies_by_name(request):
             'popularity': movie.popularity,
             'vote_average': movie.vote_average,
             'poster_path': movie.poster_path,
-            'liked': liked
+            'liked': liked,
+            'average_rating': round(float(movie.average_rating), 1) if movie.average_rating is not None else None,
+            'ratings_count': movie.ratings_count,
         })
     return JsonResponse({
         "movies": movies_data,

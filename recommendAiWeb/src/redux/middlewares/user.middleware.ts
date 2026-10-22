@@ -62,6 +62,8 @@ const userSuccess: Middleware =
 				name: action.payload.name,
 				lastname: action.payload.lastname,
 				id: action.payload.id,
+				avatar: action.payload.avatar || null,
+				bio: action.payload.bio || "",
 			};
 
 			storage.set("user", user);
@@ -73,6 +75,8 @@ const userSuccess: Middleware =
 				name: action.payload.name,
 				lastname: action.payload.lastname,
 				id: action.payload.id,
+				avatar: action.payload.avatar || null,
+				bio: action.payload.bio || "",
 			};
 			storage.set("user", user);
 			if (action.payload.token) storage.set("token", action.payload.token);

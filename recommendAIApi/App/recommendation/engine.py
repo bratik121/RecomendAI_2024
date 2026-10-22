@@ -21,10 +21,13 @@ def interaction_fingerprint(user_id: int) -> str:
     interactions = (
         Interaction.objects.filter(user_id=user_id)
         .order_by('movie_id')
-        .values_list('movie_id', 'liked', 'seen')
+        .values_list('movie_id', 'liked', 'seen', 'rating')
     )
-    for movie_id, liked, seen in interactions:
-        digest.update(f'{movie_id}:{int(bool(liked))}:{int(bool(seen))};'.encode())
+    for movie_id, liked, seen, rating in interactions:
+        rating = rating if rating is not None else 0
+        digest.update(
+            f'{movie_id}:{int(bool(liked))}:{int(bool(seen))}:{rating};'.encode()
+        )
     return digest.hexdigest()
 
 
@@ -65,7 +68,7 @@ def compute_recommendations(user_id: int, limit: int = 20) -> list[int]:
 
     interactions = list(
         Interaction.objects.filter(user_id=user_id).values_list(
-            'movie_id', 'liked', 'seen'
+            'movie_id', 'liked', 'seen', 'rating'
         )
     )
 
@@ -76,7 +79,17 @@ def compute_recommendations(user_id: int, limit: int = 20) -> list[int]:
         interaction_ids = [row[0] for row in interactions]
         positions, valid = _positions_for_ids(catalog, interaction_ids)
         liked = np.asarray([row[1] for row in interactions], dtype=np.int8)
-        y[positions] = liked[valid]
+        ratings = [row[3] for row in interactions]
+        labels = np.asarray(
+            [
+                (1 if rating >= 4 else 0 if rating <= 2 else liked[index])
+                if rating is not None
+                else liked[index]
+                for index, rating in enumerate(ratings)
+            ],
+            dtype=np.int8,
+        )
+        y[positions] = labels[valid]
         seen_mask[positions] = True
 
     # Sin historial no hay señal para entrenar: devolvemos las más populares.

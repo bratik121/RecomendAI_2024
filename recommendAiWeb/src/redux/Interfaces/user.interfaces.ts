@@ -4,6 +4,8 @@ export interface Iuser {
 	name: string;
 	lastname: string;
 	id: string;
+	avatar?: string | null;
+	bio?: string;
 }
 
 export interface userState {

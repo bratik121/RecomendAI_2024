@@ -2,6 +2,7 @@ export interface ICommentUser {
 	id: number;
 	name: string;
 	lastname: string;
+	avatar?: string | null;
 }
 
 export interface IComment {
@@ -15,6 +16,8 @@ export interface IComment {
 	user: ICommentUser;
 	parent: number | null;
 	replies?: IComment[];
+	author_liked?: boolean;
+	author_rating?: number | null;
 }
 
 export interface ICommentsResponse {

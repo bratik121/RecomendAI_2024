@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
+import { api } from "@/src/api/client";
 import { IMovieDetail } from "../Interfaces";
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 export const useFetchMovieById = (id?: string) => {
 	const [movie, setMovie] = useState<IMovieDetail | null>(null);
@@ -22,10 +21,8 @@ export const useFetchMovieById = (id?: string) => {
 		setError("");
 		setNotFound(false);
 
-		axios
-			.get<IMovieDetail>(`${API_URL}/movies/${id}/`, {
-				signal: controller.signal,
-			})
+		api
+			.get<IMovieDetail>(`/movies/${id}/`, { signal: controller.signal })
 			.then((response) => setMovie(response.data))
 			.catch((requestError: AxiosError) => {
 				if (requestError.code === "ERR_CANCELED") return;

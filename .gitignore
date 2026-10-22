@@ -44,3 +44,6 @@ recommendAIApi/venv/__pycache__/
 *.pyd
 venv/
 .venv/
+
+# Uploaded media
+recommendAIApi/media/
