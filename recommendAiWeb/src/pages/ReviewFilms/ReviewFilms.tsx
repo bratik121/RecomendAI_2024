@@ -1,25 +1,27 @@
 import { useEffect, useState } from "react";
-import { IReview } from "@/src/redux/Interfaces";
-import { FaHeart, FaTimes } from "react-icons/fa";
-import { Loading, Button } from "@/src/components/common";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "@/src/redux/reducers";
-import { IRate_Movies } from "@/src/redux/Interfaces";
-import { AnimatePresence, motion } from "framer-motion";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { Heart, Sparkles, X } from "lucide-react";
+import { RootState } from "@/src/redux/reducers";
+import { IReview, IRate_Movies } from "@/src/redux/Interfaces";
 import {
 	post10MoviesProcess,
 	postRate10MoviesProcess,
 } from "@/src/redux/actions";
-import SwipeMovieCard from "./SwipeMovieCard";
-import MovieCard from "@/src/components/MovieCard/MovieCard";
+import { SwipeMovieCard } from "./SwipeMovieCard";
+import { MovieCard } from "@/src/components/MovieCard";
+import { Loading } from "@/src/components/Loading";
+import { ErrorState } from "@/src/components/ErrorState";
+import { Button } from "@/src/components/ui/button";
+import { staggerContainer } from "@/src/lib/motion";
 
-function ReviewFilms() {
+export function ReviewFilms() {
 	const [ratedMovies, setRatedMovies] = useState<IReview[]>([]);
 	const [isBatchComplete, setIsBatchComplete] = useState(false);
+	const [index, setIndex] = useState(0);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const [index, setIndex] = useState<number>(0);
 
 	const { user, isAuthenticated } = useSelector(
 		(state: RootState) => state.user
@@ -29,33 +31,15 @@ function ReviewFilms() {
 	);
 
 	useEffect(() => {
-		if (error) {
-			console.error("Error fetching movies:", error);
-			// Aquí puedes manejar el error, por ejemplo, mostrar un mensaje al usuario
-		}
-	}, [error]);
-
-	useEffect(() => {
-		console.log("movies actuales");
-		console.log(movies);
-	}, [movies]);
-
-	useEffect(() => {
-		console.log(isAuthenticated);
-		console.log(user?.id);
-		console.log(isBatchComplete);
-		console.log(movies.length);
-
 		if (
 			isAuthenticated &&
 			user?.id &&
 			!isBatchComplete &&
 			movies.length === 0
 		) {
-			console.log("Trayendo 10 nuevas peliculas");
 			dispatch(post10MoviesProcess(parseInt(user.id)));
 		}
-	}, [user.id, isAuthenticated, dispatch]);
+	}, [user.id, isAuthenticated, isBatchComplete, movies.length, dispatch]);
 
 	const submitBatch = (finalRatedMovies: IReview[]) => {
 		setIsBatchComplete(true);
@@ -63,195 +47,164 @@ function ReviewFilms() {
 			id_user: parseInt(user.id),
 			reviews: finalRatedMovies,
 		};
-		console.log("Enviando batch de peliculas clasificadas");
-		console.log(data);
 		dispatch(postRate10MoviesProcess(data));
 	};
 
-	const handleDisLike = () => {
-		const newRatedMovies = [
-			...ratedMovies,
-			{ id_movie: movies[index].id, like: false },
-		];
-
-		if (index === movies.length - 1) {
-			submitBatch(newRatedMovies);
-		} else {
-			setRatedMovies(newRatedMovies);
-			setIndex(index + 1);
-		}
-	};
-
-	const handleLike = () => {
-		const newRatedMovies = [
-			...ratedMovies,
-			{ id_movie: movies[index].id, like: true },
-		];
-
-		if (index === movies.length - 1) {
-			submitBatch(newRatedMovies);
-		} else {
-			setRatedMovies(newRatedMovies);
+	const rate = (like: boolean) => {
+		const current = movies[index];
+		if (!current) return;
+		const next = [...ratedMovies, { id_movie: current.id, like }];
+		if (index === movies.length - 1) submitBatch(next);
+		else {
+			setRatedMovies(next);
 			setIndex(index + 1);
 		}
 	};
 
 	if (isFetching || !movies || movies.length === 0) {
 		return (
-			<div className="flex min-h-[60vh] justify-center items-center">
-				<Loading />
+			<div className="flex min-h-[60vh] items-center justify-center">
+				<Loading label="Preparando películas..." />
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="mx-auto max-w-xl px-4 py-16">
+				<ErrorState
+					title="No pudimos cargar las películas"
+					description={error}
+					onRetry={() => user?.id && dispatch(post10MoviesProcess(parseInt(user.id)))}
+				/>
 			</div>
 		);
 	}
 
 	if (isBatchComplete) {
 		return (
-			<div className="relative z-40 mx-auto flex min-h-[70vh] w-full max-w-6xl flex-col items-center px-4 py-16 text-center">
+			<div className="mx-auto flex min-h-[70vh] w-full max-w-6xl flex-col items-center px-4 py-16 text-center">
 				<motion.div
 					initial={{ opacity: 0, scale: 0.9, y: 20 }}
 					animate={{ opacity: 1, scale: 1, y: 0 }}
 					transition={{ type: "spring", bounce: 0.35, duration: 0.8 }}
-					className="mb-10 flex max-w-3xl flex-col items-center"
+					className="flex max-w-3xl flex-col items-center"
 				>
-					<div className="mb-6 flex h-28 w-28 items-center justify-center rounded-full border border-primary-500/30 bg-primary-500/10 shadow-[0_0_40px_rgba(9,217,158,0.22)]">
-						<FaHeart className="text-6xl text-primary-500" />
+					<div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-accent-soft text-accent">
+						<Sparkles className="h-9 w-9" />
 					</div>
-
-					<h2 className="mb-4 font-custom text-4xl font-bold tracking-tight text-white md:text-5xl">
-						Your recommendations are ready
+					<h2 className="text-3xl font-extrabold tracking-tight text-text-primary sm:text-4xl">
+						Tus recomendaciones están listas
 					</h2>
-
-					<p className="mb-4 max-w-2xl text-lg leading-relaxed text-c_gray-500 md:text-xl">
-						Based on your latest ratings, RecomendAI has selected a fresh set of
-						movies that better match your taste.
-					</p>
-
-					<p className="max-w-2xl rounded-2xl border border-primary-500/20 bg-primary-500/10 px-5 py-4 text-sm leading-relaxed text-c_gray-300 md:text-base">
-						If these options still don&apos;t convince you, rate another batch
-						to receive 10 fresh recommendations.
+					<p className="mt-4 max-w-2xl text-text-secondary">
+						En base a tus calificaciones, RecomendAI seleccionó un nuevo set de
+						películas que se ajustan a tu gusto.
 					</p>
 				</motion.div>
 
 				<motion.div
-					initial={{ opacity: 0, y: 24 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ delay: 0.15, duration: 0.5 }}
-					className="mb-10 grid w-full grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5"
+					variants={staggerContainer(0.04)}
+					initial="hidden"
+					animate="visible"
+					className="mt-12 grid w-full grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5"
 				>
-					{movies.slice(0, 10).map((movie, movieIndex) => (
-						<motion.article
-							key={movie.id}
-							initial={{ opacity: 0, y: 30 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{
-								delay: movieIndex * 0.04,
-								duration: 0.35,
-							}}
-							whileHover={{ y: -8, scale: 1.02 }}
-						>
-							<MovieCard movie={movie} />
-						</motion.article>
+					{movies.slice(0, 10).map((movie) => (
+						<MovieCard key={movie.id} movie={movie} />
 					))}
 				</motion.div>
 
-				<motion.div
-					initial={{ opacity: 0, y: 16 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ delay: 0.35, duration: 0.4 }}
-					className="flex flex-col items-center justify-center gap-4 sm:flex-row"
-				>
-					<Button text="Discover Movies" onClick={() => navigate("/search")} />
-
+				<div className="mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row">
+					<Button size="lg" onClick={() => navigate("/search")}>
+						Descubrir películas
+					</Button>
 					<Button
-						text="Rate Another Batch"
-						fill={false}
+						size="lg"
+						variant="outline"
 						onClick={() => {
 							setIsBatchComplete(false);
 							setRatedMovies([]);
 							setIndex(0);
-
-							if (user?.id) {
-								dispatch(post10MoviesProcess(parseInt(user.id)));
-							}
+							if (user?.id) dispatch(post10MoviesProcess(parseInt(user.id)));
 						}}
-					/>
-				</motion.div>
+					>
+						Calificar otro lote
+					</Button>
+				</div>
 			</div>
 		);
 	}
 
-	const progressPercentage = ((index + 1) / movies.length) * 100;
+	const progress = ((index + 1) / movies.length) * 100;
 
 	return (
-		<div className="flex flex-col items-center mt-4 gap-y-6 relative z-40 max-w-4xl mx-auto px-4 pb-12">
-			{/* Titulo y subtitulo */}
-			<div className="flex flex-col items-center gap-y-2 mt-4">
-				<h1 className="text-4xl font-bold font-custom text-primary-400 tracking-tight">
-					Review Films
+		<div className="mx-auto flex w-full max-w-4xl flex-col items-center px-4 pb-16 pt-8">
+			<div className="flex flex-col items-center text-center">
+				<h1 className="text-3xl font-extrabold tracking-tight text-text-primary sm:text-4xl">
+					Calificá películas
 				</h1>
-				<p className="text-center text-c_gray-500 max-w-md">
-					Review ten films in order to get better personalized recommendations
+				<p className="mt-2 max-w-md text-text-secondary">
+					Calificá diez películas para recibir recomendaciones personalizadas.
 				</p>
 			</div>
 
-			{/* Progress Bar */}
-			<div className="w-full max-w-sm mt-2">
-				<div className="flex justify-between text-sm text-c_gray-700 mb-2 font-medium">
-					<span>Progress</span>
-					<span>
+			{/* Progress */}
+			<div className="mt-6 w-full max-w-sm">
+				<div className="mb-2 flex justify-between text-sm font-medium text-text-secondary">
+					<span>Progreso</span>
+					<span className="tabular-nums">
 						{index + 1} / {movies.length}
 					</span>
 				</div>
-				<div className="h-2 w-full bg-c_dark_blue-400 rounded-full overflow-hidden border border-white/5">
+				<div className="h-2 w-full overflow-hidden rounded-full bg-surface-elevated">
 					<motion.div
-						initial={{ width: 0 }}
-						animate={{ width: `${progressPercentage}%` }}
-						transition={{ duration: 0.3 }}
-						className="h-full bg-primary-500 rounded-full"
+						initial={false}
+						animate={{ width: `${progress}%` }}
+						transition={{ duration: 0.3, ease: "easeOut" }}
+						className="h-full rounded-full bg-accent"
 					/>
 				</div>
 			</div>
 
-			{/* Clasificador de peliculas */}
-			<div className="flex flex-col gap-y-8 items-center w-full mt-4">
-				{/* Card de la pelicula */}
-				<div className="w-full min-h-125 flex justify-center items-center">
+			<div className="mt-8 flex w-full flex-col items-center gap-8">
+				<div className="flex min-h-[420px] w-full items-center justify-center">
 					<AnimatePresence mode="wait">
 						{movies[index] && (
 							<SwipeMovieCard
 								key={movies[index].id}
 								movie={movies[index]}
-								onLike={handleLike}
-								onDislike={handleDisLike}
+								onLike={() => rate(true)}
+								onDislike={() => rate(false)}
 							/>
 						)}
 					</AnimatePresence>
 				</div>
 
-				{/* Buttons */}
-				<div className="flex gap-x-6">
+				<div className="flex gap-5">
 					<motion.button
-						whileHover={{ scale: 1.1 }}
+						whileHover={{ scale: 1.08 }}
 						whileTap={{ scale: 0.9 }}
-						className="flex items-center justify-center w-16 h-16 rounded-full bg-c_dark_blue-400 border border-red-500/50 shadow-lg hover:bg-red-500/10 hover:border-red-500 transition-colors duration-200"
-						onClick={handleDisLike}
-						title="Dislike"
+						onClick={() => rate(false)}
+						aria-label="No me gusta"
+						className="flex h-16 w-16 items-center justify-center rounded-full border border-danger/40 bg-surface text-danger shadow-card transition-colors hover:bg-danger-soft"
 					>
-						<FaTimes className="text-red-500 text-2xl" />
+						<X className="h-7 w-7" />
 					</motion.button>
 					<motion.button
-						whileHover={{ scale: 1.1 }}
+						whileHover={{ scale: 1.08 }}
 						whileTap={{ scale: 0.9 }}
-						className="flex items-center justify-center w-16 h-16 rounded-full bg-c_dark_blue-400 border border-primary-500/50 shadow-lg hover:bg-primary-500/10 hover:border-primary-500 transition-colors duration-200"
-						onClick={handleLike}
-						title="Like"
+						onClick={() => rate(true)}
+						aria-label="Me gusta"
+						className="flex h-16 w-16 items-center justify-center rounded-full border border-accent/40 bg-surface text-accent shadow-card transition-colors hover:bg-accent-soft"
 					>
-						<FaHeart className="text-2xl text-primary-500" />
+						<Heart className="h-7 w-7 fill-current" />
 					</motion.button>
 				</div>
+
+				<p className="text-sm text-text-muted">
+					Deslizá la tarjeta o usá los botones: derecha = me gusta, izquierda = no me
+					gusta.
+				</p>
 			</div>
 		</div>
 	);
 }
-
-export default ReviewFilms;
