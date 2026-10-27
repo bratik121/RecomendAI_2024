@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary_storage',      # <- debe ir antes de staticfiles si está
+    'cloudinary',              # <- opcional, pero recomendado
     'App.apps.AppAppConfig',
     'rest_framework',
     'rest_framework.authtoken',
@@ -102,8 +104,6 @@ CORS_ALLOWED_ORIGINS = env.list(
     'CORS_ALLOWED_ORIGINS',
     default=['http://localhost:5173', 'http://127.0.0.1:5173'],
 )
-# En desarrollo permitimos cualquier origen para simplificar el flujo local.
-# En producción dejá CORS_ALLOW_ALL_ORIGINS=False y configurá CORS_ALLOWED_ORIGINS.
 CORS_ALLOW_ALL_ORIGINS = env.bool('CORS_ALLOW_ALL_ORIGINS', default=DEBUG)
 
 CSRF_TRUSTED_ORIGINS = env.list(
@@ -176,10 +176,23 @@ def _cloudinary_configured() -> bool:
 try:
     import cloudinary_storage  # noqa: F401
     import cloudinary  # noqa: F401
+    import cloudinary.uploader  # noqa: F401
+    import cloudinary.api  # noqa: F401
 
     CLOUDINARY_AVAILABLE = True
 except ImportError:
     CLOUDINARY_AVAILABLE = False
+
+
+# 👇 AQUÍ ESTÁ EL FIX: configurar el SDK global de Cloudinary
+if CLOUDINARY_AVAILABLE and _cloudinary_configured():
+    cloudinary.config(
+        cloud_name=CLOUDINARY_CLOUD_NAME,
+        api_key=CLOUDINARY_API_KEY,
+        api_secret=CLOUDINARY_API_SECRET,
+        secure=True,
+    )
+
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': CLOUDINARY_CLOUD_NAME,
