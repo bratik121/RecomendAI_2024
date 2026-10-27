@@ -47,3 +47,15 @@ venv/
 
 # Uploaded media
 recommendAIApi/media/
+
+# Environment files (never commit secrets)
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+.env.staging
+recommendAIApi/.env
+recommendAiWeb/.env
+!.env.example
+!**/.env.example

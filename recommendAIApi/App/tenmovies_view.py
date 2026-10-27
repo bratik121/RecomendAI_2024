@@ -18,6 +18,7 @@ def tenmovies(request, idUser):
         Movie.objects
         .exclude(id__in=user_interacted_movie_ids)
         .filter(
+            is_active=True,
             popularity__gt=0,
             vote_average__gt=0
         )

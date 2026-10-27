@@ -9,8 +9,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'name', 'email', 'password', 'lastname', 'bio', 'avatar', 'is_active', 'is_staff']
-        read_only_fields = ['is_active', 'is_staff', 'bio', 'avatar']
+        fields = ['id', 'name', 'email', 'password', 'lastname', 'bio', 'avatar', 'role', 'is_active', 'is_staff']
+        read_only_fields = ['is_active', 'is_staff', 'bio', 'avatar', 'role']
         extra_kwargs = {
             'password': {'write_only': True}  # Esto hace que la contraseña no sea retornada en las respuestas de la API
         }
@@ -193,8 +193,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'name', 'lastname', 'email', 'bio', 'avatar']
-        read_only_fields = ['id', 'email']
+        fields = ['id', 'name', 'lastname', 'email', 'bio', 'avatar', 'role']
+        read_only_fields = ['id', 'email', 'role']
 
     def validate_avatar(self, value):
         if value is None:

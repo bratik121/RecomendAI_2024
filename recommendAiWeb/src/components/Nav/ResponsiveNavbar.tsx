@@ -31,7 +31,12 @@ export function ResponsiveNavbar() {
 		{ to: "/review-films", label: t("reviewFilms"), match: "/review-films", auth: true },
 		{ to: "/watchlist", label: t("watchlist"), match: "/watchlist", auth: true, badge: pendingCount },
 		{ to: "/profile", label: t("profile"), match: "/profile", auth: true },
-	].filter((item) => !item.auth || isAuthenticated);
+		{ to: "/admin", label: t("admin"), match: "/admin", auth: true, admin: true },
+	].filter(
+		(item) =>
+			(!item.auth || isAuthenticated) &&
+			(!("admin" in item && item.admin) || (user.role === "admin" || user.role === "root"))
+	);
 
 	return (
 		<header className="fixed inset-x-0 top-0 z-50 flex h-16 items-center justify-between border-b border-border-subtle bg-background/85 px-4 backdrop-blur-md lg:hidden">

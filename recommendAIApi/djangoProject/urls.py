@@ -31,12 +31,19 @@ from App.movie_views import MovieDetailView
 from App.profile_views import AvatarDeleteView, ProfileView
 from App.rating_views import MovieRatingsView, RatingCreateView, RatingDetailView
 from App.watchlist_views import WatchlistSummaryView, WatchlistViewSet
+from App.admin_views import CommentAdminViewSet, MovieAdminViewSet, UserAdminViewSet
+from App.metrics_views import MetricsOverviewView
 
 from App.views import UserViewSet
 
 route = routers.DefaultRouter()
 
 route.register("User", UserViewSet, basename="User")
+
+admin_route = routers.DefaultRouter()
+admin_route.register("movies", MovieAdminViewSet, basename="admin-movies")
+admin_route.register("users", UserAdminViewSet, basename="admin-users")
+admin_route.register("comments", CommentAdminViewSet, basename="admin-comments")
 
 
 urlpatterns = [
@@ -67,4 +74,6 @@ urlpatterns = [
         WatchlistViewSet.as_view({'patch': 'partial_update', 'delete': 'destroy'}),
         name='watchlist-detail',
     ),
+    path('api/admin/', include(admin_route.urls)),
+    path('api/admin/metrics/overview/', MetricsOverviewView.as_view(), name='admin-metrics-overview'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

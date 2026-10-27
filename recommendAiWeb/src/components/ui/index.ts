@@ -10,3 +10,7 @@ export * from "./tooltip";
 export * from "./label";
 export * from "./form";
 export * from "./sonner";
+export * from "./alert-dialog";
+export * from "./badge";
+export * from "./table";
+export * from "./select";

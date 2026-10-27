@@ -32,6 +32,7 @@ def login_view(request):
                 'lastname': user.lastname,
                 'bio': user.bio,
                 'avatar': request.build_absolute_uri(user.avatar.url) if user.avatar else None,
+                'role': user.role,
                 'token': token.key,
             }, status=200)
         else:

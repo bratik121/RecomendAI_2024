@@ -45,7 +45,18 @@ export function Header() {
 		{ to: "/review-films", label: t("reviewFilms"), match: "/review-films", auth: true },
 		{ to: "/watchlist", label: t("watchlist"), match: "/watchlist", auth: true, badge: pendingCount },
 		{ to: "/profile", label: t("profile"), match: "/profile", auth: true },
-	].filter((item) => !item.auth || isAuthenticated);
+		{
+			to: "/admin",
+			label: t("admin"),
+			match: "/admin",
+			auth: true,
+			admin: true,
+		},
+	].filter(
+		(item) =>
+			(!item.auth || isAuthenticated) &&
+			(!("admin" in item && item.admin) || (user.role === "admin" || user.role === "root"))
+	);
 
 	const handleLogout = () => dispatch(userLogout());
 

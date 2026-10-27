@@ -11,6 +11,7 @@ import watchlist from "./locales/es/watchlist.json";
 import comments from "./locales/es/comments.json";
 import profile from "./locales/es/profile.json";
 import errors from "./locales/es/errors.json";
+import admin from "./locales/es/admin.json";
 
 import commonEn from "./locales/en/common.json";
 import navEn from "./locales/en/nav.json";
@@ -21,9 +22,10 @@ import watchlistEn from "./locales/en/watchlist.json";
 import commentsEn from "./locales/en/comments.json";
 import profileEn from "./locales/en/profile.json";
 import errorsEn from "./locales/en/errors.json";
+import adminEn from "./locales/en/admin.json";
 
 const resources = {
-	es: { common, nav, landing, auth, movie, watchlist, comments, profile, errors },
+	es: { common, nav, landing, auth, movie, watchlist, comments, profile, errors, admin },
 	en: {
 		common: commonEn,
 		nav: navEn,
@@ -34,6 +36,7 @@ const resources = {
 		comments: commentsEn,
 		profile: profileEn,
 		errors: errorsEn,
+		admin: adminEn,
 	},
 } as const;
 

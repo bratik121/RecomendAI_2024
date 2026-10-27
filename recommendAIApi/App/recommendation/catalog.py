@@ -42,7 +42,7 @@ def _normalize_genres(genres) -> list[str]:
 
 def _build_features(catalog_version: int) -> CatalogFeatures:
     rows = list(
-        Movie.objects.order_by('id').values_list(
+        Movie.objects.filter(is_active=True).order_by('id').values_list(
             'id', 'genres', 'popularity', 'vote_average', 'revenue'
         )
     )

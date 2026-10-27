@@ -8,6 +8,7 @@ import type watchlist from "./locales/es/watchlist.json";
 import type comments from "./locales/es/comments.json";
 import type profile from "./locales/es/profile.json";
 import type errors from "./locales/es/errors.json";
+import type admin from "./locales/es/admin.json";
 
 declare module "react-i18next" {
 	interface CustomTypeOptions {
@@ -22,6 +23,7 @@ declare module "react-i18next" {
 			comments: typeof comments;
 			profile: typeof profile;
 			errors: typeof errors;
+			admin: typeof admin;
 		};
 	}
 }

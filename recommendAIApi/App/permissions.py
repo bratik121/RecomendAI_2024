@@ -12,3 +12,31 @@ class IsAuthorOrReadOnly(permissions.BasePermission):
             and request.user.is_authenticated
             and obj.user_id == request.user.id
         )
+
+
+class IsAppAdmin(permissions.BasePermission):
+    """Permite el acceso solo a usuarios autenticados con rol admin o root."""
+
+    message = 'Se requiere un usuario administrador.'
+
+    def has_permission(self, request, view):
+        return bool(
+            request.user
+            and request.user.is_authenticated
+            and request.user.is_active
+            and getattr(request.user, 'is_admin', False)
+        )
+
+
+class IsRoot(permissions.BasePermission):
+    """Permite el acceso solo a usuarios autenticados con rol root."""
+
+    message = 'Se requiere un usuario root.'
+
+    def has_permission(self, request, view):
+        return bool(
+            request.user
+            and request.user.is_authenticated
+            and request.user.is_active
+            and getattr(request.user, 'is_root', False)
+        )

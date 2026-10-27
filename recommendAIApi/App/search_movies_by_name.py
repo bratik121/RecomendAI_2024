@@ -18,7 +18,7 @@ def search_movies_by_name(request):
         return JsonResponse({'error': 'No title provided'}, status=400)
     
     # Case-insensitive search for movies containing the title, ordered by popularity
-    queryset = Movie.objects.filter(title__icontains=title)
+    queryset = Movie.objects.filter(title__icontains=title, is_active=True)
     total_movies = queryset.count()
     movies = queryset.annotate(
         average_rating=Avg('interactions__rating'),

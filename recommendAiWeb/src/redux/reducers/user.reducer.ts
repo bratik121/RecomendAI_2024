@@ -45,6 +45,7 @@ export const user = (
 					id: action.payload.id,
 					avatar: action.payload.avatar || null,
 					bio: action.payload.bio || "",
+					role: action.payload.role || "user",
 				},
 			};
 		case POST_REGISTER_USER_ERROR:

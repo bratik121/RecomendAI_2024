@@ -31,7 +31,7 @@ def recommend_movies(request, idUser):
         movie_ids, cache_hit = get_recommendations(idUser)
         movies_by_id = {
             movie.id: movie
-            for movie in Movie.objects.filter(id__in=movie_ids).annotate(
+            for movie in Movie.objects.filter(id__in=movie_ids, is_active=True).annotate(
                 average_rating=Avg('interactions__rating'),
                 ratings_count=Count('interactions__rating'),
             )

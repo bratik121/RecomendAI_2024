@@ -41,6 +41,7 @@ export const useProfile = () => {
 				id: String(response.data.id),
 				avatar: response.data.avatar || null,
 				bio: response.data.bio || "",
+				role: response.data.role || "user",
 			};
 			storage.set("user", updated);
 			dispatch(setUserFromStorage(updated));
@@ -70,6 +71,7 @@ export const useProfile = () => {
 				id: String(response.data.id),
 				avatar: response.data.avatar || null,
 				bio: response.data.bio || "",
+				role: response.data.role || "user",
 			};
 			storage.set("user", updated);
 			dispatch(setUserFromStorage(updated));

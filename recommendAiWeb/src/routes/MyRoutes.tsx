@@ -2,6 +2,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Landingpage, MovieDetail, Sign, ReviewFilms, Searchpage, WatchlistPage, ProfilePage, NotFound } from "../pages";
 import ProtectedRoutes from "../components/protectedRoutes/protectedRoutes";
+import AdminRoute from "../components/admin/AdminRoute";
+import { AdminLayout } from "../components/admin/AdminLayout";
+import { MetricsDashboard, MoviesPage, UsersPage, CommentsPage } from "../pages/Admin";
 import { pageTransition } from "@/src/lib/motion";
 
 type Props = {
@@ -32,6 +35,15 @@ const MyRoutes = ({ isAuthenticated }: Props) => {
 					<Route path="/review-films" element={<PageTransition><ReviewFilms /></PageTransition>} />
 					<Route path="/watchlist" element={<PageTransition><WatchlistPage /></PageTransition>} />
 					<Route path="/profile" element={<PageTransition><ProfilePage /></PageTransition>} />
+				</Route>
+
+				<Route element={<AdminRoute />}>
+					<Route path="/admin" element={<AdminLayout />}>
+						<Route index element={<MetricsDashboard />} />
+						<Route path="movies" element={<MoviesPage />} />
+						<Route path="users" element={<UsersPage />} />
+						<Route path="comments" element={<CommentsPage />} />
+					</Route>
 				</Route>
 
 				<Route path="*" element={<PageTransition><NotFound /></PageTransition>} />

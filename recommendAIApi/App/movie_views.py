@@ -11,7 +11,7 @@ class MovieDetailView(generics.RetrieveAPIView):
     permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
-        return Movie.objects.annotate(
+        return Movie.objects.filter(is_active=True).annotate(
             average_rating=Avg('interactions__rating'),
             ratings_count=Count('interactions__rating'),
         )

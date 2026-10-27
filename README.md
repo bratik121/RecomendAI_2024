@@ -320,8 +320,14 @@ python -m venv venv
 # Install dependencies
 pip install -r requirements.txt
 
+# Configure environment variables
+copy .env.example .env   # luego editá .env con tus valores reales
+
 # Run migrations
 python manage.py migrate
+
+# Create the first root admin
+python manage.py createsuperuser
 
 # Optional: load initial movie data
 python manage.py load_movies path\to\movies.csv
@@ -344,6 +350,9 @@ cd ../recommendAiWeb
 # Install dependencies
 npm install
 
+# Configure environment variables
+copy .env.example .env   # luego editá .env con tus valores reales
+
 # Start Vite development server
 npm run dev
 ```
@@ -353,6 +362,20 @@ Vite usually runs at:
 ```text
 http://localhost:5173/
 ```
+
+### Environment variables
+
+Cada proyecto expone un `.env.example` (versionado) con todas las variables
+documentadas. Copialo a `.env` (que **nunca** se versiona) y completá los
+valores reales:
+
+- `recommendAIApi/.env.example` → Django core, database (`DATABASE_URL`),
+  hosts/CORS/CSRF, credenciales de Cloudinary, email y `FRONTEND_URL`.
+- `recommendAiWeb/.env.example` → `VITE_API_URL` (solo variables `VITE_*` se
+  exponen al cliente; no pongas secretos ahí).
+
+Si falta una variable requerida, el backend falla al arrancar con un mensaje
+claro en lugar de continuar con valores inseguros.
 
 ---
 
@@ -373,6 +396,39 @@ http://localhost:5173/
 
 Authenticated write endpoints expect `Authorization: Token <token>`. The token is returned by
 `/api/auth/login` and `/api/User/` on registration.
+
+### Roles
+
+The application has three roles:
+
+| Role | Capabilities |
+|---|---|
+| `root` | Full access: manages users, movies, comments and can activate/deactivate and promote other admins. |
+| `admin` | Manages regular users, movies and comments. Cannot modify other admins or root users. |
+| `user` | Regular user: search, recommendations, ratings, watchlist and own comments. |
+
+- Self-registration always creates `role="user"`.
+- No one can deactivate themselves, remove their own role, or demote/deactivate the last active `root`.
+- Create the first root with `python manage.py createsuperuser`, or change a role with
+  `python manage.py setrole email@example.com root|admin|user`.
+
+### Admin API (requires `admin` or `root`)
+
+| Endpoint | Method | Description |
+|---|---|---|
+| `/api/admin/movies/` | `GET` / `POST` | List (search/filter/paginate) or create movies |
+| `/api/admin/movies/<id>/` | `GET` / `PATCH` / `DELETE` | Retrieve, update or archive (soft delete) a movie |
+| `/api/admin/movies/<id>/restore/` | `POST` | Restore an archived movie |
+| `/api/admin/users/` | `GET` / `POST` | List (search/filter/paginate) or create users |
+| `/api/admin/users/<id>/` | `GET` / `PATCH` / `DELETE` | Retrieve, update or deactivate a user |
+| `/api/admin/users/<id>/activate/` | `POST` | Reactivate a user |
+| `/api/admin/users/<id>/set_role/` | `POST` | Change a user's role (root only) |
+| `/api/admin/comments/` | `GET` | List comments (search/filter/paginate) |
+| `/api/admin/comments/<id>/moderate/` | `POST` | Soft-delete a comment |
+| `/api/admin/metrics/overview/?range=7d\|30d\|90d\|all` | `GET` | Aggregated metrics (KPIs and time series) |
+
+Movies are archived (not deleted) via `is_active`; users are deactivated via `is_active`.
+
 
 ### Recommendation performance
 

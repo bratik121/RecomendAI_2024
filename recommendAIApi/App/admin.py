@@ -5,13 +5,15 @@ from .models import CatalogState, Comment, Interaction, Movie, RecommendationCac
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'email', 'name', 'lastname', 'is_active', 'is_staff')
+    list_display = ('id', 'email', 'name', 'lastname', 'role', 'is_active', 'is_staff')
+    list_filter = ('role', 'is_active', 'is_staff')
     search_fields = ('email', 'name', 'lastname')
 
 
 @admin.register(Movie)
 class MovieAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'release_year', 'vote_average', 'popularity')
+    list_display = ('id', 'title', 'release_year', 'vote_average', 'popularity', 'is_active')
+    list_filter = ('is_active',)
     search_fields = ('title',)
 
 

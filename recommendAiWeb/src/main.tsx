@@ -7,6 +7,8 @@ import { store } from "./redux/store";
 import "./i18n";
 import "./index.css";
 
+const USER_URL = `${import.meta.env.VITE_API_URL}/User/`;
+console.log("USER_URL:", USER_URL);
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 	<React.StrictMode>
 		<Provider store={store}>
