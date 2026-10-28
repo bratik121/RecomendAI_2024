@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -23,6 +23,14 @@ export function ProfilePage() {
 	const [localError, setLocalError] = useState("");
 	const fileRef = useRef<HTMLInputElement>(null);
 
+	useEffect(() => {
+		return () => {
+			if (preview) {
+				URL.revokeObjectURL(preview);
+			}
+		};
+	}, [preview]);
+
 	const handleFile = (file?: File) => {
 		setLocalError("");
 		if (!file) return;
@@ -39,7 +47,12 @@ export function ProfilePage() {
 	};
 
 	const handleSave = async () => {
-		const success = await updateProfile({ name, lastname, bio, avatar: avatarFile });
+		const success = await updateProfile({
+			name,
+			lastname,
+			bio,
+			avatar: avatarFile,
+		});
 		if (success) {
 			toast.success(t("saved"));
 			setAvatarFile(null);
@@ -80,12 +93,19 @@ export function ProfilePage() {
 							onChange={(e) => handleFile(e.target.files?.[0])}
 						/>
 						<div className="flex gap-2">
-							<Button variant="outline" onClick={() => fileRef.current?.click()}>
+							<Button
+								variant="outline"
+								onClick={() => fileRef.current?.click()}
+							>
 								<Camera className="h-4 w-4" />
 								{t("upload")}
 							</Button>
 							{user.avatar && (
-								<Button variant="ghost" onClick={handleRemove} className="text-danger hover:text-danger">
+								<Button
+									variant="ghost"
+									onClick={handleRemove}
+									className="text-danger hover:text-danger"
+								>
 									<Trash2 className="h-4 w-4" />
 									{t("remove")}
 								</Button>
@@ -98,7 +118,11 @@ export function ProfilePage() {
 					<div className="grid gap-4 sm:grid-cols-2">
 						<div className="space-y-1.5">
 							<Label htmlFor="name">{t("name")}</Label>
-							<Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
+							<Input
+								id="name"
+								value={name}
+								onChange={(e) => setName(e.target.value)}
+							/>
 						</div>
 						<div className="space-y-1.5">
 							<Label htmlFor="lastname">{t("lastname")}</Label>
