@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { motion, useMotionValue, useTransform, type PanInfo } from "framer-motion";
+import {
+	motion,
+	useMotionValue,
+	useTransform,
+	type PanInfo,
+} from "framer-motion";
 import { Check, ChevronRight, Trash2 } from "lucide-react";
 import { IWatchlistItem } from "@/src/redux/Interfaces";
 import { getPosterUrl } from "@/src/utils";
@@ -24,9 +29,7 @@ export function WatchlistRow({ item, onWatched, onRemove }: Props) {
 	const [exitX, setExitX] = useState(0);
 
 	const seenOpacity = useTransform(x, [0, THRESHOLD], [0, 1]);
-	const seenScale = useTransform(x, [0, THRESHOLD], [0.6, 1]);
 	const removeOpacity = useTransform(x, [-THRESHOLD, 0], [1, 0]);
-	const removeScale = useTransform(x, [-THRESHOLD, 0], [0.6, 1]);
 
 	const handleDragEnd = (_: unknown, info: PanInfo) => {
 		if (info.offset.x > THRESHOLD || info.velocity.x > 600) {
@@ -52,20 +55,24 @@ export function WatchlistRow({ item, onWatched, onRemove }: Props) {
 			className="relative overflow-hidden rounded-2xl border border-border-subtle"
 		>
 			{/* Reveal background: left = remove (danger), right = watched (accent) */}
+			{/* Fondo revelado */}
 			<div className="absolute inset-0 flex">
+				{/* Lado IZQUIERDO → se revela al arrastrar a la DERECHA → "Vista" (verde) */}
 				<motion.div
-					style={{ opacity: removeOpacity, scale: removeScale }}
-					className="flex flex-1 items-center justify-end gap-2 bg-danger px-6 text-white"
-				>
-					<Trash2 className="h-5 w-5" />
-					<span className="text-sm font-semibold">Quitar</span>
-				</motion.div>
-				<motion.div
-					style={{ opacity: seenOpacity, scale: seenScale }}
+					style={{ opacity: seenOpacity }}
 					className="flex flex-1 items-center justify-start gap-2 bg-accent px-6 text-accent-foreground"
 				>
-					<Check className="h-5 w-5" strokeWidth={3} />
-					<span className="text-sm font-semibold">Vista</span>
+					<Check className="h-6 w-6" strokeWidth={3} />
+					<span className="text-sm font-bold">Vista</span>
+				</motion.div>
+
+				{/* Lado DERECHO → se revela al arrastrar a la IZQUIERDA → "Quitar" (rojo) */}
+				<motion.div
+					style={{ opacity: removeOpacity }}
+					className="flex flex-1 items-center justify-end gap-2 bg-danger px-6 text-white"
+				>
+					<span className="text-sm font-bold">Quitar</span>
+					<Trash2 className="h-6 w-6" strokeWidth={2.5} />
 				</motion.div>
 			</div>
 
@@ -97,7 +104,9 @@ export function WatchlistRow({ item, onWatched, onRemove }: Props) {
 					</Link>
 					<p className="mt-0.5 text-xs text-text-muted">
 						{item.movie.release_year || "—"}
-						{item.movie.genres?.length ? ` · ${item.movie.genres.slice(0, 2).join(", ")}` : ""}
+						{item.movie.genres?.length
+							? ` · ${item.movie.genres.slice(0, 2).join(", ")}`
+							: ""}
 					</p>
 				</div>
 
