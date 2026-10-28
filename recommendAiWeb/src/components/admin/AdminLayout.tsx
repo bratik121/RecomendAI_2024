@@ -1,11 +1,14 @@
-import { useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { useState, Fragment } from "react";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { BarChart3, Film, Menu, MessageSquare, Users, X } from "lucide-react";
 import { cn } from "@/src/lib/utils";
 import { RootState } from "@/src/redux/reducers";
 import { Avatar } from "@/src/components/Avatar";
+import logo from "@/src/assets/logo-removebg-preview.png";
+import { ThemeToggle } from "../ThemeToggle";
+import { LanguageSwitcher } from "../LanguageSwitcher";
 
 const items = [
 	{ to: "/admin", label: "metrics", icon: BarChart3, end: true },
@@ -47,15 +50,27 @@ export function AdminLayout() {
 	const [open, setOpen] = useState(false);
 
 	return (
-		<div className="flex min-h-screen w-full bg-background">
+		<div className="flex min-h-screen w-full bg-background max-h-screen">
 			{/* Sidebar desktop */}
-			<aside className="sticky top-0 hidden h-screen w-64 shrink-0 border-r border-border-subtle bg-surface lg:block">
-				<div className="flex h-16 items-center gap-2 border-b border-border-subtle px-5">
-					<span className="text-lg font-extrabold text-text-primary">
-						{t("title")}
-					</span>
+			<aside className=" top-0 hidden h-screen w-64 shrink-0 border-r border-border-subtle bg-surface lg:block justify-between">
+				<div className="h-full w-full flex flex-col justify-between">
+					<div className="">
+						<div className="flex h-16 items-center gap-2 border-b border-border-subtle px-5">
+							<span className="text-lg font-extrabold text-text-primary">
+								{t("title")}
+							</span>
+						</div>
+						<SidebarContent />
+					</div>
+					<div className="flex h-16 items-center gap-2 border-t border-border-subtle px-5">
+						<Link to="/" className="group flex items-center gap-2">
+							<img src={logo} alt="" className="h-9 w-9 object-contain" />
+							<span className="text-lg font-extrabold tracking-tight text-text-primary transition-colors group-hover:text-accent">
+								What2Watch
+							</span>
+						</Link>
+					</div>
 				</div>
-				<SidebarContent />
 			</aside>
 
 			{/* Sidebar mobile */}
@@ -100,6 +115,8 @@ export function AdminLayout() {
 						{t("subtitle")}
 					</span>
 					<div className="flex items-center gap-2">
+						<ThemeToggle />
+						<LanguageSwitcher />
 						<span className="hidden text-sm font-medium text-text-secondary sm:inline">
 							{user.name} {user.lastname}
 						</span>
@@ -111,7 +128,7 @@ export function AdminLayout() {
 					</div>
 				</header>
 
-				<main className="flex-1 p-4 sm:p-6">
+				<main className="flex-1 p-4 sm:p-6 overflow-y-scroll">
 					<Outlet />
 				</main>
 			</div>

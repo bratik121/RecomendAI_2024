@@ -7,7 +7,7 @@
 
 		/* Bundler mode */
 		//Lo pase de Bundler a Node //? Para slider
-		"moduleResolution": "Node",
+		"moduleResolution": "bundler",
 		//esmoduleinterop lo pase a true para que no me de error en la importacion de modulos //? Para slider
 		"esModuleInterop": true,
 		"allowImportingTsExtensions": true,
@@ -21,7 +21,6 @@
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true,
-
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./*"]
