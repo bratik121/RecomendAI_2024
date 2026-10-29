@@ -12,7 +12,11 @@ import {
 	Star,
 	type LucideIcon,
 } from "lucide-react";
-import { achievementsApi, AchievementItem, RankInfo } from "@/src/api/achievements";
+import {
+	achievementsApi,
+	AchievementItem,
+	RankInfo,
+} from "@/src/api/achievements";
 import { Loading } from "@/src/components/Loading";
 import { EmptyState } from "@/src/components/EmptyState";
 import { Button } from "@/src/components/ui/button";
@@ -32,10 +36,22 @@ const ICONS: Record<string, LucideIcon> = {
 /** Fondo/texto del rango según el token devuelto por el backend. */
 const RANK_STYLES: Record<string, { bg: string; fg: string }> = {
 	"rank-novato": { bg: "var(--rank-novato-bg)", fg: "var(--rank-novato-fg)" },
-	"rank-explorador": { bg: "var(--rank-explorador-bg)", fg: "var(--rank-explorador-fg)" },
-	"rank-cinefilo": { bg: "var(--rank-cinefilo-bg)", fg: "var(--rank-cinefilo-fg)" },
-	"rank-critico": { bg: "var(--rank-critico-bg)", fg: "var(--rank-critico-fg)" },
-	"rank-maestro": { bg: "var(--rank-maestro-bg)", fg: "var(--rank-maestro-fg)" },
+	"rank-explorador": {
+		bg: "var(--rank-explorador-bg)",
+		fg: "var(--rank-explorador-fg)",
+	},
+	"rank-cinefilo": {
+		bg: "var(--rank-cinefilo-bg)",
+		fg: "var(--rank-cinefilo-fg)",
+	},
+	"rank-critico": {
+		bg: "var(--rank-critico-bg)",
+		fg: "var(--rank-critico-fg)",
+	},
+	"rank-maestro": {
+		bg: "var(--rank-maestro-bg)",
+		fg: "var(--rank-maestro-fg)",
+	},
 };
 
 function rankStyle(color: string) {
@@ -62,7 +78,9 @@ function AchievementCard({ item }: { item: AchievementItem }) {
 				<span
 					className={cn(
 						"flex h-10 w-10 items-center justify-center rounded-xl",
-						unlocked ? "bg-accent text-accent-foreground" : "bg-surface-elevated text-text-muted"
+						unlocked
+							? "bg-accent text-accent-foreground"
+							: "bg-surface-elevated text-text-muted"
 					)}
 				>
 					<Icon className="h-5 w-5" />
@@ -84,7 +102,12 @@ function AchievementCard({ item }: { item: AchievementItem }) {
 
 			<div className="mt-auto">
 				<div className="mb-1 flex items-center justify-between text-[11px] text-text-muted">
-					<span>{t("progressLabel", { progress: item.progress, target: item.target })}</span>
+					<span>
+						{t("progressLabel", {
+							progress: item.progress,
+							target: item.target,
+						})}
+					</span>
 					{!unlocked && <Lock className="h-3 w-3" />}
 				</div>
 				<div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-elevated">
@@ -129,10 +152,13 @@ export function AchievementsPage() {
 
 	const rank = data.rank as RankInfo;
 	const style = rankStyle(rank.color);
-	const nextPct = rank.next_threshold
-		? Math.min(100, Math.round((rank.progress / rank.next_threshold) * 100))
-		: 100;
+	// const nextPct = rank.next_threshold
+	// 	? Math.min(100, Math.round((rank.progress / rank.next_threshold) * 100))
+	// 	: 100;
 
+	const nextPct = 200;
+
+	console.log("nextPct", nextPct);
 	return (
 		<div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
 			<motion.div variants={fadeUp} initial="hidden" animate="visible">
@@ -161,26 +187,31 @@ export function AchievementsPage() {
 							<p className="text-xs font-semibold uppercase tracking-[0.14em] text-text-muted">
 								{t("rankTitle")}
 							</p>
-							<p className="text-2xl font-extrabold" style={{ color: style.fg }}>
+							<p
+								className="text-2xl font-extrabold"
+								style={{ color: style.fg }}
+							>
 								{rank.label}
 							</p>
 						</div>
 					</div>
 					<div className="text-left sm:text-right">
 						<p className="text-sm font-semibold text-text-primary">
-							{t("unlockedCount", { count: data.unlocked_count, total: data.total_count })}
+							{t("unlockedCount", {
+								count: data.unlocked_count,
+								total: data.total_count,
+							})}
 						</p>
 						<p className="text-xs text-text-muted">
 							{rank.next_threshold
 								? t("progressToNext", {
 										count: rank.next_threshold - rank.progress,
 										rank: rank.next_label,
-								  })
+									})
 								: t("maxRank")}
 						</p>
 					</div>
 				</div>
-
 				<div className="mt-6">
 					<div className="h-2.5 w-full overflow-hidden rounded-full bg-surface-elevated">
 						<motion.div
@@ -205,15 +236,23 @@ export function AchievementsPage() {
 				animate="visible"
 				className="mt-6 rounded-2xl border border-border-subtle bg-surface-elevated/40 p-5"
 			>
-				<h2 className="text-sm font-bold text-text-primary">{t("howItWorksTitle")}</h2>
-				<p className="mt-1 text-sm text-text-secondary">{t("howItWorksBody")}</p>
+				<h2 className="text-sm font-bold text-text-primary">
+					{t("howItWorksTitle")}
+				</h2>
+				<p className="mt-1 text-sm text-text-secondary">
+					{t("howItWorksBody")}
+				</p>
 			</motion.section>
 
 			{/* Lista de logros agrupados por categoría */}
 			{(() => {
-				const categories = Array.from(new Set(data.achievements.map((a) => a.category)));
+				const categories = Array.from(
+					new Set(data.achievements.map((a) => a.category))
+				);
 				return categories.map((category) => {
-					const items = data.achievements.filter((a) => a.category === category);
+					const items = data.achievements.filter(
+						(a) => a.category === category
+					);
 					const label = t(`categories.${category}`, { defaultValue: category });
 					return (
 						<motion.section
@@ -223,7 +262,9 @@ export function AchievementsPage() {
 							animate="visible"
 							className="mt-8"
 						>
-							<h2 className="mb-3 text-lg font-bold text-text-primary">{label}</h2>
+							<h2 className="mb-3 text-lg font-bold text-text-primary">
+								{label}
+							</h2>
 							<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
 								{items.map((item) => (
 									<AchievementCard key={item.key} item={item} />

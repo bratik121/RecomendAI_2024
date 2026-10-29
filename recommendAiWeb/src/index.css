@@ -47,6 +47,18 @@
 	/* Star / rating */
 	--star: #d97706;
 
+	/* Ranks (Achievements) — texto + fondo con contraste AA en claro */
+	--rank-novato-fg: #475569;
+	--rank-novato-bg: #e2e8f0;
+	--rank-explorador-fg: #047857;
+	--rank-explorador-bg: #d1fae5;
+	--rank-cinefilo-fg: #1d4ed8;
+	--rank-cinefilo-bg: #dbeafe;
+	--rank-critico-fg: #7e22ce;
+	--rank-critico-bg: #f3e8ff;
+	--rank-maestro-fg: #b45309;
+	--rank-maestro-bg: #fef3c7;
+
 	/* Focus ring */
 	--ring: #0c8a68;
 }
@@ -76,6 +88,18 @@
 
 	--star: #fbbf24;
 
+	/* Ranks (Achievements) — texto + fondo con contraste AA en oscuro */
+	--rank-novato-fg: #cbd5e1;
+	--rank-novato-bg: #1e293b;
+	--rank-explorador-fg: #6ee7b7;
+	--rank-explorador-bg: #064e3b;
+	--rank-cinefilo-fg: #93c5fd;
+	--rank-cinefilo-bg: #1e3a8a;
+	--rank-critico-fg: #d8b4fe;
+	--rank-critico-bg: #4c1d95;
+	--rank-maestro-fg: #fcd34d;
+	--rank-maestro-bg: #78350f;
+
 	--ring: #17d6a2;
 }
 
@@ -104,6 +128,17 @@
 
 	--color-star: var(--star);
 	--color-ring: var(--ring);
+
+	--color-rank-novato-fg: var(--rank-novato-fg);
+	--color-rank-novato-bg: var(--rank-novato-bg);
+	--color-rank-explorador-fg: var(--rank-explorador-fg);
+	--color-rank-explorador-bg: var(--rank-explorador-bg);
+	--color-rank-cinefilo-fg: var(--rank-cinefilo-fg);
+	--color-rank-cinefilo-bg: var(--rank-cinefilo-bg);
+	--color-rank-critico-fg: var(--rank-critico-fg);
+	--color-rank-critico-bg: var(--rank-critico-bg);
+	--color-rank-maestro-fg: var(--rank-maestro-fg);
+	--color-rank-maestro-bg: var(--rank-maestro-bg);
 
 	--font-sans:
 		"Outfit", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
@@ -189,4 +224,26 @@
 [data-slot="select-item"][data-highlighted] {
 	color: var(--accent) !important;
 	background-color: var(--accent-soft) !important;
+}
+
+/* ============================================================
+   Toasts (Sonner): iconos por variante semántica
+   ============================================================ */
+[data-sonner-toast][data-type="success"] [data-icon] {
+	color: #16a34a;
+}
+[data-sonner-toast][data-type="error"] [data-icon] {
+	color: var(--danger);
+}
+[data-sonner-toast][data-type="info"] [data-icon] {
+	color: var(--accent);
+}
+[data-sonner-toast][data-type="warning"] [data-icon] {
+	color: #d97706;
+}
+.dark [data-sonner-toast][data-type="success"] [data-icon] {
+	color: #4ade80;
+}
+.dark [data-sonner-toast][data-type="warning"] [data-icon] {
+	color: #fbbf24;
 }
