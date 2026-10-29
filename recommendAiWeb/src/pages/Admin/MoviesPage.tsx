@@ -39,14 +39,6 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/src/components/ui/table";
-import {
-	Select,
-	SelectContent,
-	SelectGroup,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
 
 type MovieFormState = {
 	title: string;
@@ -195,6 +187,14 @@ export default function MoviesPage() {
 		(key: keyof MovieFormState) => (e: React.ChangeEvent<HTMLInputElement>) =>
 			setForm((prev) => ({ ...prev, [key]: e.target.value }));
 
+	const options = () => {
+		return [
+			{ value: "all", label: t("movies.all") },
+			{ value: "active", label: t("movies.active") },
+			{ value: "archived", label: t("movies.archived") },
+		];
+	};
+
 	return (
 		<div className="space-y-5">
 			<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -219,28 +219,7 @@ export default function MoviesPage() {
 						className="pl-9"
 					/>
 				</div>
-				<div className="w-full sm:w-44">
-					<Select
-						value={status}
-						onValueChange={(e) => {
-							if (e) {
-								setStatus(e);
-								setPage(1);
-							}
-						}}
-					>
-						<SelectTrigger className="">
-							<SelectValue placeholder="Theme" />
-						</SelectTrigger>
-						<SelectContent>
-							<SelectGroup>
-								<SelectItem value="all">{t("movies.all")}</SelectItem>
-								<SelectItem value="active">{t("movies.active")}</SelectItem>
-								<SelectItem value="archived">{t("movies.archived")}</SelectItem>
-							</SelectGroup>
-						</SelectContent>
-					</Select>
-				</div>
+				<div className="w-full sm:w-44"></div>
 			</div>
 
 			{error && <p className="text-sm text-danger">{error}</p>}
