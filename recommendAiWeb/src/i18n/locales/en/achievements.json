@@ -1,0 +1,21 @@
+{
+  "title": "Achievements",
+  "subtitle": "Unlock achievements by rating, commenting and using the app.",
+  "rankTitle": "Your rank",
+  "progressToNext": "{{count}} achievements to {{rank}}",
+  "maxRank": "You reached the top rank",
+  "unlockedCount": "{{count}} of {{total}} achievements",
+  "howItWorksTitle": "How does it work?",
+  "howItWorksBody": "Each achievement unlocks when you hit a milestone. As you collect achievements you rank up: Rookie, Explorer, Cinephile, Critic and Master.",
+  "locked": "Locked",
+  "unlocked": "Unlocked",
+  "progressLabel": "{{progress}} of {{target}}",
+  "categories": {
+    "ratings": "Ratings",
+    "comments": "Comments",
+    "watchlist": "Watchlist",
+    "chat": "Chat",
+    "seen": "Seen",
+    "likes": "Likes"
+  }
+}

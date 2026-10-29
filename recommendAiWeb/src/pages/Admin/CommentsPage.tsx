@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
+import { toast } from "@/src/lib/toast";
 import { Search, Trash2 } from "lucide-react";
 import { adminApi, adminErrorMessage, AdminComment, Paginated } from "@/src/api/admin";
 import { Button } from "@/src/components/ui/button";

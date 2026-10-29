@@ -10,3 +10,5 @@ Pillow
 django-environ
 cloudinary
 django-cloudinary-storage
+google-genai
+redis

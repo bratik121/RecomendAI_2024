@@ -7,6 +7,7 @@ from .models import Comment, Interaction, Movie
 from .pagination import CommentPagination
 from .permissions import IsAuthorOrReadOnly
 from .serializers import CommentSerializer
+from .achievement_service import evaluate_achievements
 
 
 class CommentListCreateView(generics.ListCreateAPIView):
@@ -56,6 +57,7 @@ class CommentListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user, movie=self.get_movie())
+        evaluate_achievements(self.request.user.id)
 
 
 class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):

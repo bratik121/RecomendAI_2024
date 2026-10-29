@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
 import {
 	Area,
 	AreaChart,
@@ -21,32 +22,30 @@ import { Select } from "@/src/components/ui/select";
 import { Skeleton } from "@/src/components/ui/skeleton";
 import { EmptyState } from "@/src/components/EmptyState";
 import { adminApi, adminErrorMessage, MetricsOverview } from "@/src/api/admin";
-import { toast } from "sonner";
+import { toast } from "@/src/lib/toast";
 
 export default function MetricsDashboard() {
 	const { t } = useTranslation("admin");
 	const [range, setRange] = useState("30d");
-	const [data, setData] = useState<MetricsOverview | null>(null);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState("");
+
+	const {
+		data,
+		isLoading: loading,
+		error,
+	} = useQuery<MetricsOverview>({
+		queryKey: ["admin", "metrics", range],
+		queryFn: () => adminApi.metrics(range),
+		// Caché en cliente: evita peticiones repetidas al backend al volver.
+		staleTime: 45_000,
+		gcTime: 5 * 60_000,
+	});
 
 	useEffect(() => {
-		let active = true;
-		setLoading(true);
-		setError("");
-		adminApi
-			.metrics(range)
-			.then((res) => active && setData(res))
-			.catch((err) => {
-				const message = adminErrorMessage(err);
-				active && setError(message);
-				toast.error(message);
-			})
-			.finally(() => active && setLoading(false));
-		return () => {
-			active = false;
-		};
-	}, [range]);
+		if (error) {
+			const message = adminErrorMessage(error);
+			toast.error(message);
+		}
+	}, [error]);
 
 	if (loading) {
 		return (
@@ -66,7 +65,8 @@ export default function MetricsDashboard() {
 	}
 
 	if (error || !data) {
-		return <EmptyState title={t("metrics.errorTitle")} description={error || t("metrics.error")} />;
+		const message = error ? adminErrorMessage(error) : "";
+		return <EmptyState title={t("metrics.errorTitle")} description={message || t("metrics.error")} />;
 	}
 
 	const pieData = data.rating_distribution.map((d) => ({ name: `${d.rating}★`, value: d.count }));

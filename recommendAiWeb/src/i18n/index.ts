@@ -12,6 +12,8 @@ import comments from "./locales/es/comments.json";
 import profile from "./locales/es/profile.json";
 import errors from "./locales/es/errors.json";
 import admin from "./locales/es/admin.json";
+import chat from "./locales/es/chat.json";
+import achievements from "./locales/es/achievements.json";
 
 import commonEn from "./locales/en/common.json";
 import navEn from "./locales/en/nav.json";
@@ -23,9 +25,11 @@ import commentsEn from "./locales/en/comments.json";
 import profileEn from "./locales/en/profile.json";
 import errorsEn from "./locales/en/errors.json";
 import adminEn from "./locales/en/admin.json";
+import chatEn from "./locales/en/chat.json";
+import achievementsEn from "./locales/en/achievements.json";
 
 const resources = {
-	es: { common, nav, landing, auth, movie, watchlist, comments, profile, errors, admin },
+	es: { common, nav, landing, auth, movie, watchlist, comments, profile, errors, admin, chat, achievements },
 	en: {
 		common: commonEn,
 		nav: navEn,
@@ -37,6 +41,8 @@ const resources = {
 		profile: profileEn,
 		errors: errorsEn,
 		admin: adminEn,
+		chat: chatEn,
+		achievements: achievementsEn,
 	},
 } as const;
 

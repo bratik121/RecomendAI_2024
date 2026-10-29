@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 
 from .models import WatchlistItem
 from .serializers import WatchlistSerializer
+from .achievement_service import evaluate_achievements
 
 
 class WatchlistViewSet(viewsets.ModelViewSet):
@@ -27,6 +28,7 @@ class WatchlistViewSet(viewsets.ModelViewSet):
                 serializer.save(user=self.request.user)
         except IntegrityError:
             raise ValidationError({'detail': 'Esa película ya está en tu watchlist.'}) from None
+        evaluate_achievements(self.request.user.id)
 
     def perform_update(self, serializer):
         watched = serializer.validated_data.get('watched')

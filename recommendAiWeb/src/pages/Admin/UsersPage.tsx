@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { toast } from "sonner";
+import { toast } from "@/src/lib/toast";
 import { Pencil, Plus, Search, ShieldCheck } from "lucide-react";
 import { adminApi, adminErrorMessage, AdminUser, Paginated, UserRole } from "@/src/api/admin";
 import { RootState } from "@/src/redux/reducers";

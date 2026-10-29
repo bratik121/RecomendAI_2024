@@ -16,6 +16,7 @@ from rest_framework.views import APIView
 
 from .models import Comment, Interaction, Movie, User
 from .permissions import IsAppAdmin
+from . import metrics_cache
 
 RANGE_DAYS = {
     '7d': 7,
@@ -45,6 +46,11 @@ class MetricsOverviewView(APIView):
 
     def get(self, request):
         range_key = request.query_params.get('range', '30d')
+
+        cached = metrics_cache.get(range_key)
+        if cached is not None:
+            return Response(cached)
+
         since = self._since(range_key)
 
         def in_range(qs):
@@ -121,4 +127,5 @@ class MetricsOverviewView(APIView):
                 'su instrumentación; los usuarios preexistentes comparten fecha de migración.'
             ),
         }
+        metrics_cache.set(range_key, data)
         return Response(data)

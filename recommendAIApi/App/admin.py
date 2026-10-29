@@ -1,6 +1,18 @@
 from django.contrib import admin
 
-from .models import CatalogState, Comment, Interaction, Movie, RecommendationCache, User
+from .models import (
+    Achievement,
+    CatalogState,
+    ChatConversation,
+    ChatMessage,
+    ChatQuota,
+    Comment,
+    Interaction,
+    Movie,
+    RecommendationCache,
+    User,
+    UserAchievement,
+)
 
 
 @admin.register(User)
@@ -37,3 +49,40 @@ class RecommendationCacheAdmin(admin.ModelAdmin):
 @admin.register(CatalogState)
 class CatalogStateAdmin(admin.ModelAdmin):
     list_display = ('version', 'updated_at')
+
+
+@admin.register(Achievement)
+class AchievementAdmin(admin.ModelAdmin):
+    list_display = ('key', 'category', 'name', 'target', 'order', 'is_active')
+    list_filter = ('category', 'is_active')
+    search_fields = ('key', 'name')
+
+
+@admin.register(UserAchievement)
+class UserAchievementAdmin(admin.ModelAdmin):
+    list_display = ('user', 'achievement', 'unlocked_at')
+    list_filter = ('achievement__category',)
+    search_fields = ('user__email', 'achievement__name')
+
+
+@admin.register(ChatConversation)
+class ChatConversationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'created_at', 'updated_at')
+    search_fields = ('user__email',)
+
+
+@admin.register(ChatMessage)
+class ChatMessageAdmin(admin.ModelAdmin):
+    list_display = ('conversation', 'role', 'created_at', 'short_content')
+    list_filter = ('role',)
+    search_fields = ('content',)
+
+    @admin.display(description='Contenido')
+    def short_content(self, obj):
+        return obj.content[:60]
+
+
+@admin.register(ChatQuota)
+class ChatQuotaAdmin(admin.ModelAdmin):
+    list_display = ('user', 'rank', 'rank_count', 'daily_date', 'daily_count')
+    search_fields = ('user__email',)

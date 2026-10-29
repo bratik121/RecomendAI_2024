@@ -5,3 +5,4 @@ class AppAppConfig(AppConfig):  # 👈 Nombre único
 
     def ready(self):
         from App.recommendation import signals  # noqa: F401
+        from App import metrics_signals  # noqa: F401

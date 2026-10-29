@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
+import { toast } from "@/src/lib/toast";
 import { Camera, Trash2 } from "lucide-react";
 import { useProfile } from "@/src/redux/hooks/useProfile";
 import { Avatar } from "@/src/components/Avatar";

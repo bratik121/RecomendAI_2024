@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import F
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils import timezone
+import uuid
 
 
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
@@ -225,3 +226,101 @@ class WatchlistItem(models.Model):
 
     def __str__(self):
         return f'{self.user.name} → {self.movie.title}'
+
+
+class ChatConversation(models.Model):
+    """Conversación de chat de un usuario autenticado.
+
+    Guardamos los mensajes para que el usuario retome la conversación al volver.
+    """
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='chat_conversations')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-updated_at']
+
+    def __str__(self):
+        return f'Chat de {self.user.email}'
+
+
+class ChatMessage(models.Model):
+    """Mensaje individual dentro de una conversación."""
+
+    class Role(models.TextChoices):
+        USER = 'user', 'User'
+        ASSISTANT = 'assistant', 'Assistant'
+
+    conversation = models.ForeignKey(
+        ChatConversation, on_delete=models.CASCADE, related_name='messages'
+    )
+    role = models.CharField(max_length=10, choices=Role.choices)
+    content = models.TextField()
+    # IDs de películas reales referenciadas en la respuesta (para el frontend).
+    movie_ids = models.JSONField(default=list, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
+        indexes = [
+            models.Index(fields=['conversation', 'created_at']),
+        ]
+
+    def __str__(self):
+        return f'{self.role}: {self.content[:40]}'
+
+
+class ChatQuota(models.Model):
+    """Contador de uso del chat por usuario, para limitar por rango.
+
+    `rank_count` cuenta los mensajes desde que el usuario está en su rango
+    actual (se reinicia al cambiar de rango). `daily_count`/`daily_date` solo
+    se usa para el rango Maestro, que tiene un límite diario.
+    """
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='chat_quota')
+    rank = models.CharField(max_length=10, blank=True, default='')
+    rank_count = models.PositiveIntegerField(default=0)
+    daily_date = models.DateField(null=True, blank=True)
+    daily_count = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f'Quota de {self.user.email}'
+
+
+class Achievement(models.Model):
+    """Logro desbloqueable, con su categoría, hito e ícono."""
+
+    key = models.CharField(max_length=64, unique=True)
+    category = models.CharField(max_length=32)
+    name = models.CharField(max_length=120)
+    description = models.CharField(max_length=255)
+    icon = models.CharField(max_length=64, blank=True, default='Award')
+    target = models.PositiveIntegerField(default=1)
+    order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['category', 'order', 'target']
+
+    def __str__(self):
+        return self.name
+
+
+class UserAchievement(models.Model):
+    """Logro desbloqueado por un usuario."""
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='achievements')
+    achievement = models.ForeignKey(
+        Achievement, on_delete=models.CASCADE, related_name='unlocks'
+    )
+    unlocked_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'achievement')
+        ordering = ['-unlocked_at']
+
+    def __str__(self):
+        return f'{self.user.email} · {self.achievement.name}'

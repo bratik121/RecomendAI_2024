@@ -33,6 +33,7 @@ from App.rating_views import MovieRatingsView, RatingCreateView, RatingDetailVie
 from App.watchlist_views import WatchlistSummaryView, WatchlistViewSet
 from App.admin_views import CommentAdminViewSet, MovieAdminViewSet, UserAdminViewSet
 from App.metrics_views import MetricsOverviewView
+from App.chat_views import AchievementsView, ChatView
 
 from App.views import UserViewSet
 
@@ -76,4 +77,6 @@ urlpatterns = [
     ),
     path('api/admin/', include(admin_route.urls)),
     path('api/admin/metrics/overview/', MetricsOverviewView.as_view(), name='admin-metrics-overview'),
+    path('api/chat/', ChatView.as_view(), name='chat'),
+    path('api/achievements/', AchievementsView.as_view(), name='achievements'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,21 @@
+{
+  "title": "Logros",
+  "subtitle": "Desbloqueá logros calificando, comentando y usando la app.",
+  "rankTitle": "Tu rango",
+  "progressToNext": "{{count}} logros hasta {{rank}}",
+  "maxRank": "Alcanzaste el rango máximo",
+  "unlockedCount": "{{count}} de {{total}} logros",
+  "howItWorksTitle": "¿Cómo funciona?",
+  "howItWorksBody": "Cada logro se desbloquea al alcanzar un hito. Al acumular logros subís de rango: Novato, Explorador, Cinéfilo, Crítico y Maestro.",
+  "locked": "Bloqueado",
+  "unlocked": "Desbloqueado",
+  "progressLabel": "{{progress}} de {{target}}",
+  "categories": {
+    "ratings": "Ratings",
+    "comments": "Comentarios",
+    "watchlist": "Watchlist",
+    "chat": "Chat",
+    "seen": "Vistas",
+    "likes": "Likes"
+  }
+}

@@ -8,6 +8,7 @@ from .models import Interaction, Movie
 from .permissions import IsAuthorOrReadOnly
 from .serializers import RatingSerializer
 from .recommendation.cache import invalidate_recommendations
+from .achievement_service import evaluate_achievements
 
 
 class RatingCreateView(generics.CreateAPIView):
@@ -30,6 +31,7 @@ class RatingCreateView(generics.CreateAPIView):
             },
         )
         invalidate_recommendations(request.user.id)
+        evaluate_achievements(request.user.id)
 
         output = RatingSerializer(interaction, context={'request': request})
         return Response(output.data, status=201)

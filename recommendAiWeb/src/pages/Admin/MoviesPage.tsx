@@ -1,12 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
+import { toast } from "@/src/lib/toast";
 import { Pencil, Plus, RotateCcw, Search, Trash2 } from "lucide-react";
-import { adminApi, adminErrorMessage, AdminMovie, Paginated } from "@/src/api/admin";
+import {
+	adminApi,
+	adminErrorMessage,
+	AdminMovie,
+	Paginated,
+} from "@/src/api/admin";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
-import { Select } from "@/src/components/ui/select";
 import { Badge } from "@/src/components/ui/badge";
 import { Skeleton } from "@/src/components/ui/skeleton";
 import { EmptyState } from "@/src/components/EmptyState";
@@ -35,6 +39,14 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/src/components/ui/table";
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 
 type MovieFormState = {
 	title: string;
@@ -179,8 +191,9 @@ export default function MoviesPage() {
 		}
 	};
 
-	const set = (key: keyof MovieFormState) => (e: React.ChangeEvent<HTMLInputElement>) =>
-		setForm((prev) => ({ ...prev, [key]: e.target.value }));
+	const set =
+		(key: keyof MovieFormState) => (e: React.ChangeEvent<HTMLInputElement>) =>
+			setForm((prev) => ({ ...prev, [key]: e.target.value }));
 
 	return (
 		<div className="space-y-5">
@@ -207,10 +220,25 @@ export default function MoviesPage() {
 					/>
 				</div>
 				<div className="w-full sm:w-44">
-					<Select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }}>
-						<option value="all">{t("movies.all")}</option>
-						<option value="active">{t("movies.active")}</option>
-						<option value="archived">{t("movies.archived")}</option>
+					<Select
+						value={status}
+						onValueChange={(e) => {
+							if (e) {
+								setStatus(e);
+								setPage(1);
+							}
+						}}
+					>
+						<SelectTrigger className="">
+							<SelectValue placeholder="Theme" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectGroup>
+								<SelectItem value="all">{t("movies.all")}</SelectItem>
+								<SelectItem value="active">{t("movies.active")}</SelectItem>
+								<SelectItem value="archived">{t("movies.archived")}</SelectItem>
+							</SelectGroup>
+						</SelectContent>
 					</Select>
 				</div>
 			</div>
@@ -247,7 +275,9 @@ export default function MoviesPage() {
 									<TableCell>
 										<div className="flex max-w-xs flex-wrap gap-1">
 											{(movie.genres || []).slice(0, 3).map((genre) => (
-												<Badge key={genre} variant="secondary">{genre}</Badge>
+												<Badge key={genre} variant="secondary">
+													{genre}
+												</Badge>
 											))}
 										</div>
 									</TableCell>
@@ -260,7 +290,12 @@ export default function MoviesPage() {
 									</TableCell>
 									<TableCell className="text-right">
 										<div className="flex justify-end gap-1">
-											<Button variant="ghost" size="icon" onClick={() => openEdit(movie)} aria-label={t("movies.edit")}>
+											<Button
+												variant="ghost"
+												size="icon"
+												onClick={() => openEdit(movie)}
+												aria-label={t("movies.edit")}
+											>
 												<Pencil className="h-4 w-4" />
 											</Button>
 											{movie.is_active ? (
@@ -274,7 +309,12 @@ export default function MoviesPage() {
 													<Trash2 className="h-4 w-4" />
 												</Button>
 											) : (
-												<Button variant="ghost" size="icon" onClick={() => restore(movie)} aria-label={t("movies.restore")}>
+												<Button
+													variant="ghost"
+													size="icon"
+													onClick={() => restore(movie)}
+													aria-label={t("movies.restore")}
+												>
 													<RotateCcw className="h-4 w-4" />
 												</Button>
 											)}
@@ -293,10 +333,20 @@ export default function MoviesPage() {
 						{data.count} {t("movies.title").toLowerCase()}
 					</p>
 					<div className="flex gap-2">
-						<Button variant="outline" size="sm" disabled={!data.previous} onClick={() => setPage((p) => p - 1)}>
+						<Button
+							variant="outline"
+							size="sm"
+							disabled={!data.previous}
+							onClick={() => setPage((p) => p - 1)}
+						>
 							{t("actions.previous")}
 						</Button>
-						<Button variant="outline" size="sm" disabled={!data.next} onClick={() => setPage((p) => p + 1)}>
+						<Button
+							variant="outline"
+							size="sm"
+							disabled={!data.next}
+							onClick={() => setPage((p) => p + 1)}
+						>
 							{t("actions.next")}
 						</Button>
 					</div>
@@ -306,7 +356,9 @@ export default function MoviesPage() {
 			<Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
 				<DialogContent className="max-h-[90vh] overflow-y-auto">
 					<DialogHeader>
-						<DialogTitle>{editing ? t("movies.edit") : t("movies.create")}</DialogTitle>
+						<DialogTitle>
+							{editing ? t("movies.edit") : t("movies.create")}
+						</DialogTitle>
 						<DialogDescription>
 							{editing && editing.poster_image ? t("movies.posterLocked") : ""}
 						</DialogDescription>
@@ -319,11 +371,23 @@ export default function MoviesPage() {
 						<div className="grid grid-cols-2 gap-3">
 							<div className="space-y-1.5">
 								<Label htmlFor="m-year">{t("movies.field.releaseYear")}</Label>
-								<Input id="m-year" value={form.release_year} onChange={set("release_year")} />
+								<Input
+									id="m-year"
+									value={form.release_year}
+									onChange={set("release_year")}
+								/>
 							</div>
 							<div className="space-y-1.5">
-								<Label htmlFor="m-rating">{t("movies.field.voteAverage")}</Label>
-								<Input id="m-rating" type="number" step="0.1" value={form.vote_average} onChange={set("vote_average")} />
+								<Label htmlFor="m-rating">
+									{t("movies.field.voteAverage")}
+								</Label>
+								<Input
+									id="m-rating"
+									type="number"
+									step="0.1"
+									value={form.vote_average}
+									onChange={set("vote_average")}
+								/>
 							</div>
 						</div>
 						<div className="space-y-1.5">
@@ -331,7 +395,9 @@ export default function MoviesPage() {
 							<textarea
 								id="m-overview"
 								value={form.overview}
-								onChange={(e) => setForm((prev) => ({ ...prev, overview: e.target.value }))}
+								onChange={(e) =>
+									setForm((prev) => ({ ...prev, overview: e.target.value }))
+								}
 								rows={3}
 								className="w-full resize-y rounded-lg border border-border-subtle bg-surface px-3.5 py-2 text-sm text-text-primary placeholder:text-text-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-ring/60"
 							/>
@@ -339,20 +405,40 @@ export default function MoviesPage() {
 						<div className="grid grid-cols-2 gap-3">
 							<div className="space-y-1.5">
 								<Label htmlFor="m-pop">{t("movies.field.popularity")}</Label>
-								<Input id="m-pop" type="number" step="0.1" value={form.popularity} onChange={set("popularity")} />
+								<Input
+									id="m-pop"
+									type="number"
+									step="0.1"
+									value={form.popularity}
+									onChange={set("popularity")}
+								/>
 							</div>
 							<div className="space-y-1.5">
 								<Label htmlFor="m-rev">{t("movies.field.revenue")}</Label>
-								<Input id="m-rev" type="number" step="0.1" value={form.revenue} onChange={set("revenue")} />
+								<Input
+									id="m-rev"
+									type="number"
+									step="0.1"
+									value={form.revenue}
+									onChange={set("revenue")}
+								/>
 							</div>
 						</div>
 						<div className="space-y-1.5">
 							<Label htmlFor="m-genres">{t("movies.field.genres")}</Label>
-							<Input id="m-genres" value={form.genres} onChange={set("genres")} />
+							<Input
+								id="m-genres"
+								value={form.genres}
+								onChange={set("genres")}
+							/>
 						</div>
 						<div className="space-y-1.5">
 							<Label htmlFor="m-path">{t("movies.field.posterPath")}</Label>
-							<Input id="m-path" value={form.poster_path} onChange={set("poster_path")} />
+							<Input
+								id="m-path"
+								value={form.poster_path}
+								onChange={set("poster_path")}
+							/>
 						</div>
 						{!editing?.poster_image && (
 							<div className="space-y-1.5">
@@ -377,15 +463,22 @@ export default function MoviesPage() {
 				</DialogContent>
 			</Dialog>
 
-			<AlertDialog open={Boolean(archiving)} onOpenChange={(open) => !open && setArchiving(null)}>
+			<AlertDialog
+				open={Boolean(archiving)}
+				onOpenChange={(open) => !open && setArchiving(null)}
+			>
 				<AlertDialogContent>
 					<AlertDialogHeader>
 						<AlertDialogTitle>{t("movies.confirmArchive")}</AlertDialogTitle>
-						<AlertDialogDescription>{t("movies.confirmArchiveDesc")}</AlertDialogDescription>
+						<AlertDialogDescription>
+							{t("movies.confirmArchiveDesc")}
+						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel>{t("movies.cancel")}</AlertDialogCancel>
-						<AlertDialogAction onClick={confirmArchive}>{t("movies.archive")}</AlertDialogAction>
+						<AlertDialogAction onClick={confirmArchive}>
+							{t("movies.archive")}
+						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>
 			</AlertDialog>

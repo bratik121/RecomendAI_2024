@@ -5,4 +5,5 @@ export * from "./Searchpage";
 export * from "./MovieDetail";
 export * from "./Watchlist";
 export * from "./Profile";
+export * from "./Achievements";
 export { NotFound } from "./NotFound";

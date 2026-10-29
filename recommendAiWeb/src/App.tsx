@@ -5,6 +5,7 @@ import { MotionConfig } from "framer-motion";
 import MyRoutes from "./routes/MyRoutes";
 import { Nav } from "./components/Nav/Nav";
 import { Toaster } from "./components/ui/sonner";
+import { ChatWidget } from "./components/chat/ChatWidget";
 import { useTheme } from "./lib/theme";
 import { storage } from "./helpers";
 import { setUserFromStorage } from "./redux/actions";
@@ -30,6 +31,7 @@ function App() {
 	const dispatch = useDispatch();
 	const isOnSignPage = location.pathname.includes("sign");
 	const isOnAdminPage = location.pathname.startsWith("/admin");
+	const isOnReviewPage = location.pathname.startsWith("/review-films");
 	const { isAuthenticated } = useSelector((state: RootState) => state.user);
 	const { refresh: refreshWatchlist } = useWatchlist();
 
@@ -53,6 +55,8 @@ function App() {
 				<main className={!isOnSignPage && !isOnAdminPage ? "pt-16" : ""}>
 					<MyRoutes isAuthenticated={isAuthenticated} />
 				</main>
+				{/* Chat flotante: oculto en admin, calificación, sign y para anónimos. */}
+				{isAuthenticated && !isOnSignPage && !isOnAdminPage && !isOnReviewPage && <ChatWidget />}
 				<ThemedToaster />
 			</div>
 		</MotionConfig>

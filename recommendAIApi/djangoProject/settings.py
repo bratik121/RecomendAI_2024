@@ -60,11 +60,39 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_THROTTLE_RATES': {
         'comments': '10/min',
+        'chat': '20/min',
     },
 }
 
 RECOMMENDER_VERSION = 'rf-v1'
 RECOMMENDATION_CACHE_TTL_SECONDS = 7 * 24 * 60 * 60
+
+# ---------------------------------------------------------------------------
+# Caché
+# ---------------------------------------------------------------------------
+# Desarrollo usa LocMemCache (sin dependencias). En producción se configura
+# CACHE_URL=redis://... para usar RedisCache, que es compartido entre procesos.
+CACHES = {
+    'default': env.cache(
+        'CACHE_URL',
+        default='locmemcache://recomendai',
+    )
+}
+
+# TTL de la respuesta cacheada del dashboard de métricas (segundos).
+METRICS_CACHE_TTL_SECONDS = env.int('METRICS_CACHE_TTL_SECONDS', default=600)
+
+# ---------------------------------------------------------------------------
+# Gemini (asistente de chat)
+# ---------------------------------------------------------------------------
+GEMINI_API_KEY = env('GEMINI_API_KEY', default='')
+GEMINI_MODEL = env('GEMINI_MODEL', default='gemini-2.5-flash')
+# Máximo de mensajes previos que se envían como contexto a Gemini.
+CHAT_CONTEXT_MESSAGES = env.int('CHAT_CONTEXT_MESSAGES', default=20)
+# Longitud máxima aceptada para un mensaje del usuario.
+CHAT_MAX_MESSAGE_LENGTH = env.int('CHAT_MAX_MESSAGE_LENGTH', default=2000)
+# Días que se retienen las conversaciones antes de limpiarlas.
+CHAT_RETENTION_DAYS = env.int('CHAT_RETENTION_DAYS', default=90)
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # This should be at the top

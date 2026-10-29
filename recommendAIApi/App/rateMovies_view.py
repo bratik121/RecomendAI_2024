@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from App.models import User, Movie, Interaction
 from App.recommendation.cache import invalidate_recommendations
+from App.achievement_service import evaluate_achievements
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -37,6 +38,7 @@ def rateMovies(request):
 
         # El próximo GET recalcula con el historial actualizado.
         invalidate_recommendations(user_id)
+        evaluate_achievements(user_id)
 
         return JsonResponse({'id_user':user_id }, status=200)
 

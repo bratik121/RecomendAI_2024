@@ -9,6 +9,8 @@ import type comments from "./locales/es/comments.json";
 import type profile from "./locales/es/profile.json";
 import type errors from "./locales/es/errors.json";
 import type admin from "./locales/es/admin.json";
+import type chat from "./locales/es/chat.json";
+import type achievements from "./locales/es/achievements.json";
 
 declare module "react-i18next" {
 	interface CustomTypeOptions {
@@ -24,6 +26,8 @@ declare module "react-i18next" {
 			profile: typeof profile;
 			errors: typeof errors;
 			admin: typeof admin;
+			chat: typeof chat;
+			achievements: typeof achievements;
 		};
 	}
 }

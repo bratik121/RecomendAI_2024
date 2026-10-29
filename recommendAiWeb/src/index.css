@@ -105,8 +105,9 @@
 	--color-star: var(--star);
 	--color-ring: var(--ring);
 
-	--font-sans: "Outfit", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
-		Roboto, "Helvetica Neue", Arial, sans-serif;
+	--font-sans:
+		"Outfit", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+		"Helvetica Neue", Arial, sans-serif;
 }
 
 /* Static scale tokens (do not flip with theme). */
@@ -119,12 +120,12 @@
 
 	/* Elevation: offset + soft blur (never a zero-offset halo). */
 	--shadow-soft: 0 1px 2px rgb(2 6 23 / 0.04), 0 1px 3px rgb(2 6 23 / 0.06);
-	--shadow-card: 0 4px 12px -2px rgb(2 6 23 / 0.16),
-		0 2px 4px -2px rgb(2 6 23 / 0.08);
-	--shadow-float: 0 16px 40px -12px rgb(2 6 23 / 0.4),
-		0 4px 12px -4px rgb(2 6 23 / 0.12);
-	--shadow-glow: 0 0 0 1px rgb(23 214 162 / 0.12),
-		0 16px 48px -12px rgb(23 214 162 / 0.35);
+	--shadow-card:
+		0 4px 12px -2px rgb(2 6 23 / 0.16), 0 2px 4px -2px rgb(2 6 23 / 0.08);
+	--shadow-float:
+		0 16px 40px -12px rgb(2 6 23 / 0.4), 0 4px 12px -4px rgb(2 6 23 / 0.12);
+	--shadow-glow:
+		0 0 0 1px rgb(23 214 162 / 0.12), 0 16px 48px -12px rgb(23 214 162 / 0.35);
 }
 
 @layer base {
@@ -145,7 +146,9 @@
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
 		text-rendering: optimizeLegibility;
-		transition: background-color 0.3s ease, color 0.3s ease;
+		transition:
+			background-color 0.3s ease,
+			color 0.3s ease;
 		min-height: 100vh;
 	}
 

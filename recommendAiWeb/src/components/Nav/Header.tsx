@@ -44,6 +44,7 @@ export function Header() {
 		{ to: "/search", label: t("discover"), match: "/search", auth: false },
 		{ to: "/review-films", label: t("reviewFilms"), match: "/review-films", auth: true },
 		{ to: "/watchlist", label: t("watchlist"), match: "/watchlist", auth: true, badge: pendingCount },
+		{ to: "/achievements", label: t("achievements"), match: "/achievements", auth: true },
 		{ to: "/profile", label: t("profile"), match: "/profile", auth: true },
 		{
 			to: "/admin",
