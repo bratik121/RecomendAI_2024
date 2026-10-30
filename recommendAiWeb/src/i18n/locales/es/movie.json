@@ -1,0 +1,17 @@
+{
+  "notFound": "Película no encontrada",
+  "error": "Algo salió mal",
+  "notFoundDesc": "La película que buscás no existe o fue eliminada del catálogo.",
+  "discover": "Descubrir películas",
+  "back": "Volver",
+  "popularity": "Popularidad relativa",
+  "votes": "Votos",
+  "revenue": "Ingresos relativos",
+  "addToWatchlist": "Agregar a watchlist",
+  "removeFromWatchlist": "Quitar de watchlist",
+  "inWatchlist": "En tu watchlist",
+  "rating": "Tu calificación",
+  "communityRating": "Calificación de usuarios",
+  "votesCount_one": "{{count}} voto",
+  "votesCount_other": "{{count}} votos"
+}

@@ -1,0 +1,16 @@
+{
+  "title": "Profile",
+  "name": "Name",
+  "lastname": "Lastname",
+  "bio": "Bio",
+  "avatar": "Profile photo",
+  "upload": "Upload photo",
+  "remove": "Remove photo",
+  "save": "Save changes",
+  "saving": "Saving...",
+  "saved": "Changes saved",
+  "email": "Email",
+  "bioPlaceholder": "Tell us about yourself (max 280 characters)",
+  "errorSize": "The image exceeds 2 MB.",
+  "errorType": "Unsupported format. Use JPG, PNG or WebP."
+}

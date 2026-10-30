@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 import pandas as pd
-from App.models import Movie
+from App.models import CatalogState, Movie
+from App.recommendation.signals import suppress_catalog_bumps
 
 class Command(BaseCommand):
     help = 'Load a list of movies from a CSV file into the database'
@@ -20,23 +21,26 @@ class Command(BaseCommand):
         movies_df['vote_average'] = movies_df['vote_average'] / 10
         movies_df['revenue'] = movies_df['revenue'] / max_revenue
 
-        # Procesar y cargar cada película
-        for _, row in movies_df.iterrows():
-            # Verificar si todos los campos necesarios están presentes y no son nulos
-            if row[['title', 'poster_path', 'year', 'overview', 'popularity', 'vote_average', 'revenue', 'genres']].isna().any():
-                self.stdout.write(self.style.WARNING(f'Skipping movie with missing fields: {row["title"] if pd.notna(row["title"]) else "Unknown Title"}'))
-                continue
+        # Procesar y cargar cada película. Suprimimos el bump por fila y
+        # actualizamos la versión del catálogo una sola vez al final.
+        with suppress_catalog_bumps():
+            for _, row in movies_df.iterrows():
+                # Verificar si todos los campos necesarios están presentes y no son nulos
+                if row[['title', 'poster_path', 'year', 'overview', 'popularity', 'vote_average', 'revenue', 'genres']].isna().any():
+                    self.stdout.write(self.style.WARNING(f'Skipping movie with missing fields: {row["title"] if pd.notna(row["title"]) else "Unknown Title"}'))
+                    continue
 
-            # Crear y guardar la película
-            Movie.objects.create(
-                title=row['title'],
-                poster_path=row['poster_path'],
-                release_year=str(int(row['year'])),
-                overview=row['overview'],
-                popularity=row['popularity'],
-                vote_average=row['vote_average'],
-                revenue=row['revenue'],
-                genres=row['genres'],
-            )
+                # Crear y guardar la película
+                Movie.objects.create(
+                    title=row['title'],
+                    poster_path=row['poster_path'],
+                    release_year=str(int(row['year'])),
+                    overview=row['overview'],
+                    popularity=row['popularity'],
+                    vote_average=row['vote_average'],
+                    revenue=row['revenue'],
+                    genres=row['genres'],
+                )
 
+        CatalogState.bump()
         self.stdout.write(self.style.SUCCESS('Successfully loaded all movies from CSV.'))

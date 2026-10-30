@@ -3,8 +3,10 @@ from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.authtoken.models import Token
 
 from App.models import User
+from App.achievement_service import get_user_rank
 
 logger = logging.getLogger(__name__)
 
@@ -22,12 +24,20 @@ def login_view(request):
         print(user)
         if user is not None and isinstance(user, User):
             login(request, user)
+            token, _ = Token.objects.get_or_create(user=user)
+            rank = get_user_rank(user)
             logger.debug("Login successful")
             return JsonResponse({
                 'id': user.id,
                 'email': user.email,
                 'name': user.name,
                 'lastname': user.lastname,
+                'bio': user.bio,
+                'avatar': request.build_absolute_uri(user.avatar.url) if user.avatar else None,
+                'role': user.role,
+                'rank': rank['key'],
+                'rank_color': rank['color'],
+                'token': token.key,
             }, status=200)
         else:
             logger.warning("Login failed - Invalid credentials")

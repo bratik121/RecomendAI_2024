@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 from App import views
 from App.login_view import login_view
 from App.rateMovies_view import rateMovies
@@ -24,12 +26,25 @@ from App.tenmovies_view import tenmovies
 from App.remomendMovies_view import recommend_movies
 from rest_framework import routers
 from App.search_movies_by_name import search_movies_by_name
+from App.comment_views import CommentDetailView, CommentListCreateView
+from App.movie_views import MovieDetailView
+from App.profile_views import AvatarDeleteView, ProfileView
+from App.rating_views import MovieRatingsView, RatingCreateView, RatingDetailView
+from App.watchlist_views import WatchlistSummaryView, WatchlistViewSet
+from App.admin_views import CommentAdminViewSet, MovieAdminViewSet, UserAdminViewSet
+from App.metrics_views import MetricsOverviewView
+from App.chat_views import AchievementsView, ChatView
 
-from App.views import   UserViewSet
+from App.views import UserViewSet
 
 route = routers.DefaultRouter()
 
 route.register("User", UserViewSet, basename="User")
+
+admin_route = routers.DefaultRouter()
+admin_route.register("movies", MovieAdminViewSet, basename="admin-movies")
+admin_route.register("users", UserAdminViewSet, basename="admin-users")
+admin_route.register("comments", CommentAdminViewSet, basename="admin-comments")
 
 
 urlpatterns = [
@@ -41,4 +56,27 @@ urlpatterns = [
     path('api/tenmovies/<int:idUser>/', tenmovies, name='te nmovies'),
     path('api/recommend/<int:idUser>/', recommend_movies, name='recommend'),
     path('api/searchMoviesByName/', search_movies_by_name, name='searchMoviesByName'),
-]
+    path('api/movies/<int:pk>/', MovieDetailView.as_view(), name='movie-detail'),
+    path(
+        'api/movies/<int:movie_id>/comments/',
+        CommentListCreateView.as_view(),
+        name='movie-comments',
+    ),
+    path('api/comments/<int:pk>/', CommentDetailView.as_view(), name='comment-detail'),
+    path('api/profile/', ProfileView.as_view(), name='profile'),
+    path('api/profile/avatar/', AvatarDeleteView.as_view(), name='profile-avatar'),
+    path('api/ratings/', RatingCreateView.as_view(), name='rating-create'),
+    path('api/ratings/<int:pk>/', RatingDetailView.as_view(), name='rating-detail'),
+    path('api/movies/<int:pk>/ratings/', MovieRatingsView.as_view(), name='movie-ratings'),
+    path('api/watchlist/', WatchlistViewSet.as_view({'get': 'list', 'post': 'create'}), name='watchlist'),
+    path('api/watchlist/summary/', WatchlistSummaryView.as_view(), name='watchlist-summary'),
+    path(
+        'api/watchlist/<int:pk>/',
+        WatchlistViewSet.as_view({'patch': 'partial_update', 'delete': 'destroy'}),
+        name='watchlist-detail',
+    ),
+    path('api/admin/', include(admin_route.urls)),
+    path('api/admin/metrics/overview/', MetricsOverviewView.as_view(), name='admin-metrics-overview'),
+    path('api/chat/', ChatView.as_view(), name='chat'),
+    path('api/achievements/', AchievementsView.as_view(), name='achievements'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

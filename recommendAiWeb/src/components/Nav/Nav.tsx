@@ -1,15 +1,11 @@
-import React from "react";
 import { Header } from "./Header";
 import { ResponsiveNavbar } from "./ResponsiveNavbar";
-type Props = {};
 
-const Nav = (props: Props) => {
+export function Nav() {
 	return (
-		<div>
+		<>
 			<Header />
 			<ResponsiveNavbar />
-		</div>
+		</>
 	);
-};
-
-export default Nav;
+}

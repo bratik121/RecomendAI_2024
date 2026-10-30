@@ -1,0 +1,19 @@
+{
+  "loading": "Cargando...",
+  "cancel": "Cancelar",
+  "save": "Guardar",
+  "edit": "Editar",
+  "delete": "Eliminar",
+  "back": "Volver",
+  "retry": "Reintentar",
+  "loadMore": "Cargar más",
+  "send": "Enviar",
+  "yes": "Sí",
+  "no": "No",
+  "noGenres": "Sin géneros",
+  "noOverview": "No hay sinopsis disponible para esta película.",
+  "unknownYear": "Año desconocido",
+  "notAvailable": "Sin datos",
+  "viewDetails": "Ver detalle",
+  "moviePick": "Selección"
+}

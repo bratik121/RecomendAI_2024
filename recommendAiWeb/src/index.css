@@ -1,60 +1,249 @@
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "tw-animate-css";
 
-.font-custom {
-	font-family: "Outfit", sans-serif;
-	font-optical-sizing: auto;
-	font-weight: <weight>;
-	font-style: normal;
+/* Dark mode is driven by the `.dark` class on <html> (toggled by the theme
+   system in src/lib/theme.ts). The variant makes every `dark:` utility target
+   that subtree. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ============================================================
+   Semantic design tokens
+   ------------------------------------------------------------
+   These are the single source of truth for color. Each token has
+   a light value (on :root) and a dark value (on .dark). They are
+   mapped into Tailwind utilities below via `@theme inline`, so a
+   utility like `bg-surface` resolves to `var(--surface)` and flips
+   automatically with the theme.
+   ============================================================ */
+
+:root {
+	color-scheme: light;
+
+	/* Surfaces */
+	--background: #f6f7f9;
+	--surface: #ffffff;
+	--surface-elevated: #ffffff;
+
+	/* Text */
+	--text-primary: #0e141b;
+	--text-secondary: #3c4654;
+	--text-muted: #5a6675;
+
+	/* Borders */
+	--border-subtle: #e2e7ee;
+
+	/* Accent (brand teal) */
+	--accent: #0c8a68;
+	--accent-hover: #0a7357;
+	--accent-foreground: #ffffff;
+	--accent-soft: rgba(12, 138, 104, 0.1);
+
+	/* Danger / destructive */
+	--danger: #dc2626;
+	--danger-hover: #b91c1c;
+	--danger-foreground: #ffffff;
+	--danger-soft: rgba(220, 38, 38, 0.1);
+
+	/* Star / rating */
+	--star: #d97706;
+
+	/* Ranks (Achievements) — texto + fondo con contraste AA en claro */
+	--rank-novato-fg: #475569;
+	--rank-novato-bg: #e2e8f0;
+	--rank-explorador-fg: #047857;
+	--rank-explorador-bg: #d1fae5;
+	--rank-cinefilo-fg: #1d4ed8;
+	--rank-cinefilo-bg: #dbeafe;
+	--rank-critico-fg: #7e22ce;
+	--rank-critico-bg: #f3e8ff;
+	--rank-maestro-fg: #b45309;
+	--rank-maestro-bg: #fef3c7;
+
+	/* Focus ring */
+	--ring: #0c8a68;
 }
 
-.color {
-	height: 800px;
-	width: 800px;
-	background-image: radial-gradient(
-		closest-side,
-		rgba(9, 217, 158, 0.76) 0%,
-		#132d46
-	);
-	position: absolute;
-	top: -499px;
-	left: -200px;
+.dark {
+	color-scheme: dark;
+
+	--background: #0a0e14;
+	--surface: #11161d;
+	--surface-elevated: #182029;
+
+	--text-primary: #f2f5f9;
+	--text-secondary: #b8c3d0;
+	--text-muted: #8a97a7;
+
+	--border-subtle: #26303c;
+
+	--accent: #17d6a2;
+	--accent-hover: #34e2b4;
+	--accent-foreground: #06231a;
+	--accent-soft: rgba(23, 214, 162, 0.12);
+
+	--danger: #f87171;
+	--danger-hover: #fca5a5;
+	--danger-foreground: #2a0808;
+	--danger-soft: rgba(248, 113, 113, 0.12);
+
+	--star: #fbbf24;
+
+	/* Ranks (Achievements) — texto + fondo con contraste AA en oscuro */
+	--rank-novato-fg: #cbd5e1;
+	--rank-novato-bg: #1e293b;
+	--rank-explorador-fg: #6ee7b7;
+	--rank-explorador-bg: #064e3b;
+	--rank-cinefilo-fg: #93c5fd;
+	--rank-cinefilo-bg: #1e3a8a;
+	--rank-critico-fg: #d8b4fe;
+	--rank-critico-bg: #4c1d95;
+	--rank-maestro-fg: #fcd34d;
+	--rank-maestro-bg: #78350f;
+
+	--ring: #17d6a2;
 }
 
-/* background: rgb(9,217,158);
-background: radial-gradient(circle, rgba(9,217,158,1) 0%, rgba(9,217,158,0) 100%); */
+/* Map the semantic tokens onto Tailwind's color namespace. `inline` keeps the
+   reference to the raw CSS variable so utilities resolve at runtime. */
+@theme inline {
+	--color-background: var(--background);
+	--color-surface: var(--surface);
+	--color-surface-elevated: var(--surface-elevated);
 
-.overflow-y-scroll::-webkit-scrollbar {
-	width: 0.5vw;
+	--color-text-primary: var(--text-primary);
+	--color-text-secondary: var(--text-secondary);
+	--color-text-muted: var(--text-muted);
+
+	--color-border-subtle: var(--border-subtle);
+
+	--color-accent: var(--accent);
+	--color-accent-hover: var(--accent-hover);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-accent-soft: var(--accent-soft);
+
+	--color-danger: var(--danger);
+	--color-danger-hover: var(--danger-hover);
+	--color-danger-foreground: var(--danger-foreground);
+	--color-danger-soft: var(--danger-soft);
+
+	--color-star: var(--star);
+	--color-ring: var(--ring);
+
+	--color-rank-novato-fg: var(--rank-novato-fg);
+	--color-rank-novato-bg: var(--rank-novato-bg);
+	--color-rank-explorador-fg: var(--rank-explorador-fg);
+	--color-rank-explorador-bg: var(--rank-explorador-bg);
+	--color-rank-cinefilo-fg: var(--rank-cinefilo-fg);
+	--color-rank-cinefilo-bg: var(--rank-cinefilo-bg);
+	--color-rank-critico-fg: var(--rank-critico-fg);
+	--color-rank-critico-bg: var(--rank-critico-bg);
+	--color-rank-maestro-fg: var(--rank-maestro-fg);
+	--color-rank-maestro-bg: var(--rank-maestro-bg);
+
+	--font-sans:
+		"Outfit", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+		"Helvetica Neue", Arial, sans-serif;
 }
 
-.overflow-y-scroll::-webkit-scrollbar-track {
-	background: transparent;
-	border-radius: 0.5vw;
+/* Static scale tokens (do not flip with theme). */
+@theme {
+	--radius-sm: 0.5rem;
+	--radius-md: 0.75rem;
+	--radius-lg: 1rem;
+	--radius-xl: 1.25rem;
+	--radius-2xl: 1.5rem;
+
+	/* Elevation: offset + soft blur (never a zero-offset halo). */
+	--shadow-soft: 0 1px 2px rgb(2 6 23 / 0.04), 0 1px 3px rgb(2 6 23 / 0.06);
+	--shadow-card:
+		0 4px 12px -2px rgb(2 6 23 / 0.16), 0 2px 4px -2px rgb(2 6 23 / 0.08);
+	--shadow-float:
+		0 16px 40px -12px rgb(2 6 23 / 0.4), 0 4px 12px -4px rgb(2 6 23 / 0.12);
+	--shadow-glow:
+		0 0 0 1px rgb(23 214 162 / 0.12), 0 16px 48px -12px rgb(23 214 162 / 0.35);
 }
 
-.overflow-y-scroll::-webkit-scrollbar-thumb {
-	background: #08c48f;
-	border-radius: 0.5vw;
+@layer base {
+	* {
+		border-color: var(--border-subtle);
+	}
+
+	html {
+		scroll-behavior: smooth;
+		-webkit-text-size-adjust: 100%;
+	}
+
+	body {
+		background-color: var(--background);
+		color: var(--text-primary);
+		font-family: var(--font-sans);
+		font-synthesis-weight: none;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		text-rendering: optimizeLegibility;
+		transition:
+			background-color 0.3s ease,
+			color 0.3s ease;
+		min-height: 100vh;
+	}
+
+	/* Selection carries the brand, not the browser default. */
+	::selection {
+		background-color: var(--accent);
+		color: var(--accent-foreground);
+	}
+
+	/* Keyboard focus is always visible and on-brand. */
+	:focus-visible {
+		outline: 2px solid var(--ring);
+		outline-offset: 2px;
+		border-radius: 3px;
+	}
+
+	/* Theme the scrollbar so it belongs to the design. */
+	::-webkit-scrollbar {
+		width: 12px;
+		height: 12px;
+	}
+	::-webkit-scrollbar-track {
+		background: transparent;
+	}
+	::-webkit-scrollbar-thumb {
+		background: color-mix(in srgb, var(--text-muted) 42%, transparent);
+		border-radius: 9999px;
+		border: 3px solid transparent;
+		background-clip: content-box;
+	}
+	::-webkit-scrollbar-thumb:hover {
+		background: color-mix(in srgb, var(--text-muted) 62%, transparent);
+		background-clip: content-box;
+		border: 3px solid transparent;
+	}
 }
 
-.overflow-y-scroll::-webkit-scrollbar-thumb:hover {
-	background: #067555;
+[data-slot="select-item"][data-highlighted] {
+	color: var(--accent) !important;
+	background-color: var(--accent-soft) !important;
 }
 
-.overflow-y-scroll::-webkit-scrollbar-button {
-	display: none;
+/* ============================================================
+   Toasts (Sonner): iconos por variante semántica
+   ============================================================ */
+[data-sonner-toast][data-type="success"] [data-icon] {
+	color: #16a34a;
 }
-
-/* removing horizontal scrollbar */
-
-.overflow-y-scroll::-webkit-scrollbar {
-	height: 0px;
-	background: transparent;
+[data-sonner-toast][data-type="error"] [data-icon] {
+	color: var(--danger);
 }
-
-/* * {
-	outline: 2px dashed red;
-} */
+[data-sonner-toast][data-type="info"] [data-icon] {
+	color: var(--accent);
+}
+[data-sonner-toast][data-type="warning"] [data-icon] {
+	color: #d97706;
+}
+.dark [data-sonner-toast][data-type="success"] [data-icon] {
+	color: #4ade80;
+}
+.dark [data-sonner-toast][data-type="warning"] [data-icon] {
+	color: #fbbf24;
+}

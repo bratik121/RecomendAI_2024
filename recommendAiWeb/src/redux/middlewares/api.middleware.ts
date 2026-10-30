@@ -1,6 +1,13 @@
 import { Middleware, MiddlewareAPI } from "redux";
 import axios, { AxiosRequestConfig } from "axios";
 import { apiRequest, xhrRequest } from "../actions";
+import { storage } from "@/src/helpers";
+
+const authHeader = (token?: string) => {
+	const value = token || storage.get("token") || "";
+	if (!value) return "";
+	return value.startsWith("Token ") ? value : `Token ${value}`;
+};
 
 export const apiMdl: Middleware =
 	({ dispatch }: MiddlewareAPI) =>
@@ -14,7 +21,7 @@ export const apiMdl: Middleware =
 				headers: {
 					Accept: "application/json",
 					"Content-Type": "application/json",
-					Authorization: token || "",
+					Authorization: authHeader(token),
 				},
 				params: params,
 				data: action.payload && JSON.stringify(action.payload),
@@ -52,7 +59,7 @@ export const apiMdl: Middleware =
 			xhr.open(method, url);
 
 			xhr.setRequestHeader("Accept", "application/json, text/plain, */*");
-			xhr.setRequestHeader("Authorization", token || "");
+			xhr.setRequestHeader("Authorization", authHeader(token));
 
 			xhr.send(data);
 		}

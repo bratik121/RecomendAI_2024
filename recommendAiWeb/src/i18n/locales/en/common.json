@@ -1,0 +1,19 @@
+{
+  "loading": "Loading...",
+  "cancel": "Cancel",
+  "save": "Save",
+  "edit": "Edit",
+  "delete": "Delete",
+  "back": "Back",
+  "retry": "Retry",
+  "loadMore": "Load more",
+  "send": "Send",
+  "yes": "Yes",
+  "no": "No",
+  "noGenres": "No genres",
+  "noOverview": "No overview available for this movie.",
+  "unknownYear": "Unknown year",
+  "notAvailable": "No data",
+  "viewDetails": "View details",
+  "moviePick": "Pick"
+}

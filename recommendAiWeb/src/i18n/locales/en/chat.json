@@ -1,0 +1,16 @@
+{
+  "bubbleLabel": "Open assistant",
+  "title": "Assistant",
+  "subtitle": "AI recommendations",
+  "placeholder": "Ask me about movies…",
+  "send": "Send",
+  "emptyTitle": "How can I help you?",
+  "emptyDesc": "Ask me about movies similar to one you like.",
+  "typing": "Typing…",
+  "quota": "Queries left: {{count}}",
+  "quotaUnlimited": "Queries left: {{count}}",
+  "error": "We couldn't send your message.",
+  "tryAgain": "Try again",
+  "recommendedTitle": "You might like",
+  "close": "Close"
+}

@@ -6,3 +6,10 @@ pandas
 scikit-learn
 numpy
 psycopg2-binary
+Pillow
+django-environ
+cloudinary
+django-cloudinary-storage
+google-genai
+redis
+gunicorn

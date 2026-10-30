@@ -52,7 +52,7 @@ const userProcess: Middleware =
 	};
 
 const userSuccess: Middleware =
-	({ dispatch }) =>
+	() =>
 	(next) =>
 	(action) => {
 		next(action);
@@ -62,9 +62,13 @@ const userSuccess: Middleware =
 				name: action.payload.name,
 				lastname: action.payload.lastname,
 				id: action.payload.id,
+				avatar: action.payload.avatar || null,
+				bio: action.payload.bio || "",
+				role: action.payload.role || "user",
 			};
 
 			storage.set("user", user);
+			if (action.payload.token) storage.set("token", action.payload.token);
 		}
 		if (postLoginUserSuccess.match(action)) {
 			const user = {
@@ -72,13 +76,17 @@ const userSuccess: Middleware =
 				name: action.payload.name,
 				lastname: action.payload.lastname,
 				id: action.payload.id,
+				avatar: action.payload.avatar || null,
+				bio: action.payload.bio || "",
+				role: action.payload.role || "user",
 			};
 			storage.set("user", user);
+			if (action.payload.token) storage.set("token", action.payload.token);
 		}
 	};
 
 const userErrors: Middleware =
-	({ dispatch }) =>
+	() =>
 	(next) =>
 	(action) => {
 		next(action);
@@ -91,12 +99,13 @@ const userErrors: Middleware =
 	};
 
 const userStorageProccess: Middleware =
-	({ dispatch }) =>
+	() =>
 	(next) =>
 	(action) => {
 		next(action);
 		if (userLogout.match(action)) {
 			storage.remove("user");
+			storage.remove("token");
 		}
 	};
 

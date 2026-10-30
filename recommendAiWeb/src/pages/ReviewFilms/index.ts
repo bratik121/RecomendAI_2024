@@ -1,1 +1,2 @@
-export { default as ReviewFilms } from "./ReviewFilms";
+export { ReviewFilms } from "./ReviewFilms";
+export { SwipeMovieCard } from "./SwipeMovieCard";

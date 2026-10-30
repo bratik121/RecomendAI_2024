@@ -1,4 +1,4 @@
-import { Iuser, userState, reduxAction } from "../Interfaces";
+import { userState, reduxAction } from "../Interfaces";
 import {
 	POST_LOGIN_USER_ERROR,
 	POST_LOGIN_USER_PROCESS,
@@ -43,6 +43,11 @@ export const user = (
 					name: action.payload.name,
 					lastname: action.payload.lastname,
 					id: action.payload.id,
+					avatar: action.payload.avatar || null,
+					bio: action.payload.bio || "",
+					role: action.payload.role || "user",
+					rank: action.payload.rank || "novato",
+					rank_color: action.payload.rank_color || "rank-novato",
 				},
 			};
 		case POST_REGISTER_USER_ERROR:

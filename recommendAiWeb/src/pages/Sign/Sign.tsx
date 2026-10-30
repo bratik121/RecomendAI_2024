@@ -1,59 +1,50 @@
 import { useLocation } from "react-router-dom";
-import SignIn from "./SignIn/SignIn";
-import SignUp from "./SignUp/SignUp";
-import wathingMovie from "@/src/assets/images/pexels-photo-4009397.webp";
-import { motion as m, AnimatePresence } from "framer-motion";
-import { opacityVariant } from "@/src/types";
-import "./style.css";
+import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
+import { SignIn } from "./SignIn";
+import { SignUp } from "./SignUp";
+import watchingMovie from "@/src/assets/images/pexels-photo-4009397.webp";
+import { fade } from "@/src/lib/motion";
 
-const Sign = () => {
-	const path = useLocation().pathname;
+export function Sign() {
+	const { pathname } = useLocation();
+	const { t } = useTranslation("landing");
+	const isSignUp = pathname === "/sign/up";
 
 	return (
-		<div className="flex h-screen w-screen  items-center justify-center">
-			<div className="flex h-[90%] w-[80%] sign shadow-lg z-20  overflow-hidden relative">
-				<m.div
-					className="hidden md:block w-[40%] h-full absolute top-0 left-0"
-					animate={{ x: path === "/sign/up" ? "150%" : 0 }}
-					transition={{
-						duration: 0.5,
-					}}
-				>
-					<img
-						src={wathingMovie}
-						alt=""
-						className="w-full h-full object-cover"
-					/>
-				</m.div>
-				<AnimatePresence mode="wait">
-					{path === "/sign/in" && (
-						<m.div
-							className="w-full md:w-[60%]   h-full flex absolute top-0 right-0"
-							variants={opacityVariant}
-							key={path}
-							initial="hidden"
-							animate="visible"
-							exit="hidden"
-						>
-							<SignIn />
-						</m.div>
-					)}
-					{path === "/sign/up" && (
-						<m.div
-							className="w-full md:w-[60%]   h-full flex  overflow-y-scroll "
-							variants={opacityVariant}
-							key={path}
-							initial="hidden"
-							animate="visible"
-							exit="hidden"
-						>
-							<SignUp />
-						</m.div>
-					)}
-				</AnimatePresence>
-			</div>
+		<div className="flex min-h-screen w-full">
+			{/* Brand panel (desktop) */}
+			<motion.aside
+				variants={fade}
+				initial="hidden"
+				animate="visible"
+				className="relative hidden w-1/2 overflow-hidden lg:block"
+			>
+				<img
+					src={watchingMovie}
+					alt=""
+					className="absolute inset-0 h-full w-full object-cover"
+				/>
+				<div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10" />
+				<div className="relative flex h-full flex-col justify-end p-12">
+					<p className="max-w-md text-3xl font-extrabold leading-tight text-white">
+						{t("hero_subtitle")}
+					</p>
+				</div>
+			</motion.aside>
+
+			{/* Form panel */}
+			<motion.main
+				key={isSignUp ? "up" : "in"}
+				initial={{ opacity: 0, x: 16 }}
+				animate={{ opacity: 1, x: 0 }}
+				transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+				className="flex w-full items-center justify-center px-4 py-10 lg:w-1/2"
+			>
+				<div className="w-full max-w-md">
+					{isSignUp ? <SignUp /> : <SignIn />}
+				</div>
+			</motion.main>
 		</div>
 	);
-};
-
-export default Sign;
+}

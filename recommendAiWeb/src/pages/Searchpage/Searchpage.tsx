@@ -1,194 +1,163 @@
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Input } from "@/src/components/common";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Search as SearchIcon, Film, ChevronLeft, ChevronRight } from "lucide-react";
+import { useSelector } from "react-redux";
 import { useInput } from "@/src/hooks";
-import {
-	HiChevronDoubleLeft,
-	HiChevronDoubleRight,
-	HiChevronLeft,
-	HiChevronRight,
-} from "react-icons/hi";
 import { selectUser } from "@/src/redux/selectors";
-import { useDispatch, useSelector } from "react-redux";
 import { IReview } from "@/src/redux/Interfaces";
 import {
 	IPagination,
 	useFetchMoviesByTitle,
 } from "@/src/redux/hooks/useFetchMovieByTitle";
-import MovieCard from "./MovieCard";
 import { useRateMovie } from "@/src/redux/hooks/useRateMovie";
+import { MovieCard } from "@/src/components/MovieCard";
+import { EmptyState } from "@/src/components/EmptyState";
+import { Button } from "@/src/components/ui/button";
+import { Input } from "@/src/components/ui/input";
+import { Skeleton } from "@/src/components/ui/skeleton";
+import { fadeDown, staggerContainer } from "@/src/lib/motion";
 
-// Variantes de animación
-const containerVariants = {
-	hidden: { opacity: 0 },
-	show: {
-		opacity: 1,
-		transition: {
-			staggerChildren: 0.1,
-		},
-	},
-};
-
-const Searchpage = () => {
+export function Searchpage() {
 	const { id } = useSelector(selectUser);
 
-	const [pagination, setPagination] = useState<IPagination>({
-		limit: 20,
-		offset: 0,
-	});
-
+	const [pagination, setPagination] = useState<IPagination>({ limit: 20, offset: 0 });
 	const searchInput = useInput("");
 
-	const {
-		error: fetchMoviesError,
-		fetchMoviesByTitle,
-		loading: fetchMoviesLoading,
-		movies,
-		pages,
-	} = useFetchMoviesByTitle();
+	const { fetchMoviesByTitle, loading: fetchMoviesLoading, movies, pages } =
+		useFetchMoviesByTitle();
+	const { loading: rateLoading, rateMovie } = useRateMovie();
 
-	const actualPage = (pagination.offset + 20) / 20;
-	const hasNextPage = actualPage < pages!;
-	const hasPrexPage = actualPage > 0;
-
-	const { error, loading, rateMovie } = useRateMovie();
+	const loading = fetchMoviesLoading || rateLoading;
+	const actualPage = pagination.offset / pagination.limit + 1;
+	const hasNextPage = actualPage < (pages ?? 1);
+	const hasPrevPage = actualPage > 1;
 
 	const fetchMovies = () => {
 		if (searchInput.value) {
 			fetchMoviesByTitle({
 				title: searchInput.value,
-				pagination: pagination,
+				pagination,
 			});
 		}
 	};
 
 	const handleRateMovie = (id_movie: number) => {
-		const review: IReview = {
-			id_movie: id_movie,
-			like: true,
-		};
+		const review: IReview = { id_movie, like: true };
 		rateMovie(review, fetchMovies);
 	};
 
 	useEffect(() => {
-		if (pagination.offset) {
-			setPagination({
-				...pagination,
-				offset: 0,
-			});
-		}
-
+		if (pagination.offset) setPagination({ ...pagination, offset: 0 });
 		const timer = setTimeout(fetchMovies, 500);
-		// importante porque si vuelvo a escribir antes de que se cumpla el timeout, se cancela la búsqueda anterior
 		return () => clearTimeout(timer);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [searchInput.value, id]);
-
-	const handleNext = () => {
-		if (hasNextPage) {
-			const newOffset = pagination.limit + pagination.offset;
-			console.log("pages / offtset", pages! / newOffset);
-			setPagination({
-				...pagination,
-				offset: newOffset,
-			});
-		}
-	};
-
-	const handlePrev = () => {
-		setPagination({
-			...pagination,
-			offset: pagination.offset - pagination.limit,
-		});
-	};
 
 	useEffect(() => {
 		fetchMovies();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [pagination.offset]);
 
-	return (
-		<div className="max-w-7xl mx-auto px-4 py-8 min-h-screen">
-			<div className="mb-10">
-				<motion.h1
-					className="text-3xl font-bold text-primary-400 mb-2"
-					initial={{ opacity: 0, y: -20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.5 }}
-				>
-					Buscar Películas
-				</motion.h1>
+	const goTo = (offset: number) => setPagination((p) => ({ ...p, offset }));
 
-				<motion.div
-					initial={{ opacity: 0 }}
-					animate={{ opacity: 1 }}
-					transition={{ delay: 0.2 }}
-				>
+	return (
+		<div className="mx-auto min-h-screen max-w-7xl px-4 py-12 sm:px-6">
+			<motion.div
+				variants={fadeDown}
+				initial="hidden"
+				animate="visible"
+				className="mb-10 flex flex-col items-center text-center"
+			>
+				<h1 className="text-3xl font-extrabold tracking-tight text-text-primary sm:text-4xl lg:text-5xl">
+					Descubrí tu próxima{" "}
+					<span className="text-accent">obsesión</span>
+				</h1>
+				<p className="mt-3 max-w-2xl text-text-secondary">
+					Buscá entre miles de películas, calificá tus favoritas y dejá que la IA
+					arme tu próxima maratón.
+				</p>
+			</motion.div>
+
+			<motion.div
+				variants={fadeDown}
+				initial="hidden"
+				animate="visible"
+				className="mx-auto mb-12 w-full max-w-2xl"
+			>
+				<div className="relative">
+					<SearchIcon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
 					<Input
 						value={searchInput.value}
 						onChange={searchInput.onChange}
 						onFocus={searchInput.onFocus}
-						placeholder="Escribe el título de una película..."
+						placeholder="Buscar una película..."
+						aria-label="Buscar película"
+						className="h-12 pl-10 text-base"
 					/>
-				</motion.div>
-			</div>
-			{fetchMoviesLoading || loading ? (
-				<div className="flex justify-center py-20">
-					<motion.div
-						animate={{ rotate: 360 }}
-						transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-						className="w-16 h-16 border-4 border-primary-500 border-t-transparent rounded-full"
-					></motion.div>
+				</div>
+			</motion.div>
+
+			{loading ? (
+				<div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
+					{Array.from({ length: 10 }).map((_, index) => (
+						<Skeleton key={index} className="aspect-[2/3] w-full rounded-2xl" />
+					))}
 				</div>
 			) : movies.length === 0 ? (
-				<motion.div
-					className="text-center py-20"
-					initial={{ opacity: 0 }}
-					animate={{ opacity: 1 }}
-					transition={{ duration: 0.5 }}
-				>
-					<div className="text-5xl mb-4 text-primary-500">🍿</div>
-					<h3 className="text-2xl font-medium text-c_gray-500">
-						{searchInput.value
+				<EmptyState
+					icon={<Film className="h-7 w-7" />}
+					title={
+						searchInput.value
 							? "No encontramos películas"
-							: "Busca tus películas favoritas"}
-					</h3>
-					<p className="text-c_gray-700 mt-2">
-						{searchInput.value
-							? "Intenta con otro nombre"
-							: "Comienza escribiendo en el buscador"}
-					</p>
-				</motion.div>
+							: "Busca tus películas favoritas"
+					}
+					description={
+						searchInput.value
+							? "Probá con otro nombre."
+							: "Empezá escribiendo en el buscador."
+					}
+				/>
 			) : (
-				<motion.div
-					variants={containerVariants}
-					initial="hidden"
-					animate="show"
-					className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
-				>
-					<AnimatePresence>
+				<>
+					<motion.div
+						variants={staggerContainer(0.05)}
+						initial="hidden"
+						animate="visible"
+						className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5"
+					>
 						{movies.map((movie) => (
 							<MovieCard
-								movie={movie}
-								handleRateMovie={handleRateMovie}
 								key={movie.id}
+								movie={movie}
+								onLike={handleRateMovie}
 							/>
 						))}
-					</AnimatePresence>
-				</motion.div>
+					</motion.div>
+
+					<div className="mt-12 flex items-center justify-center gap-3">
+						<Button
+							variant="outline"
+							onClick={() => goTo(pagination.offset - pagination.limit)}
+							disabled={!hasPrevPage}
+						>
+							<ChevronLeft className="h-4 w-4" />
+							Anterior
+						</Button>
+						<span className="px-3 text-sm font-medium text-text-secondary">
+							Página <span className="font-bold text-text-primary">{actualPage}</span>{" "}
+							de {pages || 1}
+						</span>
+						<Button
+							variant="outline"
+							onClick={() => goTo(pagination.offset + pagination.limit)}
+							disabled={!hasNextPage}
+						>
+							Siguiente
+							<ChevronRight className="h-4 w-4" />
+						</Button>
+					</div>
+				</>
 			)}
-			<div className=" flex  items-center">
-				<div>
-					<HiChevronLeft onClick={handlePrev} />
-				</div>
-				<div>
-					{" "}
-					Pagina {(pagination.offset + 20) / 20} de {pages}
-				</div>
-				<div>
-					<HiChevronRight onClick={handleNext} />
-				</div>
-			</div>
 		</div>
 	);
-};
-
-export default Searchpage;
+}

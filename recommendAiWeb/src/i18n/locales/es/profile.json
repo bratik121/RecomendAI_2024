@@ -1,0 +1,16 @@
+{
+  "title": "Perfil",
+  "name": "Nombre",
+  "lastname": "Apellido",
+  "bio": "Bio",
+  "avatar": "Foto de perfil",
+  "upload": "Subir foto",
+  "remove": "Quitar foto",
+  "save": "Guardar cambios",
+  "saving": "Guardando...",
+  "saved": "Cambios guardados",
+  "email": "Email",
+  "bioPlaceholder": "Contanos sobre vos (máx. 280 caracteres)",
+  "errorSize": "La imagen supera los 2 MB.",
+  "errorType": "Formato no permitido. Usá JPG, PNG o WebP."
+}

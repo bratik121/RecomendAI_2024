@@ -1,0 +1,16 @@
+{
+  "bubbleLabel": "Abrir el asistente",
+  "title": "Asistente",
+  "subtitle": "Recomendaciones con IA",
+  "placeholder": "Preguntame por películas…",
+  "send": "Enviar",
+  "emptyTitle": "¿En qué puedo ayudarte?",
+  "emptyDesc": "Preguntame por películas parecidas a alguna que te guste.",
+  "typing": "Escribiendo…",
+  "quota": "Consultas restantes: {{count}}",
+  "quotaUnlimited": "Consultas restantes: {{count}}",
+  "error": "No pudimos enviar tu mensaje.",
+  "tryAgain": "Intentar de nuevo",
+  "recommendedTitle": "Te puede gustar",
+  "close": "Cerrar"
+}
