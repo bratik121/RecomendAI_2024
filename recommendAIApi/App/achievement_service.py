@@ -23,9 +23,13 @@ logger = logging.getLogger(__name__)
 
 
 def sync_catalog() -> None:
-    """Crea los logros que falten del catálogo (idempotente)."""
+    """Crea o actualiza los logros del catálogo (idempotente).
+
+    Usa `update_or_create` para corregir descripciones existentes (p. ej. el
+    bug de `{target}`) y rellenar los campos bilingües.
+    """
     for row in achievement_catalog.build_catalog():
-        Achievement.objects.get_or_create(key=row['key'], defaults=row)
+        Achievement.objects.update_or_create(key=row['key'], defaults=row)
 
 
 def _stats(user_id: int) -> dict:
@@ -65,18 +69,37 @@ def unlocked_count(user_id: int) -> int:
     return UserAchievement.objects.filter(user_id=user_id).count()
 
 
-def get_summary(user_id: int) -> dict:
-    """Devuelve el resumen completo para la página de logros."""
+def get_user_rank(user) -> dict:
+    """Rango efectivo de un usuario.
+
+    Si tiene un override manual (`user.rank`), ese reemplaza el cálculo por
+    logros; si no, se deriva de la cantidad de logros desbloqueados.
+    """
+    if getattr(user, 'rank', None):
+        return achievement_catalog.get_rank_by_key(user.rank)
+    return achievement_catalog.get_rank(unlocked_count(user.id))
+
+
+def get_summary(user_id: int, lang: str = 'es') -> dict:
+    """Devuelve el resumen completo para la página de logros.
+
+    `lang` es 'es' o 'en'; determina qué campos de nombre/descripción se usan.
+    """
     sync_catalog()
     evaluate_achievements(user_id)
+    use_en = (lang or 'es').lower().startswith('en')
+
+    user = User.objects.get(pk=user_id)
+    override = bool(getattr(user, 'rank', ''))
 
     achievements = Achievement.objects.filter(is_active=True)
     unlocked = UserAchievement.objects.filter(user_id=user_id).select_related('achievement')
     unlocked_by_id = {ua.achievement_id: ua for ua in unlocked}
     count = len(unlocked)
 
-    rank = achievement_catalog.get_rank(count)
-    nxt = achievement_catalog.next_rank(count)
+    rank = get_user_rank(user)
+    # Si hay override, no hay "siguiente rango" por logros.
+    nxt = None if override else achievement_catalog.next_rank(count)
 
     def _progress(target: int, category: str, stats: dict) -> int:
         return min(target, stats.get(category, 0))
@@ -85,8 +108,8 @@ def get_summary(user_id: int) -> dict:
     achievements_data = [
         {
             'key': a.key,
-            'name': a.name,
-            'description': a.description,
+            'name': a.name_en if use_en else a.name,
+            'description': a.description_en if use_en else a.description,
             'icon': a.icon,
             'category': a.category,
             'target': a.target,
@@ -104,8 +127,10 @@ def get_summary(user_id: int) -> dict:
             'key': rank['key'],
             'label': rank['label'],
             'color': rank['color'],
+            'override': override,
             'next_threshold': nxt['min'] if nxt else None,
             'next_label': nxt['label'] if nxt else None,
+            'next_key': nxt['key'] if nxt else None,
             'next_color': nxt['color'] if nxt else None,
             'progress': count,
         },

@@ -21,6 +21,7 @@ import { Loading } from "@/src/components/Loading";
 import { EmptyState } from "@/src/components/EmptyState";
 import { Button } from "@/src/components/ui/button";
 import { fadeUp, staggerContainer, staggerItem } from "@/src/lib/motion";
+import { rankStyle } from "@/src/lib/ranks";
 import { cn } from "@/src/lib/utils";
 
 const ICONS: Record<string, LucideIcon> = {
@@ -32,31 +33,6 @@ const ICONS: Record<string, LucideIcon> = {
 	Heart,
 	Award,
 };
-
-/** Fondo/texto del rango según el token devuelto por el backend. */
-const RANK_STYLES: Record<string, { bg: string; fg: string }> = {
-	"rank-novato": { bg: "var(--rank-novato-bg)", fg: "var(--rank-novato-fg)" },
-	"rank-explorador": {
-		bg: "var(--rank-explorador-bg)",
-		fg: "var(--rank-explorador-fg)",
-	},
-	"rank-cinefilo": {
-		bg: "var(--rank-cinefilo-bg)",
-		fg: "var(--rank-cinefilo-fg)",
-	},
-	"rank-critico": {
-		bg: "var(--rank-critico-bg)",
-		fg: "var(--rank-critico-fg)",
-	},
-	"rank-maestro": {
-		bg: "var(--rank-maestro-bg)",
-		fg: "var(--rank-maestro-fg)",
-	},
-};
-
-function rankStyle(color: string) {
-	return RANK_STYLES[color] ?? RANK_STYLES["rank-novato"];
-}
 
 function AchievementCard({ item }: { item: AchievementItem }) {
 	const { t } = useTranslation("achievements");
@@ -152,13 +128,14 @@ export function AchievementsPage() {
 
 	const rank = data.rank as RankInfo;
 	const style = rankStyle(rank.color);
-	// const nextPct = rank.next_threshold
-	// 	? Math.min(100, Math.round((rank.progress / rank.next_threshold) * 100))
-	// 	: 100;
+	const rankLabel = t(`ranks.${rank.key}`, { defaultValue: rank.label });
+	const nextLabel = rank.next_key
+		? t(`ranks.${rank.next_key}`, { defaultValue: rank.next_label ?? "" })
+		: null;
+	const nextPct = rank.next_threshold
+		? Math.min(100, Math.round((rank.progress / rank.next_threshold) * 100))
+		: 100;
 
-	const nextPct = 200;
-
-	console.log("nextPct", nextPct);
 	return (
 		<div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
 			<motion.div variants={fadeUp} initial="hidden" animate="visible">
@@ -191,7 +168,7 @@ export function AchievementsPage() {
 								className="text-2xl font-extrabold"
 								style={{ color: style.fg }}
 							>
-								{rank.label}
+								{rankLabel}
 							</p>
 						</div>
 					</div>
@@ -203,12 +180,14 @@ export function AchievementsPage() {
 							})}
 						</p>
 						<p className="text-xs text-text-muted">
-							{rank.next_threshold
-								? t("progressToNext", {
-										count: rank.next_threshold - rank.progress,
-										rank: rank.next_label,
-									})
-								: t("maxRank")}
+							{rank.override
+								? t("manualRank")
+								: rank.next_threshold
+									? t("progressToNext", {
+											count: rank.next_threshold - rank.progress,
+											rank: nextLabel,
+										})
+									: t("maxRank")}
 						</p>
 					</div>
 				</div>
@@ -223,8 +202,8 @@ export function AchievementsPage() {
 						/>
 					</div>
 					<div className="mt-2 flex justify-between text-[11px] text-text-muted">
-						<span>{rank.label}</span>
-						<span>{rank.next_label ?? rank.label}</span>
+						<span>{rankLabel}</span>
+						<span>{nextLabel ?? rankLabel}</span>
 					</div>
 				</div>
 			</motion.section>

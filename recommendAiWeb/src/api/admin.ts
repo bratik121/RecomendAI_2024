@@ -10,6 +10,8 @@ export interface AdminUser {
 	bio?: string;
 	avatar?: string | null;
 	role: UserRole;
+	rank?: string;
+	rank_color?: string;
 	is_active: boolean;
 	created_at: string;
 }
@@ -88,6 +90,10 @@ export const adminApi = {
 		);
 		return data;
 	},
+	async listGenres() {
+		const { data } = await api.get<{ genres: string[] }>("/admin/movies/genres/");
+		return data.genres;
+	},
 	async createMovie(payload: MovieInput) {
 		const form = toFormData(payload);
 		const { data } = await api.post<AdminMovie>("/admin/movies/", form);
@@ -148,6 +154,10 @@ export const adminApi = {
 	},
 	async setRole(id: number, role: UserRole) {
 		const { data } = await api.post<AdminUser>(`/admin/users/${id}/set_role/`, { role });
+		return data;
+	},
+	async setRank(id: number, rank: string) {
+		const { data } = await api.patch<AdminUser>(`/admin/users/${id}/`, { rank });
 		return data;
 	},
 

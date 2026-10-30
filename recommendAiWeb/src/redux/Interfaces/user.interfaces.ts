@@ -9,6 +9,8 @@ export interface Iuser {
 	avatar?: string | null;
 	bio?: string;
 	role?: UserRole;
+	rank?: string;
+	rank_color?: string;
 }
 
 export interface userState {

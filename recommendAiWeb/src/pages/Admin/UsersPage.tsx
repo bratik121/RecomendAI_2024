@@ -2,9 +2,10 @@ import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { toast } from "@/src/lib/toast";
-import { Pencil, Plus, Search, ShieldCheck } from "lucide-react";
+import { Pencil, Plus, Search, ShieldCheck, Trophy } from "lucide-react";
 import { adminApi, adminErrorMessage, AdminUser, Paginated, UserRole } from "@/src/api/admin";
 import { RootState } from "@/src/redux/reducers";
+import { rankStyle, RANK_KEYS } from "@/src/lib/ranks";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
@@ -56,6 +57,7 @@ const roleBadge: Record<UserRole, { variant: "default" | "success" | "secondary"
 
 export default function UsersPage() {
 	const { t } = useTranslation("admin");
+	const { t: tRank } = useTranslation("achievements");
 	const currentUser = useSelector((state: RootState) => state.user.user);
 	const isRoot = currentUser.role === "root";
 
@@ -73,6 +75,8 @@ export default function UsersPage() {
 
 	const [deactivating, setDeactivating] = useState<AdminUser | null>(null);
 	const [changingRole, setChangingRole] = useState<AdminUser | null>(null);
+	const [changingRank, setChangingRank] = useState<AdminUser | null>(null);
+	const [rankValue, setRankValue] = useState<string>("");
 
 	const load = useCallback(async () => {
 		setLoading(true);
@@ -178,6 +182,23 @@ export default function UsersPage() {
 		}
 	};
 
+	const openRank = (user: AdminUser) => {
+		setRankValue(user.rank ?? "");
+		setChangingRank(user);
+	};
+
+	const applyRank = async () => {
+		if (!changingRank) return;
+		try {
+			await adminApi.setRank(changingRank.id, rankValue);
+			toast.success(t("users.rankChanged"));
+			setChangingRank(null);
+			load();
+		} catch (err) {
+			toast.error(adminErrorMessage(err));
+		}
+	};
+
 	const canManage = (user: AdminUser) => {
 		if (user.id === Number(currentUser.id)) return false;
 		if (isRoot) return true;
@@ -244,10 +265,28 @@ export default function UsersPage() {
 									<TableRow key={user.id}>
 										<TableCell>
 											<div className="flex items-center gap-2">
-												<Avatar name={`${user.name} ${user.lastname}`} src={user.avatar} size={30} />
+												<Avatar
+													name={`${user.name} ${user.lastname}`}
+													src={user.avatar}
+													size={30}
+													ringColor={
+														user.rank_color ? rankStyle(user.rank_color).fg : undefined
+													}
+												/>
 												<span className="font-semibold">
 													{user.name} {user.lastname}
 												</span>
+												{user.rank && (
+													<span
+														className="rounded-full px-2 py-0.5 text-[10px] font-bold"
+														style={{
+															backgroundColor: rankStyle(user.rank_color).bg,
+															color: rankStyle(user.rank_color).fg,
+														}}
+													>
+														{tRank(`ranks.${user.rank}`, { defaultValue: user.rank })}
+													</span>
+												)}
 											</div>
 										</TableCell>
 										<TableCell>{user.email}</TableCell>
@@ -275,6 +314,14 @@ export default function UsersPage() {
 																<ShieldCheck className="h-4 w-4" />
 															</Button>
 														)}
+														<Button
+															variant="ghost"
+															size="icon"
+															onClick={() => openRank(user)}
+															aria-label={t("users.setRank")}
+														>
+															<Trophy className="h-4 w-4" />
+														</Button>
 														<Button variant="ghost" size="icon" onClick={() => openEdit(user)} aria-label={t("users.edit")}>
 															<Pencil className="h-4 w-4" />
 														</Button>
@@ -393,6 +440,29 @@ export default function UsersPage() {
 								{t(`users.role.${role}`)}
 							</AlertDialogAction>
 						))}
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+
+			<AlertDialog open={Boolean(changingRank)} onOpenChange={(open) => !open && setChangingRank(null)}>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>{t("users.confirmSetRank")}</AlertDialogTitle>
+						<AlertDialogDescription>{t("users.confirmSetRankDesc")}</AlertDialogDescription>
+					</AlertDialogHeader>
+					<div className="py-2">
+						<Select value={rankValue} onChange={(e) => setRankValue(e.target.value)}>
+							<option value="">{t("users.rank.auto")}</option>
+							{RANK_KEYS.map((rk) => (
+								<option key={rk} value={rk}>
+									{tRank(`ranks.${rk}`, { defaultValue: rk })}
+								</option>
+							))}
+						</Select>
+					</div>
+					<AlertDialogFooter>
+						<AlertDialogCancel>{t("users.cancel")}</AlertDialogCancel>
+						<AlertDialogAction onClick={applyRank}>{t("users.save")}</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>
 			</AlertDialog>

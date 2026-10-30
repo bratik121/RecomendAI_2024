@@ -16,8 +16,10 @@ export interface RankInfo {
 	key: string;
 	label: string;
 	color: string;
+	override?: boolean;
 	next_threshold: number | null;
 	next_label: string | null;
+	next_key: string | null;
 	next_color: string | null;
 	progress: number;
 }

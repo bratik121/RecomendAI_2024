@@ -22,12 +22,11 @@ from App.models import ChatQuota
 
 
 def get_rank_key(user) -> str:
-    """Devuelve la clave de rango actual del usuario (según logros)."""
+    """Devuelve la clave de rango actual del usuario (override o derivado)."""
     if getattr(user, 'is_admin', False):
         return 'maestro'
-    from App.achievement_service import unlocked_count
-    rank = achievement_catalog.get_rank(unlocked_count(user.id))
-    return rank['key']
+    from App.achievement_service import get_user_rank
+    return get_user_rank(user)['key']
 
 
 def get_quota(user) -> dict:

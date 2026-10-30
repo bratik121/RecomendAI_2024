@@ -62,6 +62,28 @@ class MovieAdminViewSet(
         instance.save(update_fields=['is_active'])
         return Response(self.get_serializer(instance).data)
 
+    @decorators.action(detail=False, methods=['get'])
+    def genres(self, request):
+        """Lista de géneros distintos ya presentes en el catálogo.
+
+        Se usa para el autocompletado del formulario de películas. Calcula el
+        conjunto en memoria sobre el JSONField (endpoint solo de admin, poco
+        frecuente).
+        """
+        genres = set()
+        rows = (
+            Movie.objects.filter(is_active=True)
+            .values_list('genres', flat=True)
+            .iterator(chunk_size=2000)
+        )
+        for row in rows:
+            if not isinstance(row, list):
+                continue
+            for genre in row:
+                if isinstance(genre, str) and genre.strip():
+                    genres.add(genre.strip())
+        return Response({'genres': sorted(genres)})
+
 
 class UserAdminViewSet(
     mixins.CreateModelMixin,
@@ -122,6 +144,15 @@ class UserAdminViewSet(
                 status=status.HTTP_403_FORBIDDEN,
             )
         return None
+
+    def update(self, request, *args, **kwargs):
+        """Bloquea el cambio de `rank` si el actor no puede gestionar al target."""
+        target = self.get_object()
+        if 'rank' in (request.data or {}):
+            blocked = self._guard(target)
+            if blocked:
+                return blocked
+        return super().update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         target = self.get_object()

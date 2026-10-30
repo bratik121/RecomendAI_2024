@@ -2,7 +2,7 @@
 
 from rest_framework import serializers
 
-from .models import Movie, Role, User
+from .models import Movie, Rank, Role, User
 
 
 class AdminMovieSerializer(serializers.ModelSerializer):
@@ -60,6 +60,21 @@ class AdminMovieSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('El archivo no es una imagen válida.')
         return value
 
+    def validate_genres(self, value):
+        """Los géneros deben ser un array de strings (trim + sin duplicados)."""
+        if value is None:
+            return []
+        if not isinstance(value, list):
+            raise serializers.ValidationError('Los géneros deben ser una lista de textos.')
+        cleaned = []
+        for genre in value:
+            if not isinstance(genre, str):
+                raise serializers.ValidationError('Cada género debe ser un texto.')
+            genre = genre.strip()
+            if genre and genre not in cleaned:
+                cleaned.append(genre)
+        return cleaned
+
     def update(self, instance, validated_data):
         if 'poster_image' in validated_data and validated_data.get('poster_image') is not None:
             if instance.poster_image:
@@ -80,6 +95,10 @@ class AdminUserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         write_only=True, required=False, allow_blank=True, min_length=8
     )
+    rank = serializers.ChoiceField(
+        choices=Rank.choices, required=False, allow_blank=True
+    )
+    rank_color = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -91,11 +110,17 @@ class AdminUserSerializer(serializers.ModelSerializer):
             'bio',
             'avatar',
             'role',
+            'rank',
+            'rank_color',
             'is_active',
             'created_at',
             'password',
         ]
-        read_only_fields = ['id', 'role', 'created_at', 'avatar']
+        read_only_fields = ['id', 'role', 'created_at', 'avatar', 'rank_color']
+
+    def get_rank_color(self, obj):
+        from App.achievement_service import get_user_rank
+        return get_user_rank(obj)['color']
 
     def validate_email(self, value):
         value = User.objects.normalize_email(value)

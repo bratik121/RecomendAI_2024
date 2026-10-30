@@ -21,6 +21,16 @@ class Role(models.TextChoices):
     USER = 'user', 'User'
 
 
+class Rank(models.TextChoices):
+    """Rangos de logros (usados también como override manual en `User.rank`)."""
+
+    NOVATO = 'novato', 'Novato'
+    EXPLORADOR = 'explorador', 'Explorador'
+    CINEFILO = 'cinefilo', 'Cinéfilo'
+    CRITICO = 'critico', 'Crítico'
+    MAESTRO = 'maestro', 'Maestro'
+
+
 class MyUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -56,6 +66,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         max_length=10,
         choices=Role.choices,
         default=Role.USER,
+    )
+    # Rango manual (override). Si está vacío, el rango se deriva de los logros.
+    rank = models.CharField(
+        max_length=16,
+        choices=Rank.choices,
+        blank=True,
+        default='',
     )
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     is_active = models.BooleanField(default=True)
@@ -291,12 +308,19 @@ class ChatQuota(models.Model):
 
 
 class Achievement(models.Model):
-    """Logro desbloqueable, con su categoría, hito e ícono."""
+    """Logro desbloqueable, con su categoría, hito e ícono.
+
+    `name`/`description` son la versión en español; `name_en`/`description_en`
+    la versión en inglés (opción menos invasiva: no se renombraron los campos
+    existentes).
+    """
 
     key = models.CharField(max_length=64, unique=True)
     category = models.CharField(max_length=32)
     name = models.CharField(max_length=120)
     description = models.CharField(max_length=255)
+    name_en = models.CharField(max_length=120, blank=True, default='')
+    description_en = models.CharField(max_length=255, blank=True, default='')
     icon = models.CharField(max_length=64, blank=True, default='Award')
     target = models.PositiveIntegerField(default=1)
     order = models.PositiveIntegerField(default=0)

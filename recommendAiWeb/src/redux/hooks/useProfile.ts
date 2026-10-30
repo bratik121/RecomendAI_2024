@@ -42,6 +42,8 @@ export const useProfile = () => {
 				avatar: response.data.avatar || null,
 				bio: response.data.bio || "",
 				role: response.data.role || "user",
+				rank: response.data.rank || "novato",
+				rank_color: response.data.rank_color || "rank-novato",
 			};
 			storage.set("user", updated);
 			dispatch(setUserFromStorage(updated));
@@ -72,6 +74,8 @@ export const useProfile = () => {
 				avatar: response.data.avatar || null,
 				bio: response.data.bio || "",
 				role: response.data.role || "user",
+				rank: response.data.rank || "novato",
+				rank_color: response.data.rank_color || "rank-novato",
 			};
 			storage.set("user", updated);
 			dispatch(setUserFromStorage(updated));

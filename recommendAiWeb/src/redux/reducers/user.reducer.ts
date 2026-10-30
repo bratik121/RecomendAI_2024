@@ -46,6 +46,8 @@ export const user = (
 					avatar: action.payload.avatar || null,
 					bio: action.payload.bio || "",
 					role: action.payload.role || "user",
+					rank: action.payload.rank || "novato",
+					rank_color: action.payload.rank_color || "rank-novato",
 				},
 			};
 		case POST_REGISTER_USER_ERROR:

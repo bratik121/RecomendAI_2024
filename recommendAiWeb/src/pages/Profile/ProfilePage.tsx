@@ -10,10 +10,17 @@ import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
 import { Spinner } from "@/src/components/Spinner";
 import { fadeUp } from "@/src/lib/motion";
+import { rankStyle } from "@/src/lib/ranks";
 
 export function ProfilePage() {
 	const { t } = useTranslation("profile");
+	const { t: tRank } = useTranslation("achievements");
 	const { user, saving, error, updateProfile, removeAvatar } = useProfile();
+	const rankColor = rankStyle(user.rank_color).fg;
+	const rankBg = rankStyle(user.rank_color).bg;
+	const rankLabel = user.rank
+		? tRank(`ranks.${user.rank}`, { defaultValue: user.rank })
+		: null;
 
 	const [name, setName] = useState(user.name || "");
 	const [lastname, setLastname] = useState(user.lastname || "");
@@ -83,8 +90,17 @@ export function ProfilePage() {
 						name={user.name ? `${user.name} ${user.lastname}` : "?"}
 						src={preview || user.avatar}
 						size={96}
+						ringColor={user.rank_color ? rankColor : undefined}
 					/>
 					<div className="flex flex-col items-center gap-2 sm:items-start">
+						{rankLabel && (
+							<span
+								className="inline-flex items-center rounded-full px-3 py-1 text-sm font-bold"
+								style={{ backgroundColor: rankBg, color: rankColor }}
+							>
+								{rankLabel}
+							</span>
+						)}
 						<input
 							ref={fileRef}
 							type="file"

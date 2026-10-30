@@ -145,5 +145,13 @@ class AchievementsView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        summary = get_summary(request.user.id)
+        lang = self._resolve_lang(request)
+        summary = get_summary(request.user.id, lang=lang)
         return Response(summary)
+
+    @staticmethod
+    def _resolve_lang(request) -> str:
+        header = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+        if header:
+            return header.split(',')[0].split('-')[0].strip().lower()
+        return 'es'

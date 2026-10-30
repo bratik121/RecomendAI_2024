@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authtoken.models import Token
 
 from App.models import User
+from App.achievement_service import get_user_rank
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +25,7 @@ def login_view(request):
         if user is not None and isinstance(user, User):
             login(request, user)
             token, _ = Token.objects.get_or_create(user=user)
+            rank = get_user_rank(user)
             logger.debug("Login successful")
             return JsonResponse({
                 'id': user.id,
@@ -33,6 +35,8 @@ def login_view(request):
                 'bio': user.bio,
                 'avatar': request.build_absolute_uri(user.avatar.url) if user.avatar else None,
                 'role': user.role,
+                'rank': rank['key'],
+                'rank_color': rank['color'],
                 'token': token.key,
             }, status=200)
         else:

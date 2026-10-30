@@ -3,6 +3,8 @@ export interface ICommentUser {
 	name: string;
 	lastname: string;
 	avatar?: string | null;
+	rank?: string;
+	rank_color?: string;
 }
 
 export interface IComment {

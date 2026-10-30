@@ -7,6 +7,7 @@ import { useState } from "react";
 import { RootState } from "@/src/redux/reducers";
 import { userLogout } from "@/src/redux/actions";
 import { cn } from "@/src/lib/utils";
+import { rankStyle } from "@/src/lib/ranks";
 import { Avatar } from "@/src/components/Avatar";
 import { ThemeToggle } from "@/src/components/ThemeToggle";
 import { LanguageSwitcher } from "@/src/components/LanguageSwitcher";
@@ -113,6 +114,9 @@ export function ResponsiveNavbar() {
 											name={user.name ? `${user.name} ${user.lastname}` : "?"}
 											src={user.avatar}
 											size={32}
+											ringColor={
+												user.rank_color ? rankStyle(user.rank_color).fg : undefined
+											}
 										/>
 										<span className="text-sm font-medium text-text-primary">
 											{user.name}

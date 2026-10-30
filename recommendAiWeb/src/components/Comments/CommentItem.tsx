@@ -5,6 +5,13 @@ import { Heart, Pencil, Reply, Star, Trash2 } from "lucide-react";
 import { IComment } from "@/src/redux/Interfaces";
 import { Avatar } from "@/src/components/Avatar";
 import { CommentForm } from "./CommentForm";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/src/components/ui/tooltip";
+import { rankStyle } from "@/src/lib/ranks";
 import { cn } from "@/src/lib/utils";
 
 type Props = {
@@ -45,10 +52,15 @@ export function CommentItem({
 	isReply = false,
 }: Props) {
 	const { t, i18n } = useTranslation("comments");
+	const { t: tRank } = useTranslation("achievements");
 	const [replying, setReplying] = useState(false);
 	const [editing, setEditing] = useState(false);
 	const fullName = `${comment.user.name} ${comment.user.lastname}`.trim();
 	const relative = relativeDate(comment.created_at, i18n.language);
+	const rankColor = rankStyle(comment.user.rank_color).fg;
+	const rankLabel = comment.user.rank
+		? tRank(`ranks.${comment.user.rank}`, { defaultValue: comment.user.rank })
+		: null;
 
 	const handleDelete = async () => {
 		if (!onDelete) return;
@@ -71,11 +83,34 @@ export function CommentItem({
 			)}
 		>
 			<div className="flex items-start gap-3">
-				<Avatar name={comment.user.name || "?"} src={comment.user.avatar} size={36} />
+				<Avatar
+					name={comment.user.name || "?"}
+					src={comment.user.avatar}
+					size={36}
+					ringColor={comment.user.rank_color ? rankColor : undefined}
+				/>
 
 				<div className="min-w-0 flex-1">
 					<div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-						<span className="text-sm font-semibold text-text-primary">{fullName}</span>
+						{rankLabel ? (
+							<TooltipProvider delayDuration={300}>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<span
+											className="text-sm font-semibold"
+											style={{ color: rankColor }}
+										>
+											{fullName}
+										</span>
+									</TooltipTrigger>
+									<TooltipContent>{rankLabel}</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
+						) : (
+							<span className="text-sm font-semibold text-text-primary">
+								{fullName}
+							</span>
+						)}
 						<span className="text-xs text-text-muted">
 							{relative || t("justNow")}
 						</span>

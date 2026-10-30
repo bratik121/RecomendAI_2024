@@ -40,13 +40,14 @@ import {
 	TableRow,
 } from "@/src/components/ui/table";
 import { Select } from "@/src/components/ui";
+import { GenreInput } from "@/src/components/admin/GenreInput";
 
 type MovieFormState = {
 	title: string;
 	release_year: string;
 	overview: string;
 	poster_path: string;
-	genres: string;
+	genres: string[];
 	popularity: string;
 	vote_average: string;
 	revenue: string;
@@ -57,7 +58,7 @@ const emptyForm: MovieFormState = {
 	release_year: "",
 	overview: "",
 	poster_path: "",
-	genres: "",
+	genres: [],
 	popularity: "0",
 	vote_average: "0",
 	revenue: "0",
@@ -70,7 +71,7 @@ function toForm(movie?: AdminMovie): MovieFormState {
 		release_year: movie.release_year,
 		overview: movie.overview,
 		poster_path: movie.poster_path || "",
-		genres: (movie.genres || []).join(", "),
+		genres: movie.genres || [],
 		popularity: String(movie.popularity),
 		vote_average: String(movie.vote_average),
 		revenue: String(movie.revenue),
@@ -93,6 +94,7 @@ export default function MoviesPage() {
 	const [saving, setSaving] = useState(false);
 
 	const [archiving, setArchiving] = useState<AdminMovie | null>(null);
+	const [genreSuggestions, setGenreSuggestions] = useState<string[]>([]);
 
 	const load = useCallback(async () => {
 		setLoading(true);
@@ -114,6 +116,13 @@ export default function MoviesPage() {
 	useEffect(() => {
 		load();
 	}, [load]);
+
+	useEffect(() => {
+		adminApi
+			.listGenres()
+			.then(setGenreSuggestions)
+			.catch(() => setGenreSuggestions([]));
+	}, []);
 
 	const openCreate = () => {
 		setEditing(null);
@@ -137,10 +146,7 @@ export default function MoviesPage() {
 				release_year: form.release_year,
 				overview: form.overview,
 				poster_path: form.poster_path,
-				genres: form.genres
-					.split(",")
-					.map((g) => g.trim())
-					.filter(Boolean),
+				genres: form.genres,
 				popularity: Number(form.popularity || 0),
 				vote_average: Number(form.vote_average || 0),
 				revenue: Number(form.revenue || 0),
@@ -185,7 +191,8 @@ export default function MoviesPage() {
 	};
 
 	const set =
-		(key: keyof MovieFormState) => (e: React.ChangeEvent<HTMLInputElement>) =>
+		(key: Exclude<keyof MovieFormState, "genres">) =>
+		(e: React.ChangeEvent<HTMLInputElement>) =>
 			setForm((prev) => ({ ...prev, [key]: e.target.value }));
 
 	return (
@@ -411,10 +418,11 @@ export default function MoviesPage() {
 						</div>
 						<div className="space-y-1.5">
 							<Label htmlFor="m-genres">{t("movies.field.genres")}</Label>
-							<Input
-								id="m-genres"
+							<GenreInput
 								value={form.genres}
-								onChange={set("genres")}
+								onChange={(genres) => setForm((prev) => ({ ...prev, genres }))}
+								suggestions={genreSuggestions}
+								placeholder={t("movies.genrePlaceholder")}
 							/>
 						</div>
 						<div className="space-y-1.5">

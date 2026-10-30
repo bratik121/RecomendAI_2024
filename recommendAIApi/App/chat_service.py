@@ -32,8 +32,11 @@ SYSTEM_PROMPT = (
     "Solo podés recomendar películas que figuren en la lista CONTEXTO; está "
     "prohibido inventar títulos o datos. Para cada recomendación, elegí el "
     "campo `id` de una película real del contexto y explicá brevemente por qué "
-    "podría gustarle. Si el usuario pide algo fuera de recomendaciones, ayudalo "
-    "con naturalidad sin recomendar películas inventadas."
+    "podría gustarle. Si el CONTEXTO está vacío o no coincide con lo que pidió "
+    "el usuario, decí explícitamente que no encontraste nada que coincida y "
+    "pedile más detalles, SIN recomendar películas sueltas. Si el usuario pide "
+    "algo fuera de recomendaciones, ayudalo con naturalidad sin recomendar "
+    "películas inventadas."
 )
 
 
@@ -41,6 +44,7 @@ def _build_context(message: str) -> dict:
     result = retrieve_candidates(message)
     movies = result['candidates']
     seed = result['seed']
+    matched = result['matched']
 
     lines = []
     if seed is not None:
@@ -53,17 +57,29 @@ def _build_context(message: str) -> dict:
         lines.append(
             f"- id={m.id} | {m.title} ({m.release_year}) | géneros: {genres} | {m.overview}"
         )
-    return {'seed': seed, 'candidates': movies, 'context_text': '\n'.join(lines)}
+    return {
+        'seed': seed,
+        'candidates': movies,
+        'matched': matched,
+        'context_text': '\n'.join(lines),
+    }
 
 
-def _build_user_prompt(message: str, context_text: str, history) -> str:
+def _build_user_prompt(message: str, context_text: str, matched: bool, history) -> str:
     history_lines = []
     for msg in history:
         role = 'Usuario' if msg['role'] == 'user' else 'Asistente'
         history_lines.append(f'{role}: {msg["content"]}')
 
+    context_block = f"CONTEXTO (solo estas películas son válidas):\n{context_text}"
+    if not matched:
+        context_block = (
+            "CONTEXTO: NO se encontró ninguna película que coincida con la consulta. "
+            "Respondé indicando que no encontraste y pedí más detalles."
+        )
+
     return (
-        f"CONTEXTO (solo estas películas son válidas):\n{context_text}\n\n"
+        f"{context_block}\n\n"
         f"Historial reciente:\n" + ('\n'.join(history_lines) or '(sin historial)') +
         f"\n\nMensaje del usuario: {message}\n\n"
         "Respondé en formato JSON con dos claves: `reply` (tu respuesta en texto) "
@@ -120,7 +136,7 @@ def generate(message: str, history: list[dict]) -> dict:
             model=settings.GEMINI_MODEL,
             contents=[
                 {'role': 'user', 'parts': [{'text': SYSTEM_PROMPT}]},
-                {'role': 'user', 'parts': [{'text': _build_user_prompt(message, context['context_text'], history)}]},
+                {'role': 'user', 'parts': [{'text': _build_user_prompt(message, context['context_text'], context['matched'], history)}]},
             ],
         )
         text = response.text or ''

@@ -70,17 +70,25 @@ CHAT_QUOTA_LIMITS = {
 def build_catalog():
     """Devuelve la lista plana de definiciones de logros.
 
-    Cada elemento es un dict con los campos que espera el modelo `Achievement`.
+    Cada elemento es un dict con los campos que espera el modelo `Achievement`,
+    incluyendo `name`/`description` (es) y `name_en`/`description_en` (en), con
+    el `target` ya interpolado.
     """
     rows = []
     for category, meta in CATALOG.items():
         for i, target in enumerate(meta['thresholds']):
+            name = _names.get(category, {}).get(target, f'{meta["label"]} {target}')
+            name_en = _names_en.get(category, {}).get(target, f'{meta["label"]} {target}')
+            desc_tpl = _descriptions.get(category, '{target}')
+            desc_en_tpl = _descriptions_en.get(category, '{target}')
             rows.append(
                 {
                     'key': f'{category}_{target}',
                     'category': category,
-                    'name': _names.get(category, {}).get(target, f'{meta["label"]} {target}'),
-                    'description': _descriptions.get(category, f'{meta["label"]}: {target}'),
+                    'name': name,
+                    'description': desc_tpl.format(target=target),
+                    'name_en': name_en,
+                    'description_en': desc_en_tpl.format(target=target),
                     'icon': meta['icon'],
                     'target': target,
                     'order': i,
@@ -145,6 +153,44 @@ _descriptions = {
 }
 
 
+# Nombre y descripción por hito en inglés.
+_names_en = {
+    'ratings': {
+        1: 'First rating', 10: 'Good eye', 25: 'Budding critic',
+        50: 'Voice with taste', 100: 'Film curator',
+    },
+    'comments': {
+        1: 'First comment', 5: 'Conversationalist', 10: 'Frequent reviewer',
+        25: 'Room authority', 50: 'Film chronicler',
+    },
+    'watchlist': {
+        5: 'To watch', 10: 'Growing queue', 25: 'Planner',
+        50: 'Collector', 100: 'Personal library',
+    },
+    'chat': {
+        3: 'First chat', 10: 'Cinephile chat', 25: 'Chat regular',
+        50: 'AI companion', 100: 'Chat ambassador',
+    },
+    'seen': {
+        10: 'First screenings', 25: 'Marathoner', 50: 'Full house',
+        100: 'Signature cinema', 250: 'Walking encyclopedia',
+    },
+    'likes': {
+        10: 'Sign of taste', 25: 'Defined taste', 50: 'Appreciated collection',
+        100: 'Taste-maker', 250: 'Like legend',
+    },
+}
+
+_descriptions_en = {
+    'ratings': 'You rated {target} movies.',
+    'comments': 'You wrote {target} comments.',
+    'watchlist': 'You added {target} movies to your watchlist.',
+    'chat': 'You exchanged {target} messages with the assistant.',
+    'seen': 'You marked {target} movies as seen.',
+    'likes': 'You liked {target} movies.',
+}
+
+
 def get_rank(unlocked_count: int) -> dict:
     """Devuelve el dict del rango actual para una cantidad de logros."""
     current = RANKS[0]
@@ -152,6 +198,14 @@ def get_rank(unlocked_count: int) -> dict:
         if unlocked_count >= rank['min']:
             current = rank
     return current
+
+
+def get_rank_by_key(key: str) -> dict:
+    """Devuelve el dict del rango por su clave (default: Novato)."""
+    for rank in RANKS:
+        if rank['key'] == key:
+            return rank
+    return RANKS[0]
 
 
 def next_rank(unlocked_count: int) -> dict | None:

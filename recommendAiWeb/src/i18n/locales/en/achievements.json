@@ -9,6 +9,7 @@
   "howItWorksBody": "Each achievement unlocks when you hit a milestone. As you collect achievements you rank up: Rookie, Explorer, Cinephile, Critic and Master.",
   "locked": "Locked",
   "unlocked": "Unlocked",
+  "manualRank": "Rank set manually by an administrator.",
   "progressLabel": "{{progress}} of {{target}}",
   "categories": {
     "ratings": "Ratings",
@@ -17,5 +18,12 @@
     "chat": "Chat",
     "seen": "Seen",
     "likes": "Likes"
+  },
+  "ranks": {
+    "novato": "Rookie",
+    "explorador": "Explorer",
+    "cinefilo": "Cinephile",
+    "critico": "Critic",
+    "maestro": "Master"
   }
 }

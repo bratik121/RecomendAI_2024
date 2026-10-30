@@ -9,6 +9,7 @@
   "howItWorksBody": "Cada logro se desbloquea al alcanzar un hito. Al acumular logros subís de rango: Novato, Explorador, Cinéfilo, Crítico y Maestro.",
   "locked": "Bloqueado",
   "unlocked": "Desbloqueado",
+  "manualRank": "Rango asignado manualmente por un administrador.",
   "progressLabel": "{{progress}} de {{target}}",
   "categories": {
     "ratings": "Ratings",
@@ -17,5 +18,12 @@
     "chat": "Chat",
     "seen": "Vistas",
     "likes": "Likes"
+  },
+  "ranks": {
+    "novato": "Novato",
+    "explorador": "Explorador",
+    "cinefilo": "Cinéfilo",
+    "critico": "Crítico",
+    "maestro": "Maestro"
   }
 }

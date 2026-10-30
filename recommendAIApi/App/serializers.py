@@ -55,10 +55,12 @@ class MovieSerializer(serializers.ModelSerializer):
 
 class CommentUserSerializer(serializers.ModelSerializer):
     avatar = serializers.SerializerMethodField()
+    rank = serializers.SerializerMethodField()
+    rank_color = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'name', 'lastname', 'avatar']
+        fields = ['id', 'name', 'lastname', 'avatar', 'rank', 'rank_color']
 
     def get_avatar(self, obj):
         if not obj.avatar:
@@ -67,6 +69,16 @@ class CommentUserSerializer(serializers.ModelSerializer):
         if request is not None:
             return request.build_absolute_uri(obj.avatar.url)
         return obj.avatar.url
+
+    def _rank_info(self, obj):
+        from App.achievement_service import get_user_rank
+        return get_user_rank(obj)
+
+    def get_rank(self, obj):
+        return self._rank_info(obj)['key']
+
+    def get_rank_color(self, obj):
+        return self._rank_info(obj)['color']
 
 
 class CommentReplySerializer(serializers.ModelSerializer):
@@ -190,11 +202,23 @@ class CommentSerializer(CommentReplySerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     avatar = serializers.ImageField(required=False, allow_null=True)
+    rank = serializers.SerializerMethodField()
+    rank_color = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'name', 'lastname', 'email', 'bio', 'avatar', 'role']
-        read_only_fields = ['id', 'email', 'role']
+        fields = ['id', 'name', 'lastname', 'email', 'bio', 'avatar', 'role', 'rank', 'rank_color']
+        read_only_fields = ['id', 'email', 'role', 'rank', 'rank_color']
+
+    def _rank_info(self, obj):
+        from App.achievement_service import get_user_rank
+        return get_user_rank(obj)
+
+    def get_rank(self, obj):
+        return self._rank_info(obj)['key']
+
+    def get_rank_color(self, obj):
+        return self._rank_info(obj)['color']
 
     def validate_avatar(self, value):
         if value is None:
