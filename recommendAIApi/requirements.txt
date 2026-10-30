@@ -12,3 +12,4 @@ cloudinary
 django-cloudinary-storage
 google-genai
 redis
+gunicorn
