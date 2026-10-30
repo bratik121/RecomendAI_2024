@@ -29,7 +29,7 @@ DEBUG = env.bool('DEBUG', default=False)
 # Fallback de desarrollo. En producción debe configurarse explícitamente.
 ALLOWED_HOSTS = env.list(
     'ALLOWED_HOSTS',
-    default=['localhost', '127.0.0.1', 'testserver', '192.168.0.103'],
+    default=['localhost', '127.0.0.1', 'testserver', '192.168.0.103','recomendai-2024.onrender.com'],
 )
 
 # ---------------------------------------------------------------------------
