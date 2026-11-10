@@ -12,7 +12,9 @@ import { Avatar } from "@/src/components/Avatar";
 import { ThemeToggle } from "@/src/components/ThemeToggle";
 import { LanguageSwitcher } from "@/src/components/LanguageSwitcher";
 import { Button } from "@/src/components/ui/button";
+import { useTheme } from "@/src/lib/theme";
 import logo from "@/src/assets/logo-removebg-preview.png";
+import logoLight from "@/src/assets/logo-removebg-preview-light.png";
 
 export function ResponsiveNavbar() {
 	const { t } = useTranslation("nav");
@@ -26,24 +28,57 @@ export function ResponsiveNavbar() {
 	const pendingCount = useSelector(
 		(state: RootState) => state.watchlist.summary.pending
 	);
+	const { isDark } = useTheme();
 
 	const items = [
 		{ to: "/search", label: t("discover"), match: "/search", auth: false },
-		{ to: "/review-films", label: t("reviewFilms"), match: "/review-films", auth: true },
-		{ to: "/watchlist", label: t("watchlist"), match: "/watchlist", auth: true, badge: pendingCount },
-		{ to: "/achievements", label: t("achievements"), match: "/achievements", auth: true },
+		{
+			to: "/review-films",
+			label: t("reviewFilms"),
+			match: "/review-films",
+			auth: true,
+		},
+		{
+			to: "/watchlist",
+			label: t("watchlist"),
+			match: "/watchlist",
+			auth: true,
+			badge: pendingCount,
+		},
+		{
+			to: "/achievements",
+			label: t("achievements"),
+			match: "/achievements",
+			auth: true,
+		},
 		{ to: "/profile", label: t("profile"), match: "/profile", auth: true },
-		{ to: "/admin", label: t("admin"), match: "/admin", auth: true, admin: true },
+		{
+			to: "/admin",
+			label: t("admin"),
+			match: "/admin",
+			auth: true,
+			admin: true,
+		},
 	].filter(
 		(item) =>
 			(!item.auth || isAuthenticated) &&
-			(!("admin" in item && item.admin) || (user.role === "admin" || user.role === "root"))
+			(!("admin" in item && item.admin) ||
+				user.role === "admin" ||
+				user.role === "root")
 	);
 
 	return (
 		<header className="fixed inset-x-0 top-0 z-50 flex h-16 items-center justify-between border-b border-border-subtle bg-background/85 px-4 backdrop-blur-md lg:hidden">
-			<Link to="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
-				<img src={logo} alt="" className="h-8 w-8 object-contain" />
+			<Link
+				to="/"
+				className="flex items-center gap-2"
+				onClick={() => setOpen(false)}
+			>
+				<img
+					src={isDark ? logo : logoLight}
+					alt=""
+					className="h-8 w-8 object-contain"
+				/>
 				<span className="text-lg font-extrabold tracking-tight text-text-primary">
 					What2Watch
 				</span>
@@ -115,7 +150,9 @@ export function ResponsiveNavbar() {
 											src={user.avatar}
 											size={32}
 											ringColor={
-												user.rank_color ? rankStyle(user.rank_color).fg : undefined
+												user.rank_color
+													? rankStyle(user.rank_color).fg
+													: undefined
 											}
 										/>
 										<span className="text-sm font-medium text-text-primary">
