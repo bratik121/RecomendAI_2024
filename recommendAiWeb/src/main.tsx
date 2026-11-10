@@ -8,8 +8,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./i18n";
 import "./index.css";
 
-const USER_URL = `${import.meta.env.VITE_API_URL}/User/`;
-
 const queryClient = new QueryClient({
 	defaultOptions: {
 		queries: {
