@@ -9,7 +9,9 @@ import { isEmail, isPassword, isName, isLastName } from "@/src/utils";
 import { Button } from "@/src/components/ui/button";
 import { Spinner } from "@/src/components/Spinner";
 import { TextField, PasswordField } from "./AuthField";
+import { useTheme } from "@/src/lib/theme";
 import logo from "@/src/assets/logo-removebg-preview.png";
+import logoLight from "@/src/assets/logo-removebg-preview-light.png";
 
 export function SignUp() {
 	const navigate = useNavigate();
@@ -18,6 +20,7 @@ export function SignUp() {
 	const { isFetching, isAuthenticated, error } = useSelector(
 		(state: RootState) => state.user
 	);
+	const { isDark } = useTheme();
 
 	const name = useInput("");
 	const lastname = useInput("");
@@ -61,11 +64,17 @@ export function SignUp() {
 	return (
 		<div className="flex flex-col">
 			<div className="mb-8 flex flex-col items-center gap-3">
-				<img src={logo} alt="What2Watch" className="h-14 w-14 object-contain" />
+				<img
+					src={isDark ? logo : logoLight}
+					alt="What2Watch"
+					className="h-14 w-14 object-contain"
+				/>
 				<h1 className="text-2xl font-extrabold tracking-tight text-text-primary">
 					{t("signUp")}
 				</h1>
-				<p className="text-sm text-text-muted">{t("signUpSubtitle", { ns: "auth" })}</p>
+				<p className="text-sm text-text-muted">
+					{t("signUpSubtitle", { ns: "auth" })}
+				</p>
 			</div>
 
 			<form onSubmit={handleSubmit} className="space-y-4" noValidate>
@@ -117,14 +126,22 @@ export function SignUp() {
 					</p>
 				)}
 
-				<Button type="submit" className="w-full" size="lg" disabled={isFetching}>
+				<Button
+					type="submit"
+					className="w-full"
+					size="lg"
+					disabled={isFetching}
+				>
 					{isFetching ? <Spinner /> : t("signUpButton")}
 				</Button>
 			</form>
 
 			<p className="mt-6 text-center text-sm text-text-muted">
 				{t("haveAccount", { ns: "auth" })}{" "}
-				<Link to="/sign/in" className="font-semibold text-accent hover:underline">
+				<Link
+					to="/sign/in"
+					className="font-semibold text-accent hover:underline"
+				>
 					{t("signIn")}
 				</Link>
 			</p>

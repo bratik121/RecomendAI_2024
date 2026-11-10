@@ -11,6 +11,7 @@ import type errors from "./locales/es/errors.json";
 import type admin from "./locales/es/admin.json";
 import type chat from "./locales/es/chat.json";
 import type achievements from "./locales/es/achievements.json";
+import type reviews from "./locales/es/review.json";
 
 declare module "react-i18next" {
 	interface CustomTypeOptions {
@@ -28,6 +29,7 @@ declare module "react-i18next" {
 			admin: typeof admin;
 			chat: typeof chat;
 			achievements: typeof achievements;
+			review: typeof review;
 		};
 	}
 }

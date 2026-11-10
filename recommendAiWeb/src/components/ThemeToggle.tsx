@@ -8,8 +8,7 @@ import { Button } from "@/src/components/ui/button";
  * when no explicit choice has been made (see src/lib/theme.ts).
  */
 export function ThemeToggle() {
-	const { theme, toggle } = useTheme();
-	const isDark = theme === "dark";
+	const { theme, toggle, isDark } = useTheme();
 
 	return (
 		<Button
@@ -27,7 +26,11 @@ export function ThemeToggle() {
 				transition={{ type: "spring", stiffness: 260, damping: 20 }}
 				className="flex"
 			>
-				{isDark ? <Sun className="h-[18px] w-[18px]" /> : <Moon className="h-[18px] w-[18px]" />}
+				{isDark ? (
+					<Sun className="h-[18px] w-[18px]" />
+				) : (
+					<Moon className="h-[18px] w-[18px]" />
+				)}
 			</motion.span>
 		</Button>
 	);

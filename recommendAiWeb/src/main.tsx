@@ -9,7 +9,6 @@ import "./i18n";
 import "./index.css";
 
 const USER_URL = `${import.meta.env.VITE_API_URL}/User/`;
-console.log("USER_URL:", USER_URL);
 
 const queryClient = new QueryClient({
 	defaultOptions: {

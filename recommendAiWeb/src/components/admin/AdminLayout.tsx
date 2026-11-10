@@ -7,6 +7,9 @@ import { cn } from "@/src/lib/utils";
 import { RootState } from "@/src/redux/reducers";
 import { Avatar } from "@/src/components/Avatar";
 import logo from "@/src/assets/logo-removebg-preview.png";
+import logoLight from "@/src/assets/logo-removebg-preview-light.png";
+import { useTheme } from "@/src/lib/theme";
+
 import { ThemeToggle } from "../ThemeToggle";
 import { LanguageSwitcher } from "../LanguageSwitcher";
 
@@ -48,6 +51,7 @@ export function AdminLayout() {
 	const { t } = useTranslation("admin");
 	const { user } = useSelector((state: RootState) => state.user);
 	const [open, setOpen] = useState(false);
+	const { isDark } = useTheme();
 
 	return (
 		<div className="flex min-h-screen w-full bg-background max-h-screen">
@@ -64,7 +68,11 @@ export function AdminLayout() {
 					</div>
 					<div className="flex h-16 items-center gap-2 border-t border-border-subtle px-5">
 						<Link to="/" className="group flex items-center gap-2">
-							<img src={logo} alt="" className="h-9 w-9 object-contain" />
+							<img
+								src={isDark ? logo : logoLight}
+								alt=""
+								className="h-9 w-9 object-contain"
+							/>
 							<span className="text-lg font-extrabold tracking-tight text-text-primary transition-colors group-hover:text-accent">
 								What2Watch
 							</span>

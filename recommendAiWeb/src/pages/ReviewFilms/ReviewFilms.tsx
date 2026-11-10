@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Heart, Sparkles, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { RootState } from "@/src/redux/reducers";
 import { IReview, IRate_Movies } from "@/src/redux/Interfaces";
 import {
@@ -17,6 +18,7 @@ import { Button } from "@/src/components/ui/button";
 import { staggerContainer } from "@/src/lib/motion";
 
 export function ReviewFilms() {
+	const { t } = useTranslation("review");
 	const [ratedMovies, setRatedMovies] = useState<IReview[]>([]);
 	const [isBatchComplete, setIsBatchComplete] = useState(false);
 	const [index, setIndex] = useState(0);
@@ -64,7 +66,7 @@ export function ReviewFilms() {
 	if (isFetching || !movies || movies.length === 0) {
 		return (
 			<div className="flex min-h-[60vh] items-center justify-center">
-				<Loading label="Preparando películas..." />
+				<Loading label={t("loadingMovies")} />
 			</div>
 		);
 	}
@@ -73,9 +75,11 @@ export function ReviewFilms() {
 		return (
 			<div className="mx-auto max-w-xl px-4 py-16">
 				<ErrorState
-					title="No pudimos cargar las películas"
+					title={t("errorTitle")}
 					description={error}
-					onRetry={() => user?.id && dispatch(post10MoviesProcess(parseInt(user.id)))}
+					onRetry={() =>
+						user?.id && dispatch(post10MoviesProcess(parseInt(user.id)))
+					}
 				/>
 			</div>
 		);
@@ -94,11 +98,10 @@ export function ReviewFilms() {
 						<Sparkles className="h-9 w-9" />
 					</div>
 					<h2 className="text-3xl font-extrabold tracking-tight text-text-primary sm:text-4xl">
-						Tus recomendaciones están listas
+						{t("successTitle")}
 					</h2>
 					<p className="mt-4 max-w-2xl text-text-secondary">
-						En base a tus calificaciones, RecomendAI seleccionó un nuevo set de
-						películas que se ajustan a tu gusto.
+						{t("successDescription")}
 					</p>
 				</motion.div>
 
@@ -115,7 +118,7 @@ export function ReviewFilms() {
 
 				<div className="mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row">
 					<Button size="lg" onClick={() => navigate("/search")}>
-						Descubrir películas
+						{t("discoverMovies")}
 					</Button>
 					<Button
 						size="lg"
@@ -127,7 +130,7 @@ export function ReviewFilms() {
 							if (user?.id) dispatch(post10MoviesProcess(parseInt(user.id)));
 						}}
 					>
-						Calificar otro lote
+						{t("rateAnotherBatch")}
 					</Button>
 				</div>
 			</div>
@@ -140,19 +143,17 @@ export function ReviewFilms() {
 		<div className="mx-auto flex w-full max-w-4xl flex-col items-center px-4 pb-16 pt-8">
 			<div className="flex flex-col items-center text-center">
 				<h1 className="text-3xl font-extrabold tracking-tight text-text-primary sm:text-4xl">
-					Calificá películas
+					{t("title")}
 				</h1>
-				<p className="mt-2 max-w-md text-text-secondary">
-					Calificá diez películas para recibir recomendaciones personalizadas.
-				</p>
+				<p className="mt-2 max-w-md text-text-secondary">{t("subtitle")}</p>
 			</div>
 
 			{/* Progress */}
 			<div className="mt-6 w-full max-w-sm">
 				<div className="mb-2 flex justify-between text-sm font-medium text-text-secondary">
-					<span>Progreso</span>
+					<span>{t("progress")}</span>
 					<span className="tabular-nums">
-						{index + 1} / {movies.length}
+						{t("progressCount", { current: index + 1, total: movies.length })}
 					</span>
 				</div>
 				<div className="h-2 w-full overflow-hidden rounded-full bg-surface-elevated">
@@ -184,7 +185,7 @@ export function ReviewFilms() {
 						whileHover={{ scale: 1.08 }}
 						whileTap={{ scale: 0.9 }}
 						onClick={() => rate(false)}
-						aria-label="No me gusta"
+						aria-label={t("dislikeAriaLabel")}
 						className="flex h-16 w-16 items-center justify-center rounded-full border border-danger/40 bg-surface text-danger shadow-card transition-colors hover:bg-danger-soft"
 					>
 						<X className="h-7 w-7" />
@@ -193,17 +194,14 @@ export function ReviewFilms() {
 						whileHover={{ scale: 1.08 }}
 						whileTap={{ scale: 0.9 }}
 						onClick={() => rate(true)}
-						aria-label="Me gusta"
+						aria-label={t("likeAriaLabel")}
 						className="flex h-16 w-16 items-center justify-center rounded-full border border-accent/40 bg-surface text-accent shadow-card transition-colors hover:bg-accent-soft"
 					>
 						<Heart className="h-7 w-7 fill-current" />
 					</motion.button>
 				</div>
 
-				<p className="text-sm text-text-muted">
-					Deslizá la tarjeta o usá los botones: derecha = me gusta, izquierda = no me
-					gusta.
-				</p>
+				<p className="text-sm text-text-muted">{t("swipeHint")}</p>
 			</div>
 		</div>
 	);

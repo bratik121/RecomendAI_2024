@@ -9,12 +9,15 @@ import { isEmail, isPassword } from "@/src/utils";
 import { Button } from "@/src/components/ui/button";
 import { Spinner } from "@/src/components/Spinner";
 import { TextField, PasswordField } from "./AuthField";
+import { useTheme } from "@/src/lib/theme";
 import logo from "@/src/assets/logo-removebg-preview.png";
+import logoLight from "@/src/assets/logo-removebg-preview-light.png";
 
 export function SignIn() {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const { t } = useTranslation("auth");
+	const { isDark } = useTheme();
 	const { isFetching, isAuthenticated, error } = useSelector(
 		(state: RootState) => state.user
 	);
@@ -44,17 +47,25 @@ export function SignIn() {
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!validate()) return;
-		dispatch(postLoginUserProcess({ email: email.value, password: password.value }));
+		dispatch(
+			postLoginUserProcess({ email: email.value, password: password.value })
+		);
 	};
 
 	return (
 		<div className="flex flex-col">
 			<div className="mb-8 flex flex-col items-center gap-3">
-				<img src={logo} alt="What2Watch" className="h-14 w-14 object-contain" />
+				<img
+					src={isDark ? logo : logoLight}
+					alt="What2Watch"
+					className="h-14 w-14 object-contain"
+				/>
 				<h1 className="text-2xl font-extrabold tracking-tight text-text-primary">
 					{t("signIn")}
 				</h1>
-				<p className="text-sm text-text-muted">{t("signInSubtitle", { ns: "auth" })}</p>
+				<p className="text-sm text-text-muted">
+					{t("signInSubtitle", { ns: "auth" })}
+				</p>
 			</div>
 
 			<form onSubmit={handleSubmit} className="space-y-4" noValidate>
@@ -86,14 +97,22 @@ export function SignIn() {
 					</p>
 				)}
 
-				<Button type="submit" className="w-full" size="lg" disabled={isFetching}>
+				<Button
+					type="submit"
+					className="w-full"
+					size="lg"
+					disabled={isFetching}
+				>
 					{isFetching ? <Spinner /> : t("signInButton")}
 				</Button>
 			</form>
 
 			<p className="mt-6 text-center text-sm text-text-muted">
 				{t("noAccount", { ns: "auth" })}{" "}
-				<Link to="/sign/up" className="font-semibold text-accent hover:underline">
+				<Link
+					to="/sign/up"
+					className="font-semibold text-accent hover:underline"
+				>
 					{t("signUp")}
 				</Link>
 			</p>

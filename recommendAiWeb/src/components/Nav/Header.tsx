@@ -20,12 +20,15 @@ import {
 	DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu";
 import logo from "@/src/assets/logo-removebg-preview.png";
+import logoLight from "@/src/assets/logo-removebg-preview-light.png";
+import { useTheme } from "@/src/lib/theme";
 
 export function Header() {
 	const { t } = useTranslation("nav");
 	const dispatch = useDispatch();
 	const location = useLocation();
 	const navigate = useNavigate();
+	const { isDark } = useTheme();
 	const { isAuthenticated, user } = useSelector(
 		(state: RootState) => state.user
 	);
@@ -43,9 +46,25 @@ export function Header() {
 
 	const navItems = [
 		{ to: "/search", label: t("discover"), match: "/search", auth: false },
-		{ to: "/review-films", label: t("reviewFilms"), match: "/review-films", auth: true },
-		{ to: "/watchlist", label: t("watchlist"), match: "/watchlist", auth: true, badge: pendingCount },
-		{ to: "/achievements", label: t("achievements"), match: "/achievements", auth: true },
+		{
+			to: "/review-films",
+			label: t("reviewFilms"),
+			match: "/review-films",
+			auth: true,
+		},
+		{
+			to: "/watchlist",
+			label: t("watchlist"),
+			match: "/watchlist",
+			auth: true,
+			badge: pendingCount,
+		},
+		{
+			to: "/achievements",
+			label: t("achievements"),
+			match: "/achievements",
+			auth: true,
+		},
 		{ to: "/profile", label: t("profile"), match: "/profile", auth: true },
 		{
 			to: "/admin",
@@ -57,7 +76,9 @@ export function Header() {
 	].filter(
 		(item) =>
 			(!item.auth || isAuthenticated) &&
-			(!("admin" in item && item.admin) || (user.role === "admin" || user.role === "root"))
+			(!("admin" in item && item.admin) ||
+				user.role === "admin" ||
+				user.role === "root")
 	);
 
 	const handleLogout = () => dispatch(userLogout());
@@ -73,7 +94,11 @@ export function Header() {
 		>
 			<div className="mx-auto flex h-full max-w-7xl items-center justify-between gap-4 px-6">
 				<Link to="/" className="group flex items-center gap-2">
-					<img src={logo} alt="" className="h-9 w-9 object-contain" />
+					<img
+						src={isDark ? logo : logoLight}
+						alt=""
+						className="h-9 w-9 object-contain"
+					/>
 					<span className="text-lg font-extrabold tracking-tight text-text-primary transition-colors group-hover:text-accent">
 						What2Watch
 					</span>
@@ -117,7 +142,9 @@ export function Header() {
 										src={user.avatar}
 										size={34}
 										ringColor={
-											user.rank_color ? rankStyle(user.rank_color).fg : undefined
+											user.rank_color
+												? rankStyle(user.rank_color).fg
+												: undefined
 										}
 									/>
 								</button>
@@ -140,7 +167,11 @@ export function Header() {
 						</DropdownMenu>
 					) : (
 						<>
-							<Button variant="ghost" size="sm" onClick={() => navigate("/sign/in")}>
+							<Button
+								variant="ghost"
+								size="sm"
+								onClick={() => navigate("/sign/in")}
+							>
 								{t("signIn")}
 							</Button>
 							<Button size="sm" onClick={() => navigate("/sign/up")}>

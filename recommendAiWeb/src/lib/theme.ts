@@ -83,5 +83,7 @@ export function useTheme() {
 		[]
 	);
 
-	return { theme, setTheme: set, toggle };
+	const isDark = theme === "dark";
+
+	return { theme, setTheme: set, toggle, isDark };
 }

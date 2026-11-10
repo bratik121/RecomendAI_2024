@@ -1,0 +1,15 @@
+{
+	"title": "Calificá películas",
+	"subtitle": "Calificá diez películas para recibir recomendaciones personalizadas.",
+	"progress": "Progreso",
+	"progressCount": "{{current}} / {{total}}",
+	"loadingMovies": "Preparando películas...",
+	"errorTitle": "No pudimos cargar las películas",
+	"likeAriaLabel": "Me gusta",
+	"dislikeAriaLabel": "No me gusta",
+	"swipeHint": "Deslizá la tarjeta o usá los botones: derecha = me gusta, izquierda = no me gusta.",
+	"successTitle": "Tus recomendaciones están listas",
+	"successDescription": "En base a tus calificaciones, RecomendAI seleccionó un nuevo set de películas que se ajustan a tu gusto.",
+	"discoverMovies": "Descubrir películas",
+	"rateAnotherBatch": "Calificar otro lote"
+}
